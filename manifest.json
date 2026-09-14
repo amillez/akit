@@ -27,6 +27,12 @@
       "skills": ["grill-me"],
       "skillPathHint": "skills/productivity/grill-me",
       "when": "Stress-test a plan/design before build"
+    },
+    {
+      "id": "expo",
+      "package": "expo/skills",
+      "skills": ["expo-native-ui", "expo-ui", "expo-dev-client"],
+      "when": "Expo native UI / @expo/ui / development clients"
     }
   ],
   "firstParty": [

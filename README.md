@@ -12,6 +12,9 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 | `animate-expo` | `emilkowalski/skills` | Building animations |
 | `apple-design` | `emilkowalski/skills` | Building UIs |
 | `grill-me` | `mattpocock/skills` | Stress-test a plan before build |
+| `expo-native-ui` | `expo/skills` | Building native UI |
+| `expo-ui` | `expo/skills` | Building native UI |
+| `expo-dev-client` | `expo/skills` | Build and distribute Expo development clients locally or via TestFlight for internal testing. For production TestFlight releases and store submission, use `eas-app-stores`. |
 | `orchestrate-agents` | **first-party** | Fan out large work into parallel isolated prompts (Claude/Codex/mixed) |
 | Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | **vendor snapshot** (no public skills-lock upstream) | Building native / Nitro modules |
 
@@ -34,7 +37,7 @@ argent init -y --no-telemetry --global
 
 ## Keeping skills up to date
 
-Upstream packs (Argent, Emil, Matt) are managed by the [`skills`](https://www.npmjs.com/package/skills) CLI — same tool as `npx skills add`.
+Upstream packs (Argent, Emil, Matt, Expo) are managed by the [`skills`](https://www.npmjs.com/package/skills) CLI — same tool as `npx skills add`.
 
 1. **Routine refresh** (pulls latest for globally installed skills that the CLI tracks):
 
