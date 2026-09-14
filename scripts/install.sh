@@ -17,7 +17,11 @@ npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design 
 
 npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
 
-npx -y skills add expo/skills --skill expo-native-ui --skill expo-ui --skill expo-dev-client --agent '*' -g -y --copy
+npx -y skills add expo/skills --skill expo-native-ui --skill expo-ui --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
+
+npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
+
+npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
 echo "== First-party =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"

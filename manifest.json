@@ -31,8 +31,21 @@
     {
       "id": "expo",
       "package": "expo/skills",
-      "skills": ["expo-native-ui", "expo-ui", "expo-dev-client"],
-      "when": "Expo native UI / @expo/ui / development clients"
+      "skills": ["expo-native-ui", "expo-ui", "expo-dev-client", "expo-upgrade"],
+      "when": "Expo native UI / @expo/ui / development clients / SDK upgrades"
+    },
+    {
+      "id": "swm-react-native-best-practices",
+      "package": "software-mansion-labs/skills",
+      "skills": ["react-native-best-practices"],
+      "skillPathHint": "skills/react-native-best-practices",
+      "when": "Writing, reviewing, or debugging any React Native or Expo code"
+    },
+    {
+      "id": "uniwind",
+      "package": "uni-stack/uniwind",
+      "skills": ["uniwind"],
+      "when": "Building or debugging Uniwind className styling in RN"
     }
   ],
   "firstParty": [

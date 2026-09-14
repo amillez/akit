@@ -15,6 +15,9 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 | `expo-native-ui` | `expo/skills` | Building native UI |
 | `expo-ui` | `expo/skills` | Building native UI |
 | `expo-dev-client` | `expo/skills` | Build and distribute Expo development clients locally or via TestFlight for internal testing. For production TestFlight releases and store submission, use `eas-app-stores`. |
+| `expo-upgrade` | `expo/skills` | Skill description (Expo SDK upgrades, dependency conflicts, deprecated packages, cache cleanup) |
+| `react-native-best-practices` | `software-mansion-labs/skills` | Skill description / when writing, reviewing, or debugging ANY React Native or Expo code |
+| `uniwind` | `uni-stack/uniwind` | Skill description / when building or debugging Uniwind className styling in RN |
 | `orchestrate-agents` | **first-party** | Fan out large work into parallel isolated prompts (Claude/Codex/mixed) |
 | Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | **vendor snapshot** (no public skills-lock upstream) | Building native / Nitro modules |
 
@@ -37,7 +40,7 @@ argent init -y --no-telemetry --global
 
 ## Keeping skills up to date
 
-Upstream packs (Argent, Emil, Matt, Expo) are managed by the [`skills`](https://www.npmjs.com/package/skills) CLI — same tool as `npx skills add`.
+Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are managed by the [`skills`](https://www.npmjs.com/package/skills) CLI — same tool as `npx skills add`.
 
 1. **Routine refresh** (pulls latest for globally installed skills that the CLI tracks):
 
