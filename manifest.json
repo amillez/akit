@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex. Upstream packs install via npx skills; first-party and Codex snapshots live in this repo.",
+  "upstream": [
+    {
+      "id": "argent",
+      "package": "software-mansion/argent/packages/skills/skills",
+      "ref": "v0.25.0",
+      "skills": ["*"],
+      "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
+    },
+    {
+      "id": "emil-animate-expo",
+      "package": "emilkowalski/skills",
+      "skills": ["animate-expo"],
+      "when": "Building animations in RN/Expo"
+    },
+    {
+      "id": "emil-apple-design",
+      "package": "emilkowalski/skills",
+      "skills": ["apple-design"],
+      "when": "Building UIs (Apple-inspired motion/interaction)"
+    },
+    {
+      "id": "matt-grill-me",
+      "package": "mattpocock/skills",
+      "skills": ["grill-me"],
+      "skillPathHint": "skills/productivity/grill-me",
+      "when": "Stress-test a plan/design before build"
+    }
+  ],
+  "firstParty": [
+    {
+      "id": "orchestrate-agents",
+      "path": "first-party/orchestrate-agents",
+      "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
+    }
+  ],
+  "vendor": [
+    {
+      "id": "codex-native",
+      "path": "vendor/codex",
+      "skills": [
+        "api-design",
+        "build-nitro-modules",
+        "cpp",
+        "kotlin",
+        "swift",
+        "react-native-mmkv",
+        "react-native-nitro-fetch",
+        "react-native-vision-camera"
+      ],
+      "when": "Building native / Nitro modules",
+      "note": "No public skills-lock upstream — refreshed manually from a machine with current Codex skills (see README)."
+    }
+  ],
+  "excluded": ["autoreview", "superset-*", "orca-*", "orchestration", "planning extras"]
+}
