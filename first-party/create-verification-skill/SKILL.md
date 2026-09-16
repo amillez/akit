@@ -1,14 +1,26 @@
 ---
 name: create-verification-skill
-description: "Generate a project-local verification skill that drives your app the way a user does — any language, framework, or platform. Use for /create-verification-skill, \"make a control skill for this repo\", or when a project has no scripted way to prove UI/CLI/service behavior."
+description: >-
+  Use when generating a project-local verification skill
+  (Launch/Doctor/Drive/Evidence) so agents can prove UI/CLI/service behavior —
+  amillez overlay of pstack create-verification-skill. Stella: wire this for
+  coding bots on driveable apps.
 disable-model-invocation: true
 ---
-
 # Create a verification skill
 
 Every serious project needs a scripted way to drive the real app and prove behavior: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill tailored to the repo. You write the generator's output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app.
 
 **amillez-mode** (see [`amillez/ai-eng-practices` playbooks/amillez-mode.md](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/amillez-mode.md)): keep the interview → generate → feature map → prove-before-handoff craft. Remap host, output paths, and visual proof onto our stack per [agent-use-policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md) and [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md).
+
+## Bot designer (Stella)
+
+When assembling a **coding bot** for a repo with a driveable surface (UI, CLI/TUI, service, Expo/RN):
+
+- Day-one / first-touch: point the bot at this skill (and `/maintain-verification-skill`) so Prove It Works is scripted, not vibes.
+- Skip for pure library / docs / non-driveable work, and for **non-coding** bots.
+- Host stays agent-m1-first — never bake Cursor-cloud-default paths into the bot brief.
+- Pair with `/setup-amillez-models` for the session model pick before a long prove run.
 
 ## Host
 
@@ -42,13 +54,13 @@ Write `verify-<app>/SKILL.md` at the [output location](#output-location) with YA
 - **Launch:** the exact command that starts the app for verification, and how to tell it's ready (a log line, a port answering, a prompt). Include teardown. For a short-lived CLI or TUI there is no server to keep alive: launch means build the binary (or install deps) once, then start each drive in its own isolated PTY or tmux session. For Expo/RN, launch via Argent simulator/emulator setup on agent-m1.
 - **Doctor:** one read-only check that answers "is this instance worth driving?" — process up, right version/build, port owned by us, auth valid. An agent runs this first whenever anything looks off.
 - **Drive:** the harness recipe with real selectors/commands from this repo, not examples. Prefer stable handles (ARIA labels, data attributes, prompt strings, route paths) over coordinates and tab order. Expo/RN: Argent test-ui-flow / screenshot recipes.
-- **Evidence:** what to capture for a proof and where it goes. State the proof standards: exercise the real user path, not internal setters or test-only endpoints; capture the action and the resulting state, not just the final screen; verify side effects (files written, rows inserted, messages sent) alongside what's visible; mocks only where a production boundary already isolates the external system. When the safe path is a dry-run or test mode, verify what it actually skips by observing (files, network, git refs) rather than trusting its name. **Visual proof (screenshots/videos):** host on the repo's `media` branch (never the PR branch); inspect with a **Luna Max** verifier per [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md). Non-visual proof (logs, exit codes, traces) stays with the coding agent.
+- **Evidence:** what to capture for a proof and where it goes. State the proof standards: exercise the real user path, not internal setters or test-only endpoints; capture the action and the resulting state, not just the final screen; verify side effects (files written, rows inserted, messages sent) alongside what's visible; mocks only where a production boundary already isolates the external system. When the safe path is a dry-run or test mode, verify what it actually skips by observing (files, network, git refs) rather than trusting its name: some dry-runs still touch the network or open a browser. **Visual proof (screenshots/videos):** host on the repo's `media` branch (never the PR branch); inspect with a **Luna Max** verifier per [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md). Non-visual proof (logs, exit codes, traces) stays with the coding agent.
 - **Cleanup:** how to tear down instances the run created. Never kill by process name; kill what you started. Cleanup removes instances and scratch state, never the evidence: proof artifacts survive the teardown, in a location the skill names. Tear down sims/emulators and dev servers the verification run started.
 - **Helpers:** any script the skill ships is executable and its invocation is shown in the skill body. A helper the reader has to reverse-engineer is not a helper.
 
 ## 3. Seed the feature map
 
-Create `verify-<app>/features/README.md` plus one file per user-facing feature you can identify (aim for the top 3-5 to start, from routes, commands, menus, or docs), under the same skill directory. Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. Each file answers, from the user's point of view: what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. The four H2s are `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`. The map is the repo's maintained verification source; a proof that drives one convenient entry point is incomplete when the map lists others.
+Create `verify-<app>/features/README.md` plus one file per user-facing feature you can identify (aim for the top 3-5 to start, from routes, commands, menus, or docs), under the same skill directory. Follow the shape in `references/feature-map-example/` (shipped beside this skill), with a README index and one file per feature. Each file answers, from the user's point of view: what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. The four H2s are `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`. The map is the repo's maintained verification source; a proof that drives one convenient entry point is incomplete when the map lists others.
 
 ## 4. Prove the generated skill before handing it over
 

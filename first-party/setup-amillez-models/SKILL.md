@@ -1,12 +1,20 @@
 ---
 name: setup-amillez-models
-description: "Point agents at the amillez model chooser (Luna Max / Sol High / Opus High / Fable) instead of writing a pstack-models rule. Use for /setup-amillez-models, \"configure models\", or as the thin replacement for setup-pstack."
+description: >-
+  Use when configuring model picks for this org — thin amillez replacement for
+  setup-pstack (policy chooser, no pstack-models.mdc). Stella: day-one wiring
+  for coding bots.
 disable-model-invocation: true
 ---
-
 # Setup amillez models
 
 Thin replacement for pstack's `/setup-pstack`. **Do not** write `~/.cursor/rules/pstack-models.mdc` (or any always-applied pstack role map). Our stack uses a policy chooser, not a per-role Cursor rule file.
+
+## Bot designer (Stella)
+
+- Day-one wiring for **coding bots**: point them here (or run it on first touch) so model pick follows `agent-use-policy.md`, not freestyle Cursor spends.
+- Non-coding bots: skip unless they somehow dispatch coding work.
+- After model pick, the optional verify-* offer below is how Stella hooks `/create-verification-skill` without a second prompt.
 
 ## Steps
 
