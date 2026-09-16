@@ -53,6 +53,21 @@
       "id": "orchestrate-agents",
       "path": "first-party/orchestrate-agents",
       "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
+    },
+    {
+      "id": "create-verification-skill",
+      "path": "first-party/create-verification-skill",
+      "when": "Generate a project-local verify-<app> skill (Launch/Doctor/Drive/Evidence/Cleanup + feature map); amillez-mode overlay"
+    },
+    {
+      "id": "maintain-verification-skill",
+      "path": "first-party/maintain-verification-skill",
+      "when": "Audit/keep a project verify-<app> skill and feature map honest"
+    },
+    {
+      "id": "setup-amillez-models",
+      "path": "first-party/setup-amillez-models",
+      "when": "Thin setup-pstack replacement: point at agent-use-policy model chooser (do not write pstack-models.mdc)"
     }
   ],
   "vendor": [
