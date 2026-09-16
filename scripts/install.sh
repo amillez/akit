@@ -25,10 +25,12 @@ npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
 echo "== First-party =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"
-rm -rf "$HOME/.agents/skills/orchestrate-agents" "$HOME/.claude/skills/orchestrate-agents" "$HOME/.codex/skills/orchestrate-agents"
-cp -R "$ROOT/first-party/orchestrate-agents" "$HOME/.agents/skills/orchestrate-agents"
-cp -R "$ROOT/first-party/orchestrate-agents" "$HOME/.claude/skills/orchestrate-agents"
-cp -R "$ROOT/first-party/orchestrate-agents" "$HOME/.codex/skills/orchestrate-agents"
+for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
+  rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
+  cp -R "$ROOT/first-party/$s" "$HOME/.agents/skills/$s"
+  cp -R "$ROOT/first-party/$s" "$HOME/.claude/skills/$s"
+  cp -R "$ROOT/first-party/$s" "$HOME/.codex/skills/$s"
+done
 
 echo "== Vendored Codex native skills =="
 for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
