@@ -22,6 +22,13 @@
       "when": "Building UIs (Apple-inspired motion/interaction)"
     },
     {
+      "id": "emil-review-animations",
+      "package": "emilkowalski/skills",
+      "skills": ["review-animations"],
+      "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
+      "note": "Upstream sets disable-model-invocation: true — not auto-invoked; launch prompts must name it explicitly for critique passes."
+    },
+    {
       "id": "matt-grill-me",
       "package": "mattpocock/skills",
       "skills": ["grill-me"],

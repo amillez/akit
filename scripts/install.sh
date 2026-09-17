@@ -13,7 +13,7 @@ echo "== Upstream packs (npx skills add) =="
 # Argent — all skills; pin matches manifest
 npx -y skills add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*' --agent '*' -g -y --copy
 
-npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --agent '*' -g -y --copy
+npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
 
 npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
 

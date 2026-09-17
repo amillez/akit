@@ -11,6 +11,7 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 | All Argent `argent-*` | `software-mansion/argent` (pinned tag in `manifest.json`) | Skill description |
 | `animate-expo` | `emilkowalski/skills` | Building animations |
 | `apple-design` | `emilkowalski/skills` | Building UIs |
+| `review-animations` | `emilkowalski/skills` | Reviewing / critiquing animation and motion (Emil craft bar). Upstream sets `disable-model-invocation: true` — still allowlisted, but not auto-invoked: launch prompts must name it explicitly for critique passes. |
 | `grill-me` | `mattpocock/skills` | Stress-test a plan before build |
 | `expo-native-ui` | `expo/skills` | Building native UI |
 | `expo-ui` | `expo/skills` | Building native UI |
