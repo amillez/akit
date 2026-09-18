@@ -6,7 +6,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/ensure-project.sh <project-path> [--force] [--skills-root /path/to/agent-skills]
+Usage: ./scripts/ensure-project.sh <project-path> [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
 
 Required before the first coding session on a project (bots/agents run this
 automatically per ai-eng-practices policy).
@@ -21,6 +21,10 @@ Detects "installed" if ANY of:
 
 If missing → run update-project.sh (re-links skills + refreshes rules) and write stamp.
 If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
+
+Groups (same as install.sh / link-project.sh; default core,mobile):
+  core is always included. Pass --groups when known (Grok Bot / ensure should pass
+  groups when known; default core+mobile for RN projects is fine).
 
 Skills root resolution (first match):
   1. --skills-root
@@ -38,6 +42,7 @@ USAGE
 FORCE=0
 PROJECT=""
 SKILLS_ROOT_OVERRIDE=""
+GROUPS_ARG=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -53,6 +58,14 @@ while [[ $# -gt 0 ]]; do
       SKILLS_ROOT_OVERRIDE="${2:-}"
       if [[ -z "$SKILLS_ROOT_OVERRIDE" ]]; then
         echo "error: --skills-root requires a path" >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+    --groups)
+      GROUPS_ARG="${2:-}"
+      if [[ -z "$GROUPS_ARG" ]]; then
+        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
         exit 1
       fi
       shift 2
@@ -170,6 +183,9 @@ run_install() {
     args+=(--skills-root "$SKILLS_ROOT")
   elif [[ "$SKILLS_ROOT" != "$REPO_ROOT" ]]; then
     args+=(--skills-root "$SKILLS_ROOT")
+  fi
+  if [[ -n "$GROUPS_ARG" ]]; then
+    args+=(--groups "$GROUPS_ARG")
   fi
   # Quiet the verbose update/link chatter for the ensure one-liner UX;
   # still fail hard on errors.

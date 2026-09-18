@@ -5,11 +5,11 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/update-project.sh [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--skip-link] [--skip-rules]
+Usage: ./scripts/update-project.sh [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-link] [--skip-rules]
 
 Idempotent project refresh for the amillez plugin pack:
   1. Re-run link-project.sh (skill symlinks → .claude/skills + .agents/skills only)
-  2. Copy/update templates/models.claude.md →
+  2. Copy/update templates/models.md →
        .claude/rules/amillez-models.md
        .agents/rules/amillez-models.md
 
@@ -18,6 +18,7 @@ Does NOT write Cursor rules or any .cursor/ paths.
 Options:
   --force         Passed through to link-project.sh; also overwrite diverged rules files
   --skills-root   Passed through to link-project.sh
+  --groups        Passed through to link-project.sh (default core,mobile; core always included)
   --skip-link     Only refresh rules templates
   --skip-rules    Only refresh skill links
 USAGE
@@ -48,6 +49,14 @@ while [[ $# -gt 0 ]]; do
         exit 1
       fi
       EXTRA_LINK_ARGS+=(--skills-root "$SKILLS_ROOT_OVERRIDE")
+      shift 2
+      ;;
+    --groups)
+      if [[ -z "${2:-}" ]]; then
+        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
+        exit 1
+      fi
+      EXTRA_LINK_ARGS+=(--groups "$2")
       shift 2
       ;;
     --skip-link)
@@ -85,11 +94,11 @@ if [[ ! -d "$PROJECT" ]]; then
 fi
 PROJECT="$(cd "$PROJECT" && pwd)"
 
-TEMPLATE="$REPO_ROOT/templates/models.claude.md"
+TEMPLATE="$REPO_ROOT/templates/models.md"
 if [[ ! -f "$TEMPLATE" ]]; then
   # Fall back to home clone if this checkout is incomplete
-  if [[ -f "${HOME}/agent-work/agent-skills/templates/models.claude.md" ]]; then
-    TEMPLATE="${HOME}/agent-work/agent-skills/templates/models.claude.md"
+  if [[ -f "${HOME}/agent-work/agent-skills/templates/models.md" ]]; then
+    TEMPLATE="${HOME}/agent-work/agent-skills/templates/models.md"
   fi
 fi
 
@@ -101,7 +110,7 @@ fi
 
 if [[ "$SKIP_RULES" -eq 0 ]]; then
   if [[ ! -f "$TEMPLATE" ]]; then
-    echo "error: rules template not found (expected templates/models.claude.md)" >&2
+    echo "error: rules template not found (expected templates/models.md)" >&2
     exit 1
   fi
   echo "== Refresh Claude/Codex rules templates =="

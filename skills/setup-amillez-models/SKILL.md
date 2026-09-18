@@ -35,13 +35,13 @@ Thin replacement for pstack's `/setup-pstack`. **Do not** write Cursor rule file
 
 2. **Confirm the session pick.** State which model + effort + harness (Claude Code vs Codex) this session should use and why (one sentence). Do not invent freestyle frontier spends outside the chooser.
 
-3. **Install or update Claude / Codex model rule templates.** Prefer the template shipped in this pack (`templates/models.claude.md`) over linking only to the GitHub policy file. Offer once (or re-run to refresh):
+3. **Install or update Claude / Codex model rule templates.** Prefer the template shipped in this pack (`templates/models.md`) over linking only to the GitHub policy file. Offer once (or re-run to refresh):
 
    | Target | Template | Destination |
    | --- | --- | --- |
-   | Claude Code project | `templates/models.claude.md` | `.claude/rules/amillez-models.md` |
-   | Codex / shared agents | `templates/models.claude.md` | `.agents/rules/amillez-models.md` |
-   | Claude user-global (optional) | `templates/models.claude.md` | `~/.claude/rules/amillez-models.md` |
+   | Claude Code project | `templates/models.md` | `.claude/rules/amillez-models.md` |
+   | Codex / shared agents | `templates/models.md` | `.agents/rules/amillez-models.md` |
+   | Claude user-global (optional) | `templates/models.md` | `~/.claude/rules/amillez-models.md` |
 
    Resolve the agent-skills checkout (`~/agent-work/agent-skills`, or the repo that owns this skill). Copy (or re-copy) the template — idempotent update is fine. Do **not** invent a pstack role map. Template sets **bot/orchestrator** defaults (**Opus High** for Claude). Workers still follow the policy chooser. **Never** write Cursor rules, `pstack-models.mdc`, or anything under `.cursor/`.
 

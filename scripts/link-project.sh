@@ -5,13 +5,18 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/link-project.sh [/path/to/project] [--force] [--skills-root /path/to/agent-skills]
+Usage: ./scripts/link-project.sh [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
 
 Creates per-skill symlinks so the project sees amillez skills in:
   .claude/skills/<name>  →  <skills-root>/skills/<name>
   .agents/skills/<name>  →  same (Codex-style shared agents dir)
 
 Does NOT create .cursor/skills links.
+
+Groups (same as install.sh; default core,mobile):
+  core    Always linked: first-party skills tagged core in manifest.json
+  mobile  First-party skills tagged mobile (none today; reserved)
+  --groups mobile still includes core. --groups core skips mobile-only skills.
 
 Defaults:
   project      = current working directory
@@ -28,6 +33,7 @@ USAGE
 FORCE=0
 PROJECT=""
 SKILLS_ROOT_OVERRIDE=""
+GROUPS_ARG=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -43,6 +49,14 @@ while [[ $# -gt 0 ]]; do
       SKILLS_ROOT_OVERRIDE="${2:-}"
       if [[ -z "$SKILLS_ROOT_OVERRIDE" ]]; then
         echo "error: --skills-root requires a path" >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+    --groups)
+      GROUPS_ARG="${2:-}"
+      if [[ -z "$GROUPS_ARG" ]]; then
+        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
         exit 1
       fi
       shift 2
@@ -100,12 +114,70 @@ if [[ ! -d "$PROJECT" ]]; then
 fi
 PROJECT="$(cd "$PROJECT" && pwd)"
 
+# Resolve groups: core always; default core+mobile
+WANT_MOBILE=0
+if [[ -z "$GROUPS_ARG" ]]; then
+  WANT_MOBILE=1
+else
+  IFS=',' read -ra RAW_GROUPS <<< "$GROUPS_ARG"
+  saw_any=0
+  for g in "${RAW_GROUPS[@]}"; do
+    g="${g#"${g%%[![:space:]]*}"}"
+    g="${g%"${g##*[![:space:]]}"}"
+    g="$(printf '%s' "$g" | tr '[:upper:]' '[:lower:]')"
+    case "$g" in
+      core) saw_any=1 ;;
+      mobile) WANT_MOBILE=1; saw_any=1 ;;
+      "") ;;
+      *)
+        echo "error: unknown group '$g' (valid: core, mobile)" >&2
+        exit 1
+        ;;
+    esac
+  done
+  if [[ "$saw_any" -eq 0 ]]; then
+    echo "error: --groups produced no valid groups" >&2
+    exit 1
+  fi
+fi
+
+# Map skill id → group from manifest.json (default core if missing)
+skill_group() {
+  local id="$1"
+  local manifest="$SKILLS_ROOT/manifest.json"
+  if [[ -f "$manifest" ]] && command -v python3 >/dev/null 2>&1; then
+    AMILLEZ_MANIFEST="$manifest" AMILLEZ_SKILL_ID="$id" python3 -c '
+import json, os
+m = json.load(open(os.environ["AMILLEZ_MANIFEST"]))
+sid = os.environ["AMILLEZ_SKILL_ID"]
+for section in ("firstParty", "upstream", "vendor"):
+    for e in m.get(section, []):
+        if e.get("id") == sid:
+            print(e.get("group", "core"))
+            raise SystemExit
+        for s in e.get("skills") or []:
+            if s == sid:
+                print(e.get("group", "core"))
+                raise SystemExit
+print("core")
+'
+    return
+  fi
+  # Fallback without python/manifest: all first-party under skills/ are core
+  echo "core"
+}
+
 SKILL_NAMES=()
 for d in "$SKILLS_DIR"/*/; do
   [[ -d "$d" ]] || continue
   name="$(basename "$d")"
   if [[ -f "$d/SKILL.md" ]]; then
-    SKILL_NAMES+=("$name")
+    grp="$(skill_group "$name")"
+    if [[ "$grp" == "core" ]]; then
+      SKILL_NAMES+=("$name")
+    elif [[ "$grp" == "mobile" && "$WANT_MOBILE" -eq 1 ]]; then
+      SKILL_NAMES+=("$name")
+    fi
   fi
 done
 
@@ -149,6 +221,7 @@ link_one() {
 
 echo "Project:     $PROJECT"
 echo "Skills root: $SKILLS_ROOT"
+echo "Groups:      core$([ "$WANT_MOBILE" -eq 1 ] && echo '+mobile' || true) (core always)"
 echo "Skills:      ${SKILL_NAMES[*]}"
 echo
 
