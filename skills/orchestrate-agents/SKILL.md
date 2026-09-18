@@ -12,7 +12,7 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 | Gate | Condition | Action |
 | --- | --- | --- |
 | **Small** | Single surface/package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch the corresponding agent directly (Luna / Sol / Opus on Claude Code / Codex). |
-| **Needs orch (large)** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Fable 5.1 High** coordinator **inside Orca**. Decompose into tasks, `worker-start` Claude/Codex workers, integrate. Do **not** implement every slice yourself. |
+| **Needs orch (large)** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Fable 5.1 High** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude/Codex workers. **Delegate all work** — implementation, integrate, prove/validate — to workers. Coordinator only plans, dispatches, waits, and routes decisions. |
 
 **Lesson:** do not collapse big work into one mega-agent; do not over-orchestrate a rename.
 
@@ -28,7 +28,8 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 
 - **Label:** **Fable 5.1 High** (prefer this name).
 - **Host:** `agent-m1` Claude Code (Fable-class at **High**), driving Orca CLI. If nearest is Opus: **Fable 5.1 High** → Claude Code Fable/Opus-equivalent at High — still say Fable 5.1 High.
-- **Workers:** `--agent claude|codex` + `--model` + `--effort` **per slice** from the chooser — not all Fable.
+- **Workers:** `--agent claude|codex` + `--model` + `--effort` **per slice** from the chooser — not all Fable. Workers own implement / integrate / prove; coordinator does not.
+- **Coordinator does not code product slices, integrate, or validate** — only decompose, dispatch, wait, and route human/gate decisions.
 - **Disk:** sequential / max 2 parallel worktrees under pressure; never two agents on one checkout (`--worktree current` twice is forbidden).
 
 ## Preferred supervised Orca loop
@@ -64,12 +65,12 @@ Each task owns ONE unit no other task touches, ideally a separate module/package
 
 1. Confirm size gate → large. If small, stop and recommend direct Luna/Sol/Opus.
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed).
-3. Scout the codebase; never decompose blind.
-4. `run-create`, then cut isolated `task-create` items (P1 vs P2).
+3. Scout only enough to decompose; never implement product work in the coordinator session.
+4. `run-create`, then cut isolated `task-create` items (P1 vs P2) — include **integrate** and **prove/validate** as their own worker tasks when needed (not coordinator work).
 5. Assign `--agent` / `--model` / `--effort` per task from the chooser.
 6. `worker-start` with disk mode (sequential current vs ≤2 new-child).
-7. `check --wait` for `worker_done` / escalation / question; ack deliveries; use gates/`ask` for blocking decisions.
-8. Integrate yourself; prove-before-PR; sim mutex / max 2 sims on agent-m1.
+7. `check --wait` for `worker_done` / escalation / question; ack deliveries; use gates/`ask` for blocking decisions only.
+8. Do **not** integrate or validate in the coordinator — dispatch worker tasks for merge/integrate and for prove (prove-before-PR; sim mutex / max 2 sims on agent-m1).
 9. Hand PR babysit back to the eng bot (Grok). Grok does not replace Orca for the DAG.
 
 ## Output
@@ -89,3 +90,4 @@ For **large**: the Orca command sequence (run/task/worker/check) plus SHARED CON
 - Stamping Fable 5.1 High on every worker.
 - Opening a PR before prove.
 - Treating this skill's prompt text as a substitute for Orca Dispatches / `worker_done`.
+- Coordinator integrating, proving, or validating instead of dispatching worker tasks for those steps.
