@@ -14,7 +14,6 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 | `review-animations` | `emilkowalski/skills` | Reviewing / critiquing animation and motion (Emil craft bar). Upstream sets `disable-model-invocation: true` — still allowlisted, but not auto-invoked: launch prompts must name it explicitly for critique passes. |
 | `grill-me` | `mattpocock/skills` | Stress-test a plan before build |
 | `expo-native-ui` | `expo/skills` | Building native UI |
-| `expo-ui` | `expo/skills` | Building native UI |
 | `expo-dev-client` | `expo/skills` | Build and distribute Expo development clients locally or via TestFlight for internal testing. For production TestFlight releases and store submission, use `eas-app-stores`. |
 | `expo-upgrade` | `expo/skills` | Skill description (Expo SDK upgrades, dependency conflicts, deprecated packages, cache cleanup) |
 | `react-native-best-practices` | `software-mansion-labs/skills` | Skill description / when writing, reviewing, or debugging ANY React Native or Expo code |
