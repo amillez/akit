@@ -25,7 +25,7 @@ npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
 echo "== First-party =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"
-for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
+for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models register-worker-dir; do
   rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
   cp -R "$ROOT/first-party/$s" "$HOME/.agents/skills/$s"
   cp -R "$ROOT/first-party/$s" "$HOME/.claude/skills/$s"
