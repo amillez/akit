@@ -1,0 +1,9 @@
+{
+  "name": "amillez",
+  "displayName": "amillez",
+  "version": "0.1.0",
+  "description": "Skill + rules pack for Claude Code and Codex on agent-m1",
+  "skills": "./skills/",
+  "templates": "./templates/",
+  "hosts": ["claude-code", "codex"]
+}

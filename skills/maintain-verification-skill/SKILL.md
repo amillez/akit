@@ -20,7 +20,7 @@ A feature map rots the moment the app changes. This skill is the upkeep loop for
 
 ## Host
 
-Run the maintain pass on **agent-m1** (Claude Code / Codex). Cursor cloud only if agent-m1 is down. Expo/RN surfaces: drive with **Argent** on agent-m1. Visual evidence → `media` branch + **Luna Max** verify.
+Run the maintain pass on **agent-m1** (Claude Code / Codex only). Expo/RN surfaces: drive with **Argent** on agent-m1. Visual evidence → `media` branch + **Luna Max** (Codex) verify.
 
 ## Outcomes
 
@@ -36,7 +36,7 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 
 ## Pass
 
-0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map. Search agent-m1 defaults first: `.claude/skills/verify-*/` and `.codex/skills/verify-*/`. Also check `.cursor/skills/verify-*/` when Cursor cloud fallback is in use (or an older skill was generated there). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
+0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map. Search: `.claude/skills/verify-*/` and `.codex/skills/verify-*/` only. Do not use `.cursor/skills/`. Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
 
 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
