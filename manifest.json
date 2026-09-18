@@ -38,7 +38,7 @@
     {
       "id": "expo",
       "package": "expo/skills",
-      "skills": ["expo-native-ui", "expo-ui", "expo-dev-client", "expo-upgrade"],
+      "skills": ["expo-native-ui", "expo-dev-client", "expo-upgrade"],
       "when": "Expo native UI / @expo/ui / development clients / SDK upgrades"
     },
     {
