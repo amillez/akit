@@ -1,90 +1,124 @@
 {
   "version": 1,
-  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex. Upstream packs install via npx skills; first-party and Codex snapshots live in this repo.",
+  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/. Cursor plugin / My Machines out of scope.",
+  "groups": {
+    "core": {
+      "always": true,
+      "description": "Always installed: grill-me + first-party orchestration/verification/models setup"
+    },
+    "mobile": {
+      "description": "React Native / Expo / native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
+    }
+  },
   "upstream": [
     {
       "id": "argent",
+      "group": "mobile",
       "package": "software-mansion/argent/packages/skills/skills",
       "ref": "v0.25.0",
-      "skills": ["*"],
+      "skills": [
+        "*"
+      ],
       "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
     },
     {
       "id": "emil-animate-expo",
+      "group": "mobile",
       "package": "emilkowalski/skills",
-      "skills": ["animate-expo"],
+      "skills": [
+        "animate-expo"
+      ],
       "when": "Building animations in RN/Expo"
     },
     {
       "id": "emil-apple-design",
+      "group": "mobile",
       "package": "emilkowalski/skills",
-      "skills": ["apple-design"],
+      "skills": [
+        "apple-design"
+      ],
       "when": "Building UIs (Apple-inspired motion/interaction)"
     },
     {
       "id": "emil-review-animations",
+      "group": "mobile",
       "package": "emilkowalski/skills",
-      "skills": ["review-animations"],
+      "skills": [
+        "review-animations"
+      ],
       "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
-      "note": "Upstream sets disable-model-invocation: true — not auto-invoked; launch prompts must name it explicitly for critique passes."
+      "note": "Upstream sets disable-model-invocation: true \u2014 not auto-invoked; launch prompts must name it explicitly for critique passes."
     },
     {
       "id": "matt-grill-me",
+      "group": "core",
       "package": "mattpocock/skills",
-      "skills": ["grill-me"],
+      "skills": [
+        "grill-me"
+      ],
       "skillPathHint": "skills/productivity/grill-me",
       "when": "Stress-test a plan/design before build"
     },
     {
       "id": "expo",
+      "group": "mobile",
       "package": "expo/skills",
-      "skills": ["expo-native-ui", "expo-dev-client", "expo-upgrade"],
-      "when": "Expo native UI / @expo/ui / development clients / SDK upgrades"
+      "skills": [
+        "expo-dev-client",
+        "expo-upgrade"
+      ],
+      "when": "Expo development clients / SDK upgrades"
     },
     {
       "id": "swm-react-native-best-practices",
+      "group": "mobile",
       "package": "software-mansion-labs/skills",
-      "skills": ["react-native-best-practices"],
+      "skills": [
+        "react-native-best-practices"
+      ],
       "skillPathHint": "skills/react-native-best-practices",
       "when": "Writing, reviewing, or debugging any React Native or Expo code"
     },
     {
       "id": "uniwind",
+      "group": "mobile",
       "package": "uni-stack/uniwind",
-      "skills": ["uniwind"],
+      "skills": [
+        "uniwind"
+      ],
       "when": "Building or debugging Uniwind className styling in RN"
     }
   ],
   "firstParty": [
     {
       "id": "orchestrate-agents",
-      "path": "first-party/orchestrate-agents",
+      "group": "core",
+      "path": "skills/orchestrate-agents",
       "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
     },
     {
       "id": "create-verification-skill",
-      "path": "first-party/create-verification-skill",
+      "group": "core",
+      "path": "skills/create-verification-skill",
       "when": "Generate a project-local verify-<app> skill (Launch/Doctor/Drive/Evidence/Cleanup + feature map); amillez-mode overlay"
     },
     {
       "id": "maintain-verification-skill",
-      "path": "first-party/maintain-verification-skill",
+      "group": "core",
+      "path": "skills/maintain-verification-skill",
       "when": "Audit/keep a project verify-<app> skill and feature map honest"
     },
     {
       "id": "setup-amillez-models",
-      "path": "first-party/setup-amillez-models",
-      "when": "Thin setup-pstack replacement: point at agent-use-policy model chooser (do not write pstack-models.mdc)"
-    },
-    {
-      "id": "register-worker-dir",
-      "path": "first-party/register-worker-dir",
-      "when": "Register a repo via --worker-dir on LaunchAgent com.cursor.agent-worker.agent-m1 before routing worker=agent-m1; do not claim sim/Argent proof from managed cloud while unregistered"
+      "group": "core",
+      "path": "skills/setup-amillez-models",
+      "when": "Thin setup-pstack replacement: policy chooser + install/update Claude/Codex rules templates (do not write pstack-models.mdc or Cursor rules)"
     }
   ],
   "vendor": [
     {
       "id": "codex-native",
+      "group": "mobile",
       "path": "vendor/codex",
       "skills": [
         "api-design",
@@ -97,8 +131,17 @@
         "react-native-vision-camera"
       ],
       "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream — refreshed manually from a machine with current Codex skills (see README)."
+      "note": "No public skills-lock upstream \u2014 refreshed manually from a machine with current Codex skills (see README)."
     }
   ],
-  "excluded": ["autoreview", "superset-*", "orca-*", "orchestration", "planning extras"]
+  "excluded": [
+    "autoreview",
+    "superset-*",
+    "orca-*",
+    "orchestration",
+    "planning extras",
+    "register-worker-dir",
+    "cursor-plugin",
+    "expo-native-ui"
+  ]
 }

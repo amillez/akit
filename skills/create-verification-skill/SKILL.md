@@ -19,21 +19,19 @@ When assembling a **coding bot** for a repo with a driveable surface (UI, CLI/TU
 
 - Day-one / first-touch: point the bot at this skill (and `/maintain-verification-skill`) so Prove It Works is scripted, not vibes.
 - Skip for pure library / docs / non-driveable work, and for **non-coding** bots.
-- Host stays agent-m1-first — never bake Cursor-cloud-default paths into the bot brief.
+- Host is agent-m1 Claude Code / Codex only — never bake Cursor paths into the bot brief.
 - Pair with `/setup-amillez-models` for the session model pick before a long prove run.
 
 ## Host
 
-Generate and prove the skill on **agent-m1** (Claude Code / Codex). Use Cursor cloud only if agent-m1 is down.
+Generate and prove the skill on **agent-m1** (Claude Code / Codex only).
 
 ## Output location
 
-Write the generated skill under the project, preferring agent-m1 paths:
+Write the generated skill under the project:
 
-- **Default (agent-m1):** `.claude/skills/verify-<app>/` and/or `.codex/skills/verify-<app>/` (install both when both hosts are in play; one is enough if the project uses only one).
-- **Cursor cloud fallback only:** also `.cursor/skills/verify-<app>/` when the work is running on Cursor cloud because agent-m1 is unavailable.
-
-Do not make `.cursor/skills/` the default when generating on agent-m1.
+- **Default:** `.claude/skills/verify-<app>/` and/or `.codex/skills/verify-<app>/` (install both when both hosts are in play; one is enough if the project uses only one).
+- **Never** write `.cursor/skills/`.
 
 ## 1. Interview the repo, not the user
 
