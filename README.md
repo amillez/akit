@@ -22,6 +22,7 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 | `create-verification-skill` | **first-party** (pstack port, amillez overlay) | Generate project-local `verify-<app>` (Launch/Doctor/Drive/Evidence/Cleanup + feature map) |
 | `maintain-verification-skill` | **first-party** (pstack port, amillez overlay) | Keep a project `verify-<app>` skill + feature map honest |
 | `setup-amillez-models` | **first-party** (thin setup-pstack replacement) | Point at `agent-use-policy` chooser; do not write `pstack-models.mdc` |
+| `register-worker-dir` | **first-party** | Register a repo `--worker-dir` on LaunchAgent `com.cursor.agent-worker.agent-m1` before routing `worker=agent-m1` |
 | Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | **vendor snapshot** (no public skills-lock upstream) | Building native / Nitro modules |
 
 Excluded for now: `autoreview`, Superset pack, Orca orchestration, other design/planning skills.
@@ -64,7 +65,7 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 
    Then on other machines: `git pull && ./scripts/install.sh` (vendor copy step).
 
-4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit in this repo, commit, `git pull` + re-run the first-party copy section of `install.sh` (or full install).
+4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `register-worker-dir`) — edit in this repo, commit, `git pull` + re-run the first-party copy section of `install.sh` (or full install).
 
 5. **Lockfile** — after installs, `~/.agents/.skill-lock.json` records source URLs/hashes for upstream packs. Prefer that + this repo’s `manifest.json` over ad-hoc copies.
 

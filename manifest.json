@@ -6,52 +6,70 @@
       "id": "argent",
       "package": "software-mansion/argent/packages/skills/skills",
       "ref": "v0.25.0",
-      "skills": ["*"],
+      "skills": [
+        "*"
+      ],
       "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
     },
     {
       "id": "emil-animate-expo",
       "package": "emilkowalski/skills",
-      "skills": ["animate-expo"],
+      "skills": [
+        "animate-expo"
+      ],
       "when": "Building animations in RN/Expo"
     },
     {
       "id": "emil-apple-design",
       "package": "emilkowalski/skills",
-      "skills": ["apple-design"],
+      "skills": [
+        "apple-design"
+      ],
       "when": "Building UIs (Apple-inspired motion/interaction)"
     },
     {
       "id": "emil-review-animations",
       "package": "emilkowalski/skills",
-      "skills": ["review-animations"],
+      "skills": [
+        "review-animations"
+      ],
       "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
-      "note": "Upstream sets disable-model-invocation: true — not auto-invoked; launch prompts must name it explicitly for critique passes."
+      "note": "Upstream sets disable-model-invocation: true \u2014 not auto-invoked; launch prompts must name it explicitly for critique passes."
     },
     {
       "id": "matt-grill-me",
       "package": "mattpocock/skills",
-      "skills": ["grill-me"],
+      "skills": [
+        "grill-me"
+      ],
       "skillPathHint": "skills/productivity/grill-me",
       "when": "Stress-test a plan/design before build"
     },
     {
       "id": "expo",
       "package": "expo/skills",
-      "skills": ["expo-native-ui", "expo-dev-client", "expo-upgrade"],
+      "skills": [
+        "expo-native-ui",
+        "expo-dev-client",
+        "expo-upgrade"
+      ],
       "when": "Expo native UI / @expo/ui / development clients / SDK upgrades"
     },
     {
       "id": "swm-react-native-best-practices",
       "package": "software-mansion-labs/skills",
-      "skills": ["react-native-best-practices"],
+      "skills": [
+        "react-native-best-practices"
+      ],
       "skillPathHint": "skills/react-native-best-practices",
       "when": "Writing, reviewing, or debugging any React Native or Expo code"
     },
     {
       "id": "uniwind",
       "package": "uni-stack/uniwind",
-      "skills": ["uniwind"],
+      "skills": [
+        "uniwind"
+      ],
       "when": "Building or debugging Uniwind className styling in RN"
     }
   ],
@@ -75,6 +93,11 @@
       "id": "setup-amillez-models",
       "path": "first-party/setup-amillez-models",
       "when": "Thin setup-pstack replacement: point at agent-use-policy model chooser (do not write pstack-models.mdc)"
+    },
+    {
+      "id": "register-worker-dir",
+      "path": "first-party/register-worker-dir",
+      "when": "Register a repo via --worker-dir on LaunchAgent com.cursor.agent-worker.agent-m1 before routing worker=agent-m1; do not claim sim/Argent proof from managed cloud while unregistered"
     }
   ],
   "vendor": [
@@ -92,8 +115,14 @@
         "react-native-vision-camera"
       ],
       "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream — refreshed manually from a machine with current Codex skills (see README)."
+      "note": "No public skills-lock upstream \u2014 refreshed manually from a machine with current Codex skills (see README)."
     }
   ],
-  "excluded": ["autoreview", "superset-*", "orca-*", "orchestration", "planning extras"]
+  "excluded": [
+    "autoreview",
+    "superset-*",
+    "orca-*",
+    "orchestration",
+    "planning extras"
+  ]
 }
