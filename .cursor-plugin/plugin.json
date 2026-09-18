@@ -1,0 +1,27 @@
+{
+  "name": "amillez",
+  "displayName": "amillez",
+  "version": "0.1.0",
+  "description": "amillez eng stack skills: agent-m1 host, proof loops, orchestration, verification, and model setup. Replaces ad-hoc custom skill installs for Cursor, Claude Code, and Codex.",
+  "author": {
+    "name": "amillez"
+  },
+  "homepage": "https://github.com/amillez/agent-skills",
+  "repository": "https://github.com/amillez/agent-skills",
+  "keywords": [
+    "amillez",
+    "agent-m1",
+    "orchestration",
+    "verification",
+    "proof",
+    "skills"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "workflow",
+    "orchestration",
+    "verification",
+    "agent-m1"
+  ],
+  "skills": "./skills/"
+}

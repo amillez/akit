@@ -23,13 +23,13 @@ npx -y skills add software-mansion-labs/skills --skill react-native-best-practic
 
 npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
-echo "== First-party =="
+echo "== First-party (canonical tree: skills/) =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"
-for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
+for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models register-worker-dir; do
   rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
-  cp -R "$ROOT/first-party/$s" "$HOME/.agents/skills/$s"
-  cp -R "$ROOT/first-party/$s" "$HOME/.claude/skills/$s"
-  cp -R "$ROOT/first-party/$s" "$HOME/.codex/skills/$s"
+  cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
+  cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
+  cp -R "$ROOT/skills/$s" "$HOME/.codex/skills/$s"
 done
 
 echo "== Vendored Codex native skills =="
@@ -41,3 +41,4 @@ for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react
 done
 
 echo "Done. Verify with: npx skills list -g  (and ls ~/.agents/skills)"
+echo "Per-project Cursor/Claude/Codex skill links: ./scripts/link-project.sh /path/to/project"

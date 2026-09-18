@@ -1,80 +1,103 @@
 {
   "version": 1,
-  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex. Upstream packs install via npx skills; first-party and Codex snapshots live in this repo.",
+  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex / Cursor plugin. Upstream packs install via npx skills; first-party skills live under skills/ (Cursor plugin canonical tree). Legacy first-party/ is a pointer only.",
   "upstream": [
     {
       "id": "argent",
       "package": "software-mansion/argent/packages/skills/skills",
       "ref": "v0.25.0",
-      "skills": ["*"],
+      "skills": [
+        "*"
+      ],
       "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
     },
     {
       "id": "emil-animate-expo",
       "package": "emilkowalski/skills",
-      "skills": ["animate-expo"],
+      "skills": [
+        "animate-expo"
+      ],
       "when": "Building animations in RN/Expo"
     },
     {
       "id": "emil-apple-design",
       "package": "emilkowalski/skills",
-      "skills": ["apple-design"],
+      "skills": [
+        "apple-design"
+      ],
       "when": "Building UIs (Apple-inspired motion/interaction)"
     },
     {
       "id": "emil-review-animations",
       "package": "emilkowalski/skills",
-      "skills": ["review-animations"],
+      "skills": [
+        "review-animations"
+      ],
       "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
-      "note": "Upstream sets disable-model-invocation: true — not auto-invoked; launch prompts must name it explicitly for critique passes."
+      "note": "Upstream sets disable-model-invocation: true \u2014 not auto-invoked; launch prompts must name it explicitly for critique passes."
     },
     {
       "id": "matt-grill-me",
       "package": "mattpocock/skills",
-      "skills": ["grill-me"],
+      "skills": [
+        "grill-me"
+      ],
       "skillPathHint": "skills/productivity/grill-me",
       "when": "Stress-test a plan/design before build"
     },
     {
       "id": "expo",
       "package": "expo/skills",
-      "skills": ["expo-native-ui", "expo-dev-client", "expo-upgrade"],
+      "skills": [
+        "expo-native-ui",
+        "expo-dev-client",
+        "expo-upgrade"
+      ],
       "when": "Expo native UI / @expo/ui / development clients / SDK upgrades"
     },
     {
       "id": "swm-react-native-best-practices",
       "package": "software-mansion-labs/skills",
-      "skills": ["react-native-best-practices"],
+      "skills": [
+        "react-native-best-practices"
+      ],
       "skillPathHint": "skills/react-native-best-practices",
       "when": "Writing, reviewing, or debugging any React Native or Expo code"
     },
     {
       "id": "uniwind",
       "package": "uni-stack/uniwind",
-      "skills": ["uniwind"],
+      "skills": [
+        "uniwind"
+      ],
       "when": "Building or debugging Uniwind className styling in RN"
     }
   ],
   "firstParty": [
     {
       "id": "orchestrate-agents",
-      "path": "first-party/orchestrate-agents",
+      "path": "skills/orchestrate-agents",
       "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
     },
     {
       "id": "create-verification-skill",
-      "path": "first-party/create-verification-skill",
+      "path": "skills/create-verification-skill",
       "when": "Generate a project-local verify-<app> skill (Launch/Doctor/Drive/Evidence/Cleanup + feature map); amillez-mode overlay"
     },
     {
       "id": "maintain-verification-skill",
-      "path": "first-party/maintain-verification-skill",
+      "path": "skills/maintain-verification-skill",
       "when": "Audit/keep a project verify-<app> skill and feature map honest"
     },
     {
       "id": "setup-amillez-models",
-      "path": "first-party/setup-amillez-models",
-      "when": "Thin setup-pstack replacement: point at agent-use-policy model chooser (do not write pstack-models.mdc)"
+      "path": "skills/setup-amillez-models",
+      "when": "Thin setup-pstack replacement: policy chooser + optional models.mdc/rules templates (do not write pstack-models.mdc)"
+    },
+    {
+      "id": "register-worker-dir",
+      "path": "skills/register-worker-dir",
+      "when": "Register ~/agent-work/<repo> on agent-m1 LaunchAgent --worker-dir for Cursor My Machines worker=agent-m1"
     }
   ],
   "vendor": [
@@ -92,8 +115,14 @@
         "react-native-vision-camera"
       ],
       "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream — refreshed manually from a machine with current Codex skills (see README)."
+      "note": "No public skills-lock upstream \u2014 refreshed manually from a machine with current Codex skills (see README)."
     }
   ],
-  "excluded": ["autoreview", "superset-*", "orca-*", "orchestration", "planning extras"]
+  "excluded": [
+    "autoreview",
+    "superset-*",
+    "orca-*",
+    "orchestration",
+    "planning extras"
+  ]
 }
