@@ -36,20 +36,29 @@ npm install -g @swmansion/argent@0.25.0
 argent init -y --no-telemetry --global
 ```
 
-### 3. Per project: link, then update
+### 3. Per project: **Required** — ensure before first coding session
+
+**Before the first coding session on a project**, run:
 
 ```bash
 cd ~/agent-work/agent-skills
-./scripts/link-project.sh /path/to/project
-./scripts/update-project.sh /path/to/project
+./scripts/ensure-project.sh /path/to/project
 ```
 
-Or just:
+Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (new projects or missing pack → install; already present → continue). Optional `--force` refreshes links + rules + stamp.
+
+- Detects install via `.amillez-plugin.json` stamp **or** (legacy) rules + `setup-amillez-models` skill links under `.claude/` / `.agents/`.
+- If missing → runs `update-project.sh` (re-links + rules) and writes `.amillez-plugin.json`.
+- Prints one line: `amillez plugin: installed` / `already present` / `updated`.
+
+Lower-level helpers (still available):
 
 ```bash
+./scripts/link-project.sh /path/to/project
 ./scripts/update-project.sh /path/to/project   # re-links skills + refreshes rules
 ```
 
+- **`ensure-project.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh.
 - **`link-project.sh`** — idempotent per-skill symlinks into `.claude/skills/<name>` and `.agents/skills/<name>` only (**never** `.cursor/skills`).
 - **`update-project.sh`** — re-runs link + copies/updates `templates/models.claude.md` → `.claude/rules/amillez-models.md` and `.agents/rules/amillez-models.md` (idempotent; never `.cursor/rules`).
 
@@ -112,7 +121,7 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 
    Then on other machines: `git pull && ./scripts/install.sh` (vendor copy step).
 
-4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + re-run the first-party copy section of `install.sh` (or full install). For project links/rules: `./scripts/update-project.sh /path/to/project`.
+4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + re-run the first-party copy section of `install.sh` (or full install). For project links/rules: `./scripts/ensure-project.sh /path/to/project` (or `update-project.sh`).
 
 5. **Lockfile** — after installs, `~/.agents/.skill-lock.json` records source URLs/hashes for upstream packs. Prefer that + this repo’s `manifest.json` over ad-hoc copies.
 
@@ -126,6 +135,7 @@ first-party/README.md        # legacy pointer → skills/
 manifest.json                # allowlist + upstream pins (paths → skills/…)
 vendor/codex/                # snapshots without public upstream
 scripts/install.sh           # global Claude/Codex/~/.agents from skills/ + vendor
+scripts/ensure-project.sh    # REQUIRED before coding: detect → install/refresh + stamp
 scripts/link-project.sh      # per-project symlinks → .claude/skills + .agents/skills ONLY
 scripts/update-project.sh    # refresh project links + re-copy rules templates
 scripts/update-upstream.sh
