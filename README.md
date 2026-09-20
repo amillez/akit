@@ -6,14 +6,16 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 
 **Out of scope:** Cursor plugin / marketplace (`.cursor-plugin`), Cursor My Machines, `register-worker-dir`, `.cursor/skills`, `.cursor/rules`. Grok Bot remains the chat/control plane; coding runs on agent-m1 via Claude Code / Codex.
 
-## Install model (split)
+## Install model (Device vs Project)
 
-| Pack | Where it lives | How |
+| | **Device (host)** — primary | **Project (in-repo)** — optional mirror |
 | --- | --- | --- |
-| **Amillez plugin** (first-party skills + models rules + allowlisted upstream) | **Device / user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
-| **Project skills** (e.g. `verify-*`) | **In the repo** | `.claude/skills/…`, `.agents/skills/…` committed with the project |
+| **Where** | `~/.claude/skills`, `~/.agents/skills` + user rules + stamp (**no `~/.codex`** — Codex uses `~/.agents`) | `<repo>/.claude/skills/<name>`, `<repo>/.agents/skills/<name>` (**committed**, shared by teammates) |
+| **What** | Default **core+mobile** (Argent, Emil, Expo, RN best practices, Uniwind, Codex Nitro vendor set, …) | Selected **stack-relevant** skills only when useful for teammates — e.g. a Uniwind app preferably also has `uniwind` in-repo. **Not** a dump of the whole mobile set into every project. |
+| **How** | `./scripts/install.sh` / `ensure-install.sh` / `update-install.sh` (default groups `core,mobile`) | Optional: `./scripts/add-project-skills.sh <project> --skills uniwind` (copies real files, ready to commit) |
+| **Also in-repo** | — | Project-local skills such as `verify-*` stay committed as today |
 
-The amillez plugin must **not** symlink or copy into project trees. No project `.gitignore` block is needed for amillez skills/rules — we do not put them there.
+The amillez plugin’s **primary home is the device**. Ensure does **not** install into project trees. Optionally mirroring a few stack skills into a project is for teammates who share the repo — those skills still exist on device.
 
 ## amillez plugin (Claude Code + Codex)
 
@@ -39,7 +41,7 @@ cd ~/agent-work/agent-skills
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills` and `~/.claude/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never project `.claude/` / `.agents/`.
+Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills` and `~/.claude/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never `~/.codex/` (Codex uses `~/.agents`), never project `.claude/` / `.agents/` for the device pack.
 
 **Groups** (see `manifest.json` `groups` + per-entry `group` tags):
 
@@ -87,14 +89,28 @@ Refresh helpers:
 - **`ensure-project.sh`** — thin wrapper that only calls `ensure-install.sh` (legacy project path ignored).
 - **`update-install.sh`** — refresh user skills + copy `templates/models.md` → `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` + stamp.
 - **`install.sh`** — full global install (upstream + first-party + vendor + user rules + stamp).
-- **`link-project.sh`** — **OFF by default**. Optional `--project-local` convenience only; not used by ensure. Prefer in-repo project skills instead of linking the plugin into projects.
+- **`link-project.sh`** — **OFF by default**. Optional `--project-local` convenience only; not used by ensure.
+- **`add-project-skills.sh`** — **optional** teammate mirror: copy selected mobile/stack skills into a project’s `.claude/skills` + `.agents/skills` (commit them). Device remains the primary home (`core+mobile`).
+
+### Optional — mirror selected skills into a project
+
+When a repo’s stack makes a skill useful for **every teammate** (even though it already lives on the device), copy just those names and commit:
+
+```bash
+./scripts/add-project-skills.sh --list
+./scripts/add-project-skills.sh /path/to/app --skills uniwind
+# ./scripts/add-project-skills.sh /path/to/app --skills expo-dev-client,react-native-best-practices
+```
+
+Do **not** require dumping the whole mobile set into every project. Argent stays device/host (part of mobile install); it is not a project mirror target.
 
 ### Explicit
 
 - Replaces hand-copied custom skills.
 - Cursor plugin / My Machines are **out of scope**.
 - Coding host is **agent-m1 Claude Code / Codex only**.
-- **Project skills** (verify-*, app-specific) stay committed in the project; do not expect ensure to put them there.
+- **Device default** remains **core+mobile** at `~/.claude` / `~/.agents` (no `~/.codex`).
+- **Project** = optional mirror of stack-relevant skills for teammates + committed `verify-*`; ensure does not put the plugin pack there.
 
 ## Allowlist
 
@@ -169,6 +185,7 @@ scripts/ensure-project.sh    # thin alias → ensure-install.sh (project path ig
 scripts/update-install.sh    # refresh user-root skills + rules + stamp
 scripts/update-project.sh    # deprecated alias → update-install.sh
 scripts/link-project.sh      # OFF unless --project-local (optional convenience)
+scripts/add-project-skills.sh # optional: mirror selected skills into a project (commit)
 scripts/update-upstream.sh
 scripts/refresh-codex-vendor.sh
 ```
