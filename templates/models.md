@@ -1,6 +1,6 @@
 # amillez model defaults (Claude Code / Codex)
 
-For **bots and orchestrators** in this project (session defaults):
+For **bots and orchestrators** on this host (session defaults):
 
 | Host | Default |
 | --- | --- |
@@ -28,10 +28,9 @@ Claude vs Codex chooser: **TBD** (bot orchestrators pick when it lands).
 
 ## Install paths
 
-Copy or symlink this file as:
+The **amillez plugin** installs this file at **user root** (via `install.sh` / `update-install.sh` / `/setup-amillez-models`):
 
-- `.claude/rules/amillez-models.md` (Claude Code project)
-- `.agents/rules/amillez-models.md` (Codex / shared agents dir)
-- Optional user-global Claude: `~/.claude/rules/amillez-models.md` (only if documented / requested)
+- `~/.claude/rules/amillez-models.md` (Claude Code user)
+- `~/.agents/rules/amillez-models.md` (Codex / shared agents user)
 
-Prefer project rules over user-global when the repo has its own stack. Use allowlisted skills under `.claude/skills` / `.agents/skills` / `.codex/skills` only — never `.cursor/skills`.
+Do **not** copy into project `.claude/rules/` or `.agents/rules/` for the plugin pack. Project trees hold project-specific skills (e.g. `verify-*`) under `.claude/skills` / `.agents/skills` / `.codex/skills` only — never `.cursor/skills`.
