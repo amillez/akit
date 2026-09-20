@@ -6,6 +6,15 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 
 **Out of scope:** Cursor plugin / marketplace (`.cursor-plugin`), Cursor My Machines, `register-worker-dir`, `.cursor/skills`, `.cursor/rules`. Grok Bot remains the chat/control plane; coding runs on agent-m1 via Claude Code / Codex.
 
+## Install model (split)
+
+| Pack | Where it lives | How |
+| --- | --- | --- |
+| **Amillez plugin** (first-party skills + models rules + allowlisted upstream) | **Device / user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`, `~/.codex/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
+| **Project skills** (e.g. `verify-*`) | **In the repo** | `.claude/skills/…`, `.agents/skills/…` committed with the project |
+
+The amillez plugin must **not** symlink or copy into project trees. No project `.gitignore` block is needed for amillez skills/rules — we do not put them there.
+
 ## amillez plugin (Claude Code + Codex)
 
 This repo is the **amillez** skill + rules pack (`amillez-plugin.json`): canonical `skills/` + `templates/models.md` + setup/update scripts. **Goal:** replace hand-copied custom skills. Allowlisted upstream packs still install via `./scripts/install.sh` / the `skills` CLI. Playbooks stay in [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices); **runtime skills live here**.
@@ -20,7 +29,7 @@ git clone git@github.com:amillez/agent-skills.git ~/agent-work/agent-skills
 cd ~/agent-work/agent-skills && git pull
 ```
 
-### 2. Global install
+### 2. Global (user-root) install
 
 ```bash
 cd ~/agent-work/agent-skills
@@ -30,7 +39,7 @@ cd ~/agent-work/agent-skills
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills`, `~/.claude/skills`, and `~/.codex/skills` (never `.cursor/`).
+Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills`, `~/.claude/skills`, and `~/.codex/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never project `.claude/` / `.agents/`.
 
 **Groups** (see `manifest.json` `groups` + per-entry `group` tags):
 
@@ -48,45 +57,48 @@ npm install -g @swmansion/argent@0.25.0
 argent init -y --no-telemetry --global
 ```
 
-### 3. Per project: **Required** — ensure before first coding session
+### 3. **Required** — ensure host install before coding
 
-**Before the first coding session on a project**, run:
+**Before coding sessions on agent-m1**, ensure the **host** has the amillez plugin (not a project path):
 
 ```bash
 cd ~/agent-work/agent-skills
-./scripts/ensure-project.sh /path/to/project
+./scripts/ensure-install.sh
+# thin alias (project path ignored if passed):
+# ./scripts/ensure-project.sh
 ```
 
-Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (new projects or missing pack → install; already present → continue). Optional `--force` refreshes links + rules + stamp.
+Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (missing pack → install; already present → continue). Optional `--force` refreshes skills + user rules + stamp.
 
-- Detects install via `.amillez-plugin.json` stamp **or** (legacy) rules + `setup-amillez-models` skill links under `.claude/` / `.agents/`.
-- If missing → runs `update-project.sh` (re-links + rules) and writes `.amillez-plugin.json`.
+- Detects install via `~/.amillez-plugin.json` (or `~/.agents/amillez-plugin.json`) **or** (legacy) user rules + `setup-amillez-models` under `~/.claude|~/.agents|~/.codex/skills`.
+- If missing → runs `update-install.sh` (install + user rules + stamp).
 - Prints one line: `amillez plugin: installed` / `already present` / `updated`.
 
-Lower-level helpers (still available):
+Refresh helpers:
 
 ```bash
-./scripts/link-project.sh /path/to/project
-./scripts/update-project.sh /path/to/project   # re-links skills + refreshes rules
-# Optional groups (same semantics as install.sh; default core+mobile):
-# ./scripts/ensure-project.sh /path/to/project --groups core
-# ./scripts/link-project.sh /path/to/project --groups core,mobile
-# ./scripts/update-project.sh /path/to/project --groups mobile
+./scripts/update-install.sh              # refresh user-root skills + rules + stamp
+# ./scripts/update-install.sh --groups core
+# ./scripts/update-install.sh --skip-upstream   # first-party + vendor + rules only
+# deprecated alias (ignores project path): ./scripts/update-project.sh
 ```
 
-- **`ensure-project.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh. Accepts `--groups` (pass through when known; Grok Bot / ensure should pass groups when known — default **core+mobile** for RN projects).
-- **`link-project.sh`** — idempotent per-skill symlinks into `.claude/skills/<name>` and `.agents/skills/<name>` only (**never** `.cursor/skills`). Filters first-party skills by `--groups` (core always).
-- **`update-project.sh`** — re-runs link + copies/updates `templates/models.md` → `.claude/rules/amillez-models.md` and `.agents/rules/amillez-models.md` (idempotent; never `.cursor/rules`). Forwards `--groups` to link.
+- **`ensure-install.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh at **user root**. Accepts `--groups` (default **core+mobile**).
+- **`ensure-project.sh`** — thin wrapper that only calls `ensure-install.sh` (legacy project path ignored).
+- **`update-install.sh`** — refresh user skills + copy `templates/models.md` → `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` + stamp.
+- **`install.sh`** — full global install (upstream + first-party + vendor + user rules + stamp).
+- **`link-project.sh`** — **OFF by default**. Optional `--project-local` convenience only; not used by ensure. Prefer in-repo project skills instead of linking the plugin into projects.
 
 ### Explicit
 
 - Replaces hand-copied custom skills.
 - Cursor plugin / My Machines are **out of scope**.
 - Coding host is **agent-m1 Claude Code / Codex only**.
+- **Project skills** (verify-*, app-specific) stay committed in the project; do not expect ensure to put them there.
 
 ## Allowlist
 
-Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--groups` on install/link/ensure/update). `expo-native-ui` is excluded.
+Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--groups` on install/ensure/update). `expo-native-ui` is excluded.
 
 | Skill | Group | Source | When |
 | --- | --- | --- | --- |
@@ -102,18 +114,18 @@ Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--group
 | `orchestrate-agents` | core | **first-party** (`skills/`) | Fan out large work into parallel isolated prompts (Claude/Codex/mixed) |
 | `create-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Generate project-local `verify-<app>` (Launch/Doctor/Drive/Evidence/Cleanup + feature map) |
 | `maintain-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Keep a project `verify-<app>` skill + feature map honest |
-| `setup-amillez-models` | core | **first-party** (thin setup-pstack replacement) | Policy chooser + install/update Claude/Codex rules templates; never Cursor / `pstack-models.mdc` |
+| `setup-amillez-models` | core | **first-party** (thin setup-pstack replacement) | Policy chooser + install/update **user** Claude/Codex rules templates; never Cursor / `pstack-models.mdc` |
 | Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | **vendor snapshot** (no public skills-lock upstream) | Building native / Nitro modules |
 
 Excluded for now: `autoreview`, Superset pack, Orca orchestration, other design/planning skills, Cursor plugin / worker-dir skills, `expo-native-ui`.
 
 ## Model rule template
 
-| Template | Typical destination |
+| Template | Destination (amillez plugin) |
 | --- | --- |
-| `templates/models.md` | `.claude/rules/amillez-models.md` and/or `.agents/rules/amillez-models.md` (optional `~/.claude/rules/`) |
+| `templates/models.md` | **`~/.claude/rules/amillez-models.md`** and **`~/.agents/rules/amillez-models.md`** (user-level) |
 
-Defaults: Claude **Opus High** for bot-dispatched Claude sessions; workers follow the policy chooser. **Never** writes Cursor rules or `pstack-models.mdc`. `/setup-amillez-models` offers installing these; `update-project.sh` refreshes them.
+Defaults: Claude **Opus High** for bot-dispatched Claude sessions; workers follow the policy chooser. **Never** writes Cursor rules, `pstack-models.mdc`, or project `.claude/rules/` for the plugin pack. `/setup-amillez-models` and `update-install.sh` / `install.sh` refresh user rules.
 
 ## Keeping skills up to date
 
@@ -138,7 +150,7 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 
    Then on other machines: `git pull && ./scripts/install.sh` (vendor copy step).
 
-4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + re-run the first-party copy section of `install.sh` (or full install). For project links/rules: `./scripts/ensure-project.sh /path/to/project` (or `update-project.sh`).
+4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + `./scripts/update-install.sh` (or full `install.sh`). Ensure gate: `./scripts/ensure-install.sh`.
 
 5. **Lockfile** — after installs, `~/.agents/.skill-lock.json` records source URLs/hashes for upstream packs. Prefer that + this repo’s `manifest.json` over ad-hoc copies.
 
@@ -147,14 +159,16 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 ```
 amillez-plugin.json          # lightweight pack metadata (NOT .cursor-plugin)
 skills/                      # canonical first-party skill tree
-templates/models.md   # Claude Code / Codex rules (Opus High defaults)
+templates/models.md          # Claude Code / Codex rules (Opus High defaults) → user rules dirs
 first-party/README.md        # legacy pointer → skills/
 manifest.json                # allowlist + upstream pins (paths → skills/…)
 vendor/codex/                # snapshots without public upstream
-scripts/install.sh           # global Claude/Codex/~/.agents; --groups core|mobile (default both)
-scripts/ensure-project.sh    # REQUIRED before coding: detect → install/refresh + stamp
-scripts/link-project.sh      # per-project symlinks → .claude/skills + .agents/skills ONLY
-scripts/update-project.sh    # refresh project links + re-copy rules templates
+scripts/install.sh           # user-root Claude/Codex/~/.agents + user rules + stamp
+scripts/ensure-install.sh    # REQUIRED before coding: detect → user-root install/refresh + stamp
+scripts/ensure-project.sh    # thin alias → ensure-install.sh (project path ignored)
+scripts/update-install.sh    # refresh user-root skills + rules + stamp
+scripts/update-project.sh    # deprecated alias → update-install.sh
+scripts/link-project.sh      # OFF unless --project-local (optional convenience)
 scripts/update-upstream.sh
 scripts/refresh-codex-vendor.sh
 ```

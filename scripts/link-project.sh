@@ -1,32 +1,26 @@
 #!/usr/bin/env bash
-# Symlink amillez first-party skills into a project for Claude Code / Codex.
+# OPTIONAL / OFF by default: symlink amillez first-party skills into a project.
+# The amillez plugin installs at **user root** via install.sh / ensure-install.sh.
+# Project trees should only hold project-specific skills (e.g. verify-*).
+# Pass --project-local to enable this legacy convenience helper.
 # Never touches .cursor/skills.
 set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/link-project.sh [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
+Usage: ./scripts/link-project.sh --project-local [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
 
-Creates per-skill symlinks so the project sees amillez skills in:
+**Default: OFF.** Amillez first-party skills install at user root
+(~/.claude/skills, ~/.agents/skills, ~/.codex/skills) via ./scripts/install.sh.
+Do **not** use this for normal ensure/coding gates.
+
+Optional convenience only: creates per-skill symlinks so a project sees amillez skills in:
   .claude/skills/<name>  →  <skills-root>/skills/<name>
-  .agents/skills/<name>  →  same (Codex-style shared agents dir)
+  .agents/skills/<name>  →  same
 
-Does NOT create .cursor/skills links.
+Requires explicit --project-local. Does NOT create .cursor/skills links.
 
-Groups (same as install.sh; default core,mobile):
-  core    Always linked: first-party skills tagged core in manifest.json
-  mobile  First-party skills tagged mobile (none today; reserved)
-  --groups mobile still includes core. --groups core skips mobile-only skills.
-
-Defaults:
-  project      = current working directory
-  skills-root  = directory containing this script's parent (the agent-skills repo),
-                 or ~/agent-work/agent-skills if that exists and this checkout is missing skills/
-
-Idempotent: existing symlinks to the same target are left alone.
-Refuses to replace a real directory or a symlink to a different path unless --force.
-
-After linking, run ./scripts/update-project.sh to refresh rules templates as well.
+Prefer: ./scripts/ensure-install.sh  (host install) or ./scripts/update-install.sh
 USAGE
 }
 
@@ -34,12 +28,17 @@ FORCE=0
 PROJECT=""
 SKILLS_ROOT_OVERRIDE=""
 GROUPS_ARG=""
+PROJECT_LOCAL=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
       usage
       exit 0
+      ;;
+    --project-local)
+      PROJECT_LOCAL=1
+      shift
       ;;
     --force)
       FORCE=1
@@ -77,6 +76,13 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ "$PROJECT_LOCAL" -ne 1 ]]; then
+  echo "error: link-project.sh is OFF by default (user-root install model)." >&2
+  echo "Amillez plugin → ~/.claude/skills + ~/.agents/skills via ./scripts/install.sh / ensure-install.sh." >&2
+  echo "Project trees keep only in-repo skills (e.g. verify-*). Pass --project-local only for optional convenience." >&2
+  exit 1
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -163,7 +169,6 @@ print("core")
 '
     return
   fi
-  # Fallback without python/manifest: all first-party under skills/ are core
   echo "core"
 }
 
@@ -223,6 +228,7 @@ echo "Project:     $PROJECT"
 echo "Skills root: $SKILLS_ROOT"
 echo "Groups:      core$([ "$WANT_MOBILE" -eq 1 ] && echo '+mobile' || true) (core always)"
 echo "Skills:      ${SKILL_NAMES[*]}"
+echo "warning: project-local amillez links are optional; prefer user-root install" >&2
 echo
 
 errors=0
@@ -242,5 +248,4 @@ if [[ "$errors" -gt 0 ]]; then
 fi
 
 echo
-echo "Done. Project-local amillez skills are symlinked for Claude Code and .agents (not .cursor)."
-echo "Next: ./scripts/update-project.sh \"$PROJECT\"  # refresh skill links + rules templates"
+echo "Done. Optional project-local links created (amillez plugin itself remains user-root)."
