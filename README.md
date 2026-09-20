@@ -57,10 +57,14 @@ cd ~/agent-work/agent-skills
 ./scripts/ensure-project.sh /path/to/project
 ```
 
-Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (new projects or missing pack → install; already present → continue). Optional `--force` refreshes links + rules + stamp.
+Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (new projects or missing pack → install; already present → continue). Optional `--force` refreshes links + rules + stamp + gitignore.
+
+**Project installs are machine-local.** Ensure/update create **symlinks** into `.claude/skills/` and `.agents/skills/`, copy rules templates, write a stamp, and upsert a marked block in the project's `.gitignore` so those artifacts are **not committed**. Teammates each run `ensure-project.sh` on their own machine — do **not** PR amillez plugin links, rules, or stamps (avoids teammate conflicts).
 
 - Detects install via `.amillez-plugin.json` stamp **or** (legacy) rules + `setup-amillez-models` skill links under `.claude/` / `.agents/`.
-- If missing → runs `update-project.sh` (re-links + rules) and writes `.amillez-plugin.json`.
+- If missing → runs `update-project.sh` (re-links + rules + gitignore) and writes `.amillez-plugin.json`.
+- Upserts `.gitignore` markers `# >>> amillez-plugin` … `# <<< amillez-plugin` (stamps, `amillez-models.md` rules, per-skill link paths for the selected `--groups`). Does **not** ignore all of `.claude/` or teammate-owned files outside the block.
+- If a path was already tracked, prints `warning: <path> is tracked — run git rm -r --cached <path> once` (does not run destructive `git rm` for you).
 - Prints one line: `amillez plugin: installed` / `already present` / `updated`.
 
 Lower-level helpers (still available):
@@ -74,9 +78,10 @@ Lower-level helpers (still available):
 # ./scripts/update-project.sh /path/to/project --groups mobile
 ```
 
-- **`ensure-project.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh. Accepts `--groups` (pass through when known; Grok Bot / ensure should pass groups when known — default **core+mobile** for RN projects).
+- **`ensure-project.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh + gitignore. Accepts `--groups` (pass through when known; Grok Bot / ensure should pass groups when known — default **core+mobile** for RN projects).
 - **`link-project.sh`** — idempotent per-skill symlinks into `.claude/skills/<name>` and `.agents/skills/<name>` only (**never** `.cursor/skills`). Filters first-party skills by `--groups` (core always).
-- **`update-project.sh`** — re-runs link + copies/updates `templates/models.md` → `.claude/rules/amillez-models.md` and `.agents/rules/amillez-models.md` (idempotent; never `.cursor/rules`). Forwards `--groups` to link.
+- **`update-project.sh`** — re-runs link + copies/updates `templates/models.md` → `.claude/rules/amillez-models.md` and `.agents/rules/amillez-models.md` + upserts the machine-local `.gitignore` block (idempotent; never `.cursor/rules`). Forwards `--groups` to link/gitignore.
+- **`ensure-gitignore.sh`** — upserts the marked amillez-plugin `.gitignore` block (called from update/ensure after link/rules).
 
 ### Explicit
 
@@ -152,9 +157,10 @@ first-party/README.md        # legacy pointer → skills/
 manifest.json                # allowlist + upstream pins (paths → skills/…)
 vendor/codex/                # snapshots without public upstream
 scripts/install.sh           # global Claude/Codex/~/.agents; --groups core|mobile (default both)
-scripts/ensure-project.sh    # REQUIRED before coding: detect → install/refresh + stamp
+scripts/ensure-project.sh    # REQUIRED before coding: detect → install/refresh + stamp + gitignore
 scripts/link-project.sh      # per-project symlinks → .claude/skills + .agents/skills ONLY
-scripts/update-project.sh    # refresh project links + re-copy rules templates
+scripts/update-project.sh    # refresh project links + rules + machine-local gitignore
+scripts/ensure-gitignore.sh  # upsert marked .gitignore block (stamps/rules/skill links)
 scripts/update-upstream.sh
 scripts/refresh-codex-vendor.sh
 ```

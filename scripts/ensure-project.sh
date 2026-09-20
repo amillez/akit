@@ -19,8 +19,8 @@ Detects "installed" if ANY of:
      - .claude/skills/setup-amillez-models OR .agents/skills/setup-amillez-models
        exists (symlink or directory)
 
-If missing → run update-project.sh (re-links skills + refreshes rules) and write stamp.
-If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
+If missing → run update-project.sh (re-links skills + refreshes rules + gitignore) and write stamp.
+If present → upsert .gitignore block, exit 0 quietly (print "already present") unless --force (then refresh + stamp).
 
 Groups (same as install.sh / link-project.sh; default core,mobile):
   core is always included. Pass --groups when known (Grok Bot / ensure should pass
@@ -169,6 +169,28 @@ write_stamp() {
 STAMP
 }
 
+
+run_ensure_gitignore() {
+  local gi="$SKILLS_ROOT/scripts/ensure-gitignore.sh"
+  if [[ ! -x "$gi" ]]; then
+    gi="$SCRIPT_DIR/ensure-gitignore.sh"
+  fi
+  if [[ ! -x "$gi" ]]; then
+    echo "warning: ensure-gitignore.sh not found; skip .gitignore upsert" >&2
+    return 0
+  fi
+  local args=("$PROJECT")
+  if [[ -n "$SKILLS_ROOT_OVERRIDE" || -n "${AMILLEZ_SKILLS_ROOT:-}" ]]; then
+    args+=(--skills-root "$SKILLS_ROOT")
+  elif [[ "$SKILLS_ROOT" != "$REPO_ROOT" ]]; then
+    args+=(--skills-root "$SKILLS_ROOT")
+  fi
+  if [[ -n "$GROUPS_ARG" ]]; then
+    args+=(--groups "$GROUPS_ARG")
+  fi
+  "$gi" "${args[@]}"
+}
+
 run_install() {
   local update="$SKILLS_ROOT/scripts/update-project.sh"
   if [[ ! -x "$update" ]]; then
@@ -199,11 +221,15 @@ if plugin_present; then
 fi
 
 if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]]; then
+  # Keep .gitignore block in sync even when skipping a full refresh
+  run_ensure_gitignore >/dev/null
   echo "amillez plugin: already present"
   exit 0
 fi
 
 run_install
+# update-project.sh upserts gitignore; re-run here so older skills-root checkouts still get it
+run_ensure_gitignore >/dev/null
 
 if [[ "$WAS_PRESENT" -eq 1 ]]; then
   echo "amillez plugin: updated"

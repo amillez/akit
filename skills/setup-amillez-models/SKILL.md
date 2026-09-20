@@ -45,7 +45,7 @@ Thin replacement for pstack's `/setup-pstack`. **Do not** write Cursor rule file
 
    Resolve the agent-skills checkout (`~/agent-work/agent-skills`, or the repo that owns this skill). Copy (or re-copy) the template — idempotent update is fine. Do **not** invent a pstack role map. Template sets **bot/orchestrator** defaults (**Opus High** for Claude). Workers still follow the policy chooser. **Never** write Cursor rules, `pstack-models.mdc`, or anything under `.cursor/`.
 
-   Prefer `./scripts/ensure-project.sh /path/to/project` (or `update-project.sh`) when refreshing an already-linked project (re-links skills + re-copies rules).
+   Prefer `./scripts/ensure-project.sh /path/to/project` (or `update-project.sh`) when refreshing an already-linked project (re-links skills + re-copies rules + upserts machine-local `.gitignore`). Do **not** commit amillez plugin stamps, rules, or skill symlinks — teammates each run ensure on their machine.
 
 4. **Optional — verification skill.** If the project has no `verify-*` skill (check `.claude/skills/verify-*/` and `.codex/skills/verify-*/` only — never `.cursor/skills`), offer once: generate one with `/create-verification-skill` so agents can drive the app and prove changes. On no, move on.
 

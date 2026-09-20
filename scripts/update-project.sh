@@ -12,21 +12,23 @@ Idempotent project refresh for the amillez plugin pack:
   2. Copy/update templates/models.md →
        .claude/rules/amillez-models.md
        .agents/rules/amillez-models.md
+  3. Upsert machine-local .gitignore block (stamps, rules, per-skill links)
 
-Does NOT write Cursor rules or any .cursor/ paths.
+Does NOT touch Cursor rules or any .cursor/ paths.
 
 Options:
   --force         Passed through to link-project.sh; also overwrite diverged rules files
-  --skills-root   Passed through to link-project.sh
-  --groups        Passed through to link-project.sh (default core,mobile; core always included)
-  --skip-link     Only refresh rules templates
-  --skip-rules    Only refresh skill links
+  --skills-root   Passed through to link-project.sh / ensure-gitignore.sh
+  --groups        Passed through to link-project.sh / ensure-gitignore.sh (default core,mobile; core always included)
+  --skip-link     Only refresh rules templates (+ gitignore)
+  --skip-rules    Only refresh skill links (+ gitignore)
 USAGE
 }
 
 FORCE=0
 PROJECT=""
 SKILLS_ROOT_OVERRIDE=""
+GROUPS_ARG=""
 SKIP_LINK=0
 SKIP_RULES=0
 EXTRA_LINK_ARGS=()
@@ -56,6 +58,7 @@ while [[ $# -gt 0 ]]; do
         echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
         exit 1
       fi
+      GROUPS_ARG="$2"
       EXTRA_LINK_ARGS+=(--groups "$2")
       shift 2
       ;;
@@ -142,4 +145,15 @@ if [[ "$SKIP_RULES" -eq 0 ]]; then
   echo
 fi
 
-echo "Done. Project skills + Claude/Codex rules refreshed (no .cursor paths)."
+echo "== Ensure machine-local .gitignore (amillez-plugin) =="
+GI_ARGS=("$PROJECT")
+if [[ -n "$SKILLS_ROOT_OVERRIDE" ]]; then
+  GI_ARGS+=(--skills-root "$SKILLS_ROOT_OVERRIDE")
+fi
+if [[ -n "$GROUPS_ARG" ]]; then
+  GI_ARGS+=(--groups "$GROUPS_ARG")
+fi
+"$SCRIPT_DIR/ensure-gitignore.sh" "${GI_ARGS[@]}"
+echo
+
+echo "Done. Project skills + Claude/Codex rules refreshed; amillez artifacts gitignored (no .cursor paths)."
