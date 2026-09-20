@@ -7,7 +7,7 @@ usage() {
 Usage: ./scripts/update-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-rules] [--skip-upstream]
 
 Idempotent **user-root** refresh for the amillez plugin pack:
-  1. Re-run install.sh (upstream + first-party + vendor → ~/.claude|~/.agents|~/.codex/skills)
+  1. Re-run install.sh (upstream + first-party + vendor → ~/.claude|~/.agents/skills)
   2. Copy/update templates/models.md →
        ~/.claude/rules/amillez-models.md
        ~/.agents/rules/amillez-models.md
@@ -171,22 +171,20 @@ install_first_party_and_vendor() {
   fi
 
   echo "== First-party (canonical tree: skills/) [core] =="
-  mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"
+  mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
   for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
-    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
+    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.agents/skills/$s"
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.claude/skills/$s"
-    cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.codex/skills/$s"
   done
 
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
     echo "== Vendored Codex native skills [mobile] =="
     for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
       if [[ -d "$SKILLS_ROOT/vendor/codex/$s" ]]; then
-        rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
+        rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
         cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
         cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
-        cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.codex/skills/$s"
       fi
     done
   fi

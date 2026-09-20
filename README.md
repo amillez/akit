@@ -10,7 +10,7 @@ Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://gi
 
 | Pack | Where it lives | How |
 | --- | --- | --- |
-| **Amillez plugin** (first-party skills + models rules + allowlisted upstream) | **Device / user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`, `~/.codex/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
+| **Amillez plugin** (first-party skills + models rules + allowlisted upstream) | **Device / user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
 | **Project skills** (e.g. `verify-*`) | **In the repo** | `.claude/skills/…`, `.agents/skills/…` committed with the project |
 
 The amillez plugin must **not** symlink or copy into project trees. No project `.gitignore` block is needed for amillez skills/rules — we do not put them there.
@@ -39,7 +39,7 @@ cd ~/agent-work/agent-skills
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills`, `~/.claude/skills`, and `~/.codex/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never project `.claude/` / `.agents/`.
+Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills` and `~/.claude/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never project `.claude/` / `.agents/`.
 
 **Groups** (see `manifest.json` `groups` + per-entry `group` tags):
 
@@ -70,7 +70,7 @@ cd ~/agent-work/agent-skills
 
 Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (missing pack → install; already present → continue). Optional `--force` refreshes skills + user rules + stamp.
 
-- Detects install via `~/.amillez-plugin.json` (or `~/.agents/amillez-plugin.json`) **or** (legacy) user rules + `setup-amillez-models` under `~/.claude|~/.agents|~/.codex/skills`.
+- Detects install via `~/.amillez-plugin.json` (or `~/.agents/amillez-plugin.json`) **or** (legacy) user rules + `setup-amillez-models` under `~/.claude|~/.agents/skills`.
 - If missing → runs `update-install.sh` (install + user rules + stamp).
 - Prints one line: `amillez plugin: installed` / `already present` / `updated`.
 

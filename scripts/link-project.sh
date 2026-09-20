@@ -11,7 +11,7 @@ usage() {
 Usage: ./scripts/link-project.sh --project-local [/path/to/project] [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
 
 **Default: OFF.** Amillez first-party skills install at user root
-(~/.claude/skills, ~/.agents/skills, ~/.codex/skills) via ./scripts/install.sh.
+(~/.claude/skills, ~/.agents/skills) via ./scripts/install.sh.
 Do **not** use this for normal ensure/coding gates.
 
 Optional convenience only: creates per-skill symlinks so a project sees amillez skills in:

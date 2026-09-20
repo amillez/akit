@@ -125,21 +125,19 @@ if [[ "$WANT_MOBILE" -eq 1 ]]; then
 fi
 
 echo "== First-party (canonical tree: skills/) [core] =="
-mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"
+mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
 for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
-  rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
+  rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
-  cp -R "$ROOT/skills/$s" "$HOME/.codex/skills/$s"
 done
 
 if [[ "$WANT_MOBILE" -eq 1 ]]; then
   echo "== Vendored Codex native skills [mobile] =="
   for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
-    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s" "$HOME/.codex/skills/$s"
+    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
     cp -R "$ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
     cp -R "$ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
-    cp -R "$ROOT/vendor/codex/$s" "$HOME/.codex/skills/$s"
   done
 fi
 

@@ -16,8 +16,7 @@ Detects "installed" if ANY of:
   B) Legacy / minimum heuristic (both must pass):
      - ~/.claude/rules/amillez-models.md OR ~/.agents/rules/amillez-models.md exists, AND
      - ~/.claude/skills/setup-amillez-models OR ~/.agents/skills/setup-amillez-models
-       OR ~/.codex/skills/setup-amillez-models exists
-
+       
 If missing → run update-install.sh (skills + user rules + stamp).
 If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
 
@@ -124,7 +123,7 @@ plugin_present() {
   if [[ -f "$HOME/.claude/rules/amillez-models.md" || -f "$HOME/.agents/rules/amillez-models.md" ]]; then
     has_rules=1
   fi
-  if [[ -e "$HOME/.claude/skills/setup-amillez-models" || -e "$HOME/.agents/skills/setup-amillez-models" || -e "$HOME/.codex/skills/setup-amillez-models" ]]; then
+  if [[ -e "$HOME/.claude/skills/setup-amillez-models" || -e "$HOME/.agents/skills/setup-amillez-models" ]]; then
     has_skill=1
   fi
   if [[ "$has_rules" -eq 1 && "$has_skill" -eq 1 ]]; then

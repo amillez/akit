@@ -19,7 +19,7 @@ Thin replacement for pstack's `/setup-pstack`. **Do not** write Cursor rule file
 
 ## Steps
 
-0. **Ensure the amillez plugin pack is on this host (user root).** If the machine lacks the pack (no `~/.amillez-plugin.json` / `~/.agents/amillez-plugin.json`, and missing user rules + `setup-amillez-models` under `~/.claude|~/.agents|~/.codex/skills`), run first:
+0. **Ensure the amillez plugin pack is on this host (user root).** If the machine lacks the pack (no `~/.amillez-plugin.json` / `~/.agents/amillez-plugin.json`, and missing user rules + `setup-amillez-models` under `~/.claude|~/.agents/skills`), run first:
 
    ```bash
    # from the agent-skills checkout (or AMILLEZ_SKILLS_ROOT)
@@ -47,7 +47,7 @@ Thin replacement for pstack's `/setup-pstack`. **Do not** write Cursor rule file
 
    Prefer `./scripts/ensure-install.sh` or `./scripts/update-install.sh` when refreshing the host pack (re-installs skills + re-copies **user** rules + stamp).
 
-4. **Optional — verification skill.** If the project has no `verify-*` skill (check **in-repo** `.claude/skills/verify-*/` and `.codex/skills/verify-*/` only — never `.cursor/skills`), offer once: generate one with `/create-verification-skill` so agents can drive the app and prove changes. On no, move on. Verification skills stay **project-local** (committed), not part of the user-root plugin install.
+4. **Optional — verification skill.** If the project has no `verify-*` skill (check **in-repo** `.claude/skills/verify-*/` and `.agents/skills/verify-*/` only — never `.cursor/skills`), offer once: generate one with `/create-verification-skill` so agents can drive the app and prove changes. On no, move on. Verification skills stay **project-local** (committed), not part of the user-root plugin install.
 
 ## Done when
 
