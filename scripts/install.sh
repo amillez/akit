@@ -1,36 +1,44 @@
 #!/usr/bin/env bash
-# Install allowlisted skills onto this machine (Claude Code + Codex + shared agents dir).
+# Install allowlisted skills onto this machine (Claude Code + Codex shared agents dir).
 # Canonical first-party tree: skills/ (amillez plugin pack). Never installs into .cursor/.
+# Never writes ~/.codex — Codex uses ~/.agents.
 #
-# Groups:
-#   core   — always added (grill-me + first-party)
-#   mobile — RN/Expo/native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor)
+# Device groups:
+#   core   — always (default): grill-me + first-party + user rules + stamp
+#   argent — optional: Argent skills for UI drive on agent-m1
+#
+# Mobile/native RN skills are project-scoped — use scripts/add-project-skills.sh.
 #
 # Usage:
-#   ./scripts/install.sh                     # default: core + mobile
-#   ./scripts/install.sh --groups core       # core only (skips mobile)
-#   ./scripts/install.sh --groups mobile     # core still added (always) + mobile
-#   ./scripts/install.sh --groups core,mobile
+#   ./scripts/install.sh                     # default: core only
+#   ./scripts/install.sh --groups core       # same
+#   ./scripts/install.sh --groups core,argent
+#   ./scripts/install.sh --groups argent     # core still included + argent
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/install.sh [--groups core|mobile|core,mobile]
+Usage: ./scripts/install.sh [--groups core|argent|core,argent]
 
-Install allowlisted skills + user rules for Claude Code + Codex + ~/.agents (never .cursor/, never project trees).
+Install allowlisted **device** skills + user rules for Claude Code + Codex (~/.agents).
+Never .cursor/, never ~/.codex/, never project trees.
 
-Groups:
-  core    Always installed: grill-me, orchestrate-agents, create-verification-skill,
-          maintain-verification-skill, setup-amillez-models
-  mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
-          expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
-          Codex native vendor set
+Groups (device):
+  core    Always installed (default): grill-me, orchestrate-agents,
+          create-verification-skill, maintain-verification-skill, setup-amillez-models
+          + user rules amillez-models.md + stamp
+  argent  Optional device Argent skills for UI drive. Not installed by default.
+          Also install Argent CLI separately (see README).
 
-Default: core,mobile
---groups mobile still includes core (core is always added).
---groups core skips mobile.
+Default: core only.
+
+Mobile/native skills (animate-expo, expo-*, uniwind, Codex Nitro set, …) are
+**project-scoped**. Copy curated ones with:
+  ./scripts/add-project-skills.sh <project> --skills a,b,c
+
+Legacy --groups mobile is rejected (use add-project-skills / --groups argent).
 USAGE
 }
 
@@ -44,7 +52,7 @@ while [[ $# -gt 0 ]]; do
     --groups)
       GROUPS_ARG="${2:-}"
       if [[ -z "$GROUPS_ARG" ]]; then
-        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
+        echo "error: --groups requires a value (e.g. core, core,argent, argent)" >&2
         exit 1
       fi
       shift 2
@@ -62,16 +70,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Resolve requested groups. Core is always included.
+# Resolve requested groups. Core is always included. Default: core only.
 WANT_CORE=1
-WANT_MOBILE=0
-if [[ -z "$GROUPS_ARG" ]]; then
-  WANT_MOBILE=1
-else
+WANT_ARGENT=0
+if [[ -n "$GROUPS_ARG" ]]; then
   IFS=',' read -ra RAW_GROUPS <<< "$GROUPS_ARG"
   saw_any=0
   for g in "${RAW_GROUPS[@]}"; do
-    # trim + lowercase
     g="${g#"${g%%[![:space:]]*}"}"
     g="${g%"${g##*[![:space:]]}"}"
     g="$(printf '%s' "$g" | tr '[:upper:]' '[:lower:]')"
@@ -79,14 +84,21 @@ else
       core)
         saw_any=1
         ;;
-      mobile)
-        WANT_MOBILE=1
+      argent)
+        WANT_ARGENT=1
         saw_any=1
+        ;;
+      mobile)
+        echo "error: group 'mobile' is no longer a device install group." >&2
+        echo "  Device optional: --groups core,argent" >&2
+        echo "  Project mobile/native: ./scripts/add-project-skills.sh <project> --skills …" >&2
+        echo "  Suggest from deps: ./scripts/suggest-project-skills.sh <project>" >&2
+        exit 1
         ;;
       "")
         ;;
       *)
-        echo "error: unknown group '$g' (valid: core, mobile)" >&2
+        echo "error: unknown group '$g' (valid device groups: core, argent)" >&2
         exit 1
         ;;
     esac
@@ -97,7 +109,7 @@ else
   fi
 fi
 
-echo "Groups: core$([ "$WANT_MOBILE" -eq 1 ] && echo '+mobile' || true) (core always)"
+echo "Groups: core$([ "$WANT_ARGENT" -eq 1 ] && echo '+argent' || true) (default core only; mobile → project)"
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "npx required" >&2
@@ -106,23 +118,13 @@ fi
 
 echo "== Upstream packs (npx skills add) =="
 
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  # Argent — all skills; pin matches manifest
+if [[ "$WANT_ARGENT" -eq 1 ]]; then
+  # Argent — all skills; pin matches manifest (optional device group)
   npx -y skills add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*' --agent '*' -g -y --copy
-
-  npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
 fi
 
 # core: grill-me
 npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  npx -y skills add expo/skills --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
-
-  npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
-
-  npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
-fi
 
 echo "== First-party (canonical tree: skills/) [core] =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
@@ -131,15 +133,6 @@ for s in orchestrate-agents create-verification-skill maintain-verification-skil
   cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
 done
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  echo "== Vendored Codex native skills [mobile] =="
-  for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
-    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-    cp -R "$ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
-    cp -R "$ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
-  done
-fi
 
 echo "== User-level Claude/Codex rules templates =="
 TEMPLATE="$ROOT/templates/models.md"
@@ -168,6 +161,7 @@ STAMP_BODY=$(cat <<STAMP
   "name": "$NAME",
   "version": "$VERSION",
   "installRoot": "user",
+  "groups": "core$([ "$WANT_ARGENT" -eq 1 ] && echo ',argent' || true)",
   "skillsRoot": "$ROOT"
 }
 STAMP
@@ -180,4 +174,5 @@ echo "stamp: $HOME/.amillez-plugin.json"
 echo "Done. Verify with: npx skills list -g  (and ls ~/.agents/skills ~/.claude/skills)"
 echo "Ensure before coding: ./scripts/ensure-install.sh   (alias: ensure-project.sh)"
 echo "Refresh: ./scripts/update-install.sh"
-echo "Groups: ./scripts/install.sh --groups core | --groups mobile | --groups core,mobile"
+echo "Device groups: ./scripts/install.sh --groups core | --groups core,argent"
+echo "Project skills: ./scripts/add-project-skills.sh <project> --skills …"

@@ -6,10 +6,11 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
+Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|argent|core,argent]
 
 Required before coding sessions on agent-m1 (bots/agents run this automatically
-per ai-eng-practices policy). Ensures the **host** (user-root) amillez plugin pack.
+per ai-eng-practices policy). Ensures the **host** (user-root) amillez **core** plugin pack
+at ~/.claude and ~/.agents only (never ~/.codex).
 
 Detects "installed" if ANY of:
   A) Stamp present: ~/.amillez-plugin.json OR ~/.agents/amillez-plugin.json
@@ -20,8 +21,9 @@ Detects "installed" if ANY of:
 If missing → run update-install.sh (skills + user rules + stamp).
 If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
 
-Groups (same as install.sh; default core,mobile):
-  core is always included. Pass --groups when known.
+Groups (same as install.sh; default **core only**):
+  core is always included. Optional device: argent (--groups core,argent).
+  Mobile/native skills are project-scoped (add-project-skills.sh), not host ensure.
 
 Skills root resolution (first match):
   1. --skills-root
@@ -34,8 +36,9 @@ Prints exactly one status line:
   amillez plugin: already present
   amillez plugin: updated
 
-Note: project path is NOT required. Project-specific skills (verify-*) live in the
-repo; the amillez plugin does not install into project .claude/skills or .agents/skills.
+Note: project path is NOT required. Project-specific skills (verify-*, curated
+mobile/native) live in the repo; the amillez plugin does not install into
+project .claude/skills or .agents/skills.
 USAGE
 }
 
@@ -64,7 +67,7 @@ while [[ $# -gt 0 ]]; do
     --groups)
       GROUPS_ARG="${2:-}"
       if [[ -z "$GROUPS_ARG" ]]; then
-        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
+        echo "error: --groups requires a value (e.g. core, core,argent, argent)" >&2
         exit 1
       fi
       shift 2

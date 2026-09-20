@@ -4,27 +4,28 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/update-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-rules] [--skip-upstream]
+Usage: ./scripts/update-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|argent|core,argent] [--skip-skills] [--skip-rules] [--skip-upstream]
 
-Idempotent **user-root** refresh for the amillez plugin pack:
-  1. Re-run install.sh (upstream + first-party + vendor → ~/.claude|~/.agents/skills)
+Idempotent **user-root** refresh for the amillez **core** plugin pack:
+  1. Re-run install.sh (core upstream + first-party → ~/.claude|~/.agents/skills)
   2. Copy/update templates/models.md →
        ~/.claude/rules/amillez-models.md
        ~/.agents/rules/amillez-models.md
   3. Write/refresh stamp ~/.amillez-plugin.json (and ~/.agents/amillez-plugin.json)
 
 Does NOT symlink/copy into project .claude/skills or .agents/skills.
-Does NOT write Cursor rules or any .cursor/ paths.
+Does NOT write Cursor rules, any .cursor/ paths, or ~/.codex.
+Does NOT install mobile/native project skills (use add-project-skills.sh).
 
-Project-specific skills (e.g. verify-*) stay in the repo — not managed here.
+Project-specific skills (e.g. verify-*, curated mobile/native) stay in the repo.
 
 Options:
   --force         Passed through to install where applicable; overwrite diverged rules
   --skills-root   Agent-skills checkout (default: this repo or ~/agent-work/agent-skills)
-  --groups        Passed through to install.sh (default core,mobile; core always)
+  --groups        Passed through to install.sh (default **core only**; optional argent)
   --skip-skills   Only refresh rules templates + stamp
   --skip-rules    Only refresh skills (install.sh) + stamp
-  --skip-upstream Skip npx upstream packs; only first-party + vendor + rules (faster refresh)
+  --skip-upstream Skip npx upstream packs; only first-party + rules (faster refresh)
 USAGE
 }
 
@@ -56,7 +57,7 @@ while [[ $# -gt 0 ]]; do
     --groups)
       GROUPS_ARG="${2:-}"
       if [[ -z "$GROUPS_ARG" ]]; then
-        echo "error: --groups requires a value (e.g. core, core,mobile, mobile)" >&2
+        echo "error: --groups requires a value (e.g. core, core,argent, argent)" >&2
         exit 1
       fi
       shift 2
@@ -154,22 +155,7 @@ STAMP
 }
 
 install_first_party_and_vendor() {
-  # Lightweight path when --skip-upstream: copy first-party + optional vendor without npx
-  local WANT_MOBILE=0
-  if [[ -z "$GROUPS_ARG" ]]; then
-    WANT_MOBILE=1
-  else
-    IFS=',' read -ra RAW_GROUPS <<< "$GROUPS_ARG"
-    for g in "${RAW_GROUPS[@]}"; do
-      g="${g#"${g%%[![:space:]]*}"}"
-      g="${g%"${g##*[![:space:]]}"}"
-      g="$(printf '%s' "$g" | tr '[:upper:]' '[:lower:]')"
-      case "$g" in
-        mobile) WANT_MOBILE=1 ;;
-      esac
-    done
-  fi
-
+  # Lightweight path when --skip-upstream: copy first-party only (no project mobile to device)
   echo "== First-party (canonical tree: skills/) [core] =="
   mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
   for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
@@ -177,17 +163,8 @@ install_first_party_and_vendor() {
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.agents/skills/$s"
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.claude/skills/$s"
   done
-
-  if [[ "$WANT_MOBILE" -eq 1 ]]; then
-    echo "== Vendored Codex native skills [mobile] =="
-    for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
-      if [[ -d "$SKILLS_ROOT/vendor/codex/$s" ]]; then
-        rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-        cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
-        cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
-      fi
-    done
-  fi
+  # Note: Codex native vendor skills are project-scoped (add-project-skills.sh).
+  # Optional device argent still requires full install.sh (npx) when --groups includes argent.
 }
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then

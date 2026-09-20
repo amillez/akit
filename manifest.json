@@ -1,91 +1,89 @@
 {
-  "version": 1,
-  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/. Cursor plugin / My Machines out of scope.",
+  "version": 2,
+  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex (amillez plugin pack). Device root = core (+ optional argent). Project mobile/native skills are curated and committed in-repo when needed. No ~/.codex. Cursor plugin / My Machines out of scope.",
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: grill-me + first-party orchestration/verification/models setup"
+      "target": "device",
+      "description": "Always installed at ~/.claude + ~/.agents: grill-me + first-party orchestration/verification/models setup + user rules + stamp"
     },
-    "mobile": {
-      "description": "React Native / Expo / native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
+    "argent": {
+      "target": "device",
+      "optional": true,
+      "description": "Optional device/host Argent skills for UI drive (agent-m1). Not installed by default with core. Pass --groups core,argent. Also install Argent CLI separately."
+    },
+    "project": {
+      "target": "project",
+      "description": "Curated mobile/native skills copied into <project>/.claude/skills and .agents/skills when the app needs them (committed, shared). Use scripts/add-project-skills.sh — do not dump the whole set."
     }
   },
   "upstream": [
     {
       "id": "argent",
-      "group": "mobile",
+      "group": "argent",
+      "target": "device",
       "package": "software-mansion/argent/packages/skills/skills",
       "ref": "v0.25.0",
-      "skills": [
-        "*"
-      ],
-      "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
+      "skills": ["*"],
+      "note": "Optional device group. Pin ref when upgrading @swmansion/argent CLI. Not installed by default with core."
     },
     {
       "id": "emil-animate-expo",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "emilkowalski/skills",
-      "skills": [
-        "animate-expo"
-      ],
+      "skills": ["animate-expo"],
       "when": "Building animations in RN/Expo"
     },
     {
       "id": "emil-apple-design",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "emilkowalski/skills",
-      "skills": [
-        "apple-design"
-      ],
+      "skills": ["apple-design"],
       "when": "Building UIs (Apple-inspired motion/interaction)"
     },
     {
       "id": "emil-review-animations",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "emilkowalski/skills",
-      "skills": [
-        "review-animations"
-      ],
+      "skills": ["review-animations"],
       "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
-      "note": "Upstream sets disable-model-invocation: true \u2014 not auto-invoked; launch prompts must name it explicitly for critique passes."
+      "note": "Upstream sets disable-model-invocation: true — not auto-invoked; launch prompts must name it explicitly for critique passes."
     },
     {
       "id": "matt-grill-me",
       "group": "core",
+      "target": "device",
       "package": "mattpocock/skills",
-      "skills": [
-        "grill-me"
-      ],
+      "skills": ["grill-me"],
       "skillPathHint": "skills/productivity/grill-me",
       "when": "Stress-test a plan/design before build"
     },
     {
       "id": "expo",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "expo/skills",
-      "skills": [
-        "expo-dev-client",
-        "expo-upgrade"
-      ],
+      "skills": ["expo-dev-client", "expo-upgrade"],
       "when": "Expo development clients / SDK upgrades"
     },
     {
       "id": "swm-react-native-best-practices",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "software-mansion-labs/skills",
-      "skills": [
-        "react-native-best-practices"
-      ],
+      "skills": ["react-native-best-practices"],
       "skillPathHint": "skills/react-native-best-practices",
       "when": "Writing, reviewing, or debugging any React Native or Expo code"
     },
     {
       "id": "uniwind",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "package": "uni-stack/uniwind",
-      "skills": [
-        "uniwind"
-      ],
+      "skills": ["uniwind"],
       "when": "Building or debugging Uniwind className styling in RN"
     }
   ],
@@ -93,24 +91,28 @@
     {
       "id": "orchestrate-agents",
       "group": "core",
+      "target": "device",
       "path": "skills/orchestrate-agents",
       "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
     },
     {
       "id": "create-verification-skill",
       "group": "core",
+      "target": "device",
       "path": "skills/create-verification-skill",
       "when": "Generate a project-local verify-<app> skill (Launch/Doctor/Drive/Evidence/Cleanup + feature map); amillez-mode overlay"
     },
     {
       "id": "maintain-verification-skill",
       "group": "core",
+      "target": "device",
       "path": "skills/maintain-verification-skill",
       "when": "Audit/keep a project verify-<app> skill and feature map honest"
     },
     {
       "id": "setup-amillez-models",
       "group": "core",
+      "target": "device",
       "path": "skills/setup-amillez-models",
       "when": "Thin setup-pstack replacement: policy chooser + install/update Claude/Codex rules templates (do not write pstack-models.mdc or Cursor rules)"
     }
@@ -118,7 +120,8 @@
   "vendor": [
     {
       "id": "codex-native",
-      "group": "mobile",
+      "group": "project",
+      "target": "project",
       "path": "vendor/codex",
       "skills": [
         "api-design",
@@ -131,8 +134,25 @@
         "react-native-vision-camera"
       ],
       "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream \u2014 refreshed manually from a machine with current Codex skills (see README)."
+      "note": "No public skills-lock upstream — refreshed manually from a machine with current Codex skills (see README). Copy into projects via add-project-skills.sh when needed."
     }
+  ],
+  "projectSkillCatalog": [
+    "animate-expo",
+    "apple-design",
+    "review-animations",
+    "expo-dev-client",
+    "expo-upgrade",
+    "react-native-best-practices",
+    "uniwind",
+    "api-design",
+    "build-nitro-modules",
+    "cpp",
+    "kotlin",
+    "swift",
+    "react-native-mmkv",
+    "react-native-nitro-fetch",
+    "react-native-vision-camera"
   ],
   "excluded": [
     "autoreview",
