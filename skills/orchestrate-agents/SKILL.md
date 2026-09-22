@@ -1,9 +1,9 @@
 ---
 name: orchestrate-agents
-description: Size-gate then either skip orch (small → direct Claude/Codex agent) or run as Opus 5 xhigh coordinator inside Orca (run-create → task-create → worker-start → check --wait). Use when deciding whether to fan out, generating isolated worker specs, or driving multi-agent DAG work. Triggers like "generate prompts for other agents", "fan this out", "split this across agents", "parallelize this work", "orchestrate", "orca run".
+description: Size-gate then either skip orch (small → direct Claude/Codex agent) or run as Opus 5.5 xhigh coordinator inside Orca (run-create → task-create → worker-start → check --wait). Use when deciding whether to fan out, generating isolated worker specs, or driving multi-agent DAG work. Triggers like "generate prompts for other agents", "fan this out", "split this across agents", "parallelize this work", "orchestrate", "orca run".
 ---
 
-# Orchestrate agents (size gate + Orca + Opus 5 xhigh)
+# Orchestrate agents (size gate + Orca + Opus 5.5 xhigh)
 
 Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orchestration](https://www.onorca.dev/docs/cli/orchestration).
 
@@ -12,7 +12,7 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 | Gate | Condition | Action |
 | --- | --- | --- |
 | **Small** | Single surface/package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch the corresponding agent directly (Luna / Sol / Opus on Claude Code / Codex). |
-| **Needs orch (large)** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5 xhigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude/Codex workers. **Delegate all work** — implementation, integrate, prove/validate — to workers. Coordinator only plans, dispatches, waits, and routes decisions. |
+| **Needs orch (large)** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xhigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude/Codex workers. **Delegate all work** — implementation, integrate, prove/validate — to workers. Coordinator only plans, dispatches, waits, and routes decisions. |
 
 **Lesson:** do not collapse big work into one mega-agent; do not over-orchestrate a rename.
 
@@ -26,7 +26,7 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 
 ## Coordinator identity
 
-- **Label:** **Opus 5 xhigh** (prefer this name; was Fable 5.1 High).
+- **Label:** **Opus 5.5 xhigh** (prefer this name; was Fable 5.1 High).
 - **Host:** `agent-m1` Claude Code (Opus at **xhigh**), driving Orca CLI.
 - **Workers:** `--agent claude|codex` + `--model` + `--effort` **per slice** from the chooser — not all Opus xhigh. Workers own implement / integrate / prove; coordinator does not.
 - **Coordinator does not code product slices, integrate, or validate** — only decompose, dispatch, wait, and route human/gate decisions.
@@ -87,7 +87,7 @@ For **large**: the Orca command sequence (run/task/worker/check) plus SHARED CON
 - Two workers on one checkout; >2 parallel trees under disk pressure without an explicit raise.
 - `--agent cursor` or any Cursor coding host.
 - Retired `orchestration run` instead of `run-create` + `worker-start`.
-- Stamping Opus 5 xhigh on every worker.
+- Stamping Opus 5.5 xhigh on every worker.
 - Opening a PR before prove.
 - Treating this skill's prompt text as a substitute for Orca Dispatches / `worker_done`.
 - Coordinator integrating, proving, or validating instead of dispatching worker tasks for those steps.
