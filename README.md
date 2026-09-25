@@ -125,7 +125,7 @@ Excluded for now: `autoreview`, Superset pack, Orca orchestration, other design/
 | --- | --- |
 | `templates/models.md` | **`~/.claude/rules/amillez-models.md`** and **`~/.agents/rules/amillez-models.md`** (user-level) |
 
-Defaults: Claude **Opus High** for bot-dispatched Claude sessions; workers follow the policy chooser. **Never** writes Cursor rules, `pstack-models.mdc`, or project `.claude/rules/` for the plugin pack. `/setup-amillez-models` and `update-install.sh` / `install.sh` refresh user rules.
+Defaults (2026-09-25): super defined → **GPT 6 Luna Max** (Codex); general code + UI → **Opus 5.5 High** (Claude Code), or **GPT 6 Sol** (xHigh general / High UI, Codex) when Claude Code usage > 70%; Orca coordinator → **Opus 5.5 xHigh**; large reasoning → **Fable 5.1 Medium→High/xhigh**. Workers follow the policy chooser. **Never** writes Cursor rules, `pstack-models.mdc`, or project `.claude/rules/` for the plugin pack. `/setup-amillez-models` and `update-install.sh` / `install.sh` refresh user rules.
 
 ## Keeping skills up to date
 
@@ -159,7 +159,7 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 ```
 amillez-plugin.json          # lightweight pack metadata (NOT .cursor-plugin)
 skills/                      # canonical first-party skill tree
-templates/models.md          # Claude Code / Codex rules (Opus High defaults) → user rules dirs
+templates/models.md          # Claude Code / Codex rules (model lanes) → user rules dirs
 first-party/README.md        # legacy pointer → skills/
 manifest.json                # allowlist + upstream pins (paths → skills/…)
 vendor/codex/                # snapshots without public upstream

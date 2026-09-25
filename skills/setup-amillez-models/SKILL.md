@@ -31,8 +31,14 @@ Thin replacement for pstack's `/setup-pstack`. **Do not** write Cursor rule file
 
 1. **Open the chooser.** Point the user (and yourself) at [`amillez/ai-eng-practices` → `policies/agent-use-policy.md`](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md):
    - Coding host: **agent-m1** Claude Code + Codex **only** (no Cursor).
-   - Default picks (roles → harness): **Luna Max** Codex (straightforward), **Sol High** Codex (general code), **Opus High** Claude Code (UI / plans), **Fable** → Opus xhigh Claude Code (escalate — do not start here). Skip Cursor-only Composer/Grok lanes.
-   - Claude vs Codex chooser TBD. Escalate one knob at a time.
+   - Default picks (roles → harness):
+     - Very direct / super defined → **GPT 6 Luna Max** (Codex `gpt-6-luna`).
+     - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6 Sol xHigh** (Codex `gpt-6-sol`).
+     - UI work → **Opus 5.5 High**; Claude Code usage > 70% → **GPT 6 Sol High**.
+     - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
+     - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xhigh.
+     - Skip Cursor-only Composer/Grok lanes.
+   - **Claude Code usage > 70%:** check `/usage` (or `/status`) in Claude Code for current-window plan usage; above 70% route general/UI work to Codex GPT 6 Sol. Escalate one knob at a time.
 
 2. **Confirm the session pick.** State which model + effort + harness (Claude Code vs Codex) this session should use and why (one sentence). Do not invent freestyle frontier spends outside the chooser.
 

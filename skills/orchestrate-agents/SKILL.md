@@ -11,7 +11,7 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 
 | Gate | Condition | Action |
 | --- | --- | --- |
-| **Small** | Single surface/package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch the corresponding agent directly (Luna / Sol / Opus on Claude Code / Codex). |
+| **Small** | Single surface/package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch the corresponding agent directly (GPT 6 Luna Max on Codex; Opus 5.5 High on Claude Code, or GPT 6 Sol on Codex when Claude Code usage > 70%). |
 | **Needs orch (large)** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xhigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude/Codex workers. **Delegate all work** — implementation, integrate, prove/validate — to workers. Coordinator only plans, dispatches, waits, and routes decisions. |
 
 **Lesson:** do not collapse big work into one mega-agent; do not over-orchestrate a rename.
@@ -27,8 +27,8 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview) · [Orca Orc
 ## Coordinator identity
 
 - **Label:** **Opus 5.5 xhigh** (prefer this name; was Fable 5.1 High).
-- **Host:** `agent-m1` Claude Code (Opus at **xhigh**), driving Orca CLI.
-- **Workers:** `--agent claude|codex` + `--model` + `--effort` **per slice** from the chooser — not all Opus xhigh. Workers own implement / integrate / prove; coordinator does not.
+- **Host:** `agent-m1` Claude Code (`claude --model claude-opus-5-5 --effort xhigh`), driving Orca CLI.
+- **Workers:** `--agent claude|codex` + `--model` + `--effort` **per slice** from the chooser (e.g. `--agent codex --model gpt-6-luna --effort max`, `--agent claude --model claude-opus-5-5 --effort high`, or `--agent codex --model gpt-6-sol --effort xhigh` when Claude Code usage > 70%) — not all Opus xhigh. Workers own implement / integrate / prove; coordinator does not.
 - **Coordinator does not code product slices, integrate, or validate** — only decompose, dispatch, wait, and route human/gate decisions.
 - **Disk:** sequential / max 2 parallel worktrees under pressure; never two agents on one checkout (`--worktree current` twice is forbidden).
 
@@ -63,7 +63,7 @@ Each task owns ONE unit no other task touches, ideally a separate module/package
 
 ## Procedure (large / needs orch)
 
-1. Confirm size gate → large. If small, stop and recommend direct Luna/Sol/Opus.
+1. Confirm size gate → large. If small, stop and recommend direct Luna / Opus 5.5 (or Sol when Claude Code usage > 70%).
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed).
 3. Scout only enough to decompose; never implement product work in the coordinator session.
 4. `run-create`, then cut isolated `task-create` items (P1 vs P2) — include **integrate** and **prove/validate** as their own worker tasks when needed (not coordinator work).
@@ -75,7 +75,7 @@ Each task owns ONE unit no other task touches, ideally a separate module/package
 
 ## Output
 
-For **small**: one line — `size gate: small → direct <Luna|Sol|Opus> on <Codex|Claude Code>; no Orca Run.`
+For **small**: one line — `size gate: small → direct <GPT 6 Luna|Opus 5.5|GPT 6 Sol> on <Codex|Claude Code>; no Orca Run.`
 
 For **large**: the Orca command sequence (run/task/worker/check) plus SHARED CONTEXT and N TASK specs (each with agent/model/effort/worktree mode).
 
