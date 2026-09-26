@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: grill-me + first-party orchestration/verification/models setup"
+      "description": "Always installed: amillez-mode (required working mode) + grill-me + first-party orchestration/verification/models setup"
     },
     "mobile": {
       "description": "React Native / Expo / native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
@@ -90,6 +90,12 @@
     }
   ],
   "firstParty": [
+    {
+      "id": "amillez-mode",
+      "group": "core",
+      "path": "skills/amillez-mode",
+      "when": "Required working mode for every coding agent (single agent or Orca worker); adapted from pstack poteto-mode (MIT, see skills/amillez-mode/UPSTREAM.md)"
+    },
     {
       "id": "orchestrate-agents",
       "group": "core",
