@@ -21,7 +21,10 @@ Applied to vendored files. Everything else is upstream text.
 1. **Principles are leaves, not skills.** `pstack/skills/principle-<slug>/SKILL.md` → `principles/<slug>.md`. YAML frontmatter (`name`, `description`, `disable-model-invocation`) replaced with the upstream H1 title plus a `**Trigger.**` line holding the upstream `description` verbatim. They are not installed as standalone skills (each skill description rides the prompt prefix; see ai-eng-practices agent-use-policy §7).
 2. **Cross-links rewritten.** `(../principle-<slug>/SKILL.md)` → `(<slug>.md)` so links resolve inside `principles/`. No other body edits.
 3. **Unported references left as-is.** Bodies still name pstack skills we do not ship in v1 (e.g. `show-me-your-work` in `prove-it-works.md`). Read them as the idea, not an installed skill.
-4. **Not wired yet.** PR 1 adds files only. Install scripts and `manifest.json` are unchanged until PR 2, so nothing installs to `~/.claude` / `~/.agents` yet.
+4. **`SKILL.md` is an adaptation, not a copy** (PR 2). Kept close to upstream: the principle-citation rule, observe-before-asking, data shape first, throughput checkpoint, the Principles index (links point at `principles/`), Autonomy's "No is an acceptable answer", Writing the reply, and Comments. Rewritten: Subagents (amillez model lanes, never GPT 5.6 or Opus 5), Autonomy (agents never merge; Grok Bot owns messages), control and slop skills (Argent, project `verify-*`, self-review). Dropped: fan-out skills, Cursor frontmatter keys, `poteto-agent`. Added: the remap table from ai-eng-practices `playbooks/amillez-mode.md`, a short Pull requests section, and a playbook list where files not yet ported say "coming".
+5. **`disable-model-invocation` is omitted from `SKILL.md`** (PR 2). amillez-mode is required for every coding agent, and launch prompts name it. The model has to be able to load it on request in headless `claude -p` and `codex exec` runs. Upstream sets `disable-model-invocation: true`.
+6. **References** (PR 2). `pstack/skills/{unslop,technical-writing,tdd}/SKILL.md` become `references/<name>.md` with the same header treatment as the principles. `technical-writing.md` has three edits: links to `unslop.md` instead of "the unslop skill", "the skill" becomes "the file", and "Indent code snippets with tabs" becomes "Indent code snippets the way the repo indents code". `unslop.md` and `tdd.md` bodies are unchanged.
+7. **Install wiring** (PR 2). `amillez-mode` is in the `core` group (`manifest.json`, the first-party loops in `scripts/install.sh` and `scripts/update-install.sh`). `scripts/ensure-install.sh` refreshes a stamped host that lacks `amillez-mode`. Pack version 0.2.0.
 
 Correction to the port plan: upstream has **23** `principle-*` skills (the poteto-mode index lists 23), not 26.
 
@@ -33,7 +36,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 
 | Section | Verdict | Our change | PR |
 | --- | --- | --- | --- |
-| Frontmatter | ADAPT | `name: amillez-mode`. Drop Cursor-only `mode`/`icon`/`color`/`reminder`. `disable-model-invocation` decided in PR 2; launch prompts name the skill explicitly. | 2 |
+| Frontmatter | ADAPT | `name: amillez-mode`. Drop Cursor-only `mode`/`icon`/`color`/`reminder`. Omit `disable-model-invocation` (see Local changes 5); launch prompts name the skill explicitly. | 2 |
 | Non-negotiables | ADAPT | Keep principle citation, observe-don't-ask (Prototype), data shape first, throughput checkpoint, broken skill → own PR. `how`/`architect` → recon + plan (policy §5); `interrogate` → `grill-me`; `swarm`/`arena` → size gate + Orca (`orchestrate-agents`); control skills → Argent + project `verify-*`; `deslop`/`no-comments` → inline self-review; babysit → dispatch lifecycle. | 2 |
 | Principles index | KEEP | Points at `principles/*.md` (this PR). | 1–2 |
 | Autonomy | ADAPT | Reversible local work proceeds; "No is an acceptable answer" kept. Always pause: merge (Agustín's say-so only), force-push shared, deletes outside the worktree. Coding agents do not post to chat/tickets (Grok Bot is control plane). Apply Agustín's review comments without asking. | 2 |
@@ -77,7 +80,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | --- | --- | --- | --- |
 | `principle-*/SKILL.md` (23) | KEEP | Vendored to `principles/<slug>.md` (see Local changes). | 1 |
 | `pstack/LICENSE` | KEEP | `LICENSE-pstack`, byte-for-byte. | 1 |
-| `poteto-mode/references/bugbot-triage.md` | ADAPT | → `references/review-triage.md`, automated reviewers only; Agustín's comments are always applied. | 2 |
+| `poteto-mode/references/bugbot-triage.md` | ADAPT | → `references/review-triage.md`, automated reviewers only; Agustín's comments are always applied. Lands with the babysit playbook. | 5 |
 | `unslop`, `technical-writing`, `tdd` | KEEP | → `references/`, capitalization remap. | 2 |
 | `poteto-mode/scripts/{watch-pr,orch,check-plan.mjs,bootstrap.ts,package.json,bun.lock}` | DROP | Cursor/Origin/gt/bun tooling. | — |
 | `poteto-mode/scripts/worktree-audit.sh` | ADAPT | See `worktree-cleanup.md`. | 5 |

@@ -45,7 +45,7 @@ Installs allowlisted upstream packs + copies first-party from `skills/` into `~/
 
 | Group | Always? | Contents |
 | --- | --- | --- |
-| `core` | **yes** (even with `--groups mobile`) | `grill-me`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models` |
+| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models` |
 | `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Codex native vendor set |
 
 Default is **core+mobile**. `--groups core` skips mobile. Future groups (e.g. frontend/backend) will follow the same pattern.
@@ -111,6 +111,7 @@ Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--group
 | `expo-upgrade` | mobile | `expo/skills` | Skill description (Expo SDK upgrades, dependency conflicts, deprecated packages, cache cleanup) |
 | `react-native-best-practices` | mobile | `software-mansion-labs/skills` | Skill description / when writing, reviewing, or debugging ANY React Native or Expo code |
 | `uniwind` | mobile | `uni-stack/uniwind` | Skill description / when building or debugging Uniwind className styling in RN |
+| `amillez-mode` | core | **first-party** (pstack `poteto-mode` port, MIT; see `skills/amillez-mode/UPSTREAM.md`) | **Required** working mode for every coding agent (single agent or Orca worker). Launch prompts name it explicitly. |
 | `orchestrate-agents` | core | **first-party** (`skills/`) | Fan out large work into parallel isolated prompts (Claude/Codex/mixed) |
 | `create-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Generate project-local `verify-<app>` (Launch/Doctor/Drive/Evidence/Cleanup + feature map) |
 | `maintain-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Keep a project `verify-<app>` skill + feature map honest |
@@ -150,7 +151,7 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 
    Then on other machines: `git pull && ./scripts/install.sh` (vendor copy step).
 
-4. **First-party** (`orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + `./scripts/update-install.sh` (or full `install.sh`). Ensure gate: `./scripts/ensure-install.sh`.
+4. **First-party** (`amillez-mode`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`) — edit under `skills/`, commit, `git pull` + `./scripts/update-install.sh` (or full `install.sh`). Ensure gate: `./scripts/ensure-install.sh`.
 
 5. **Lockfile** — after installs, `~/.agents/.skill-lock.json` records source URLs/hashes for upstream packs. Prefer that + this repo’s `manifest.json` over ad-hoc copies.
 

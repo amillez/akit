@@ -172,7 +172,7 @@ install_first_party_and_vendor() {
 
   echo "== First-party (canonical tree: skills/) [core] =="
   mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-  for s in orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
+  for s in amillez-mode orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
     rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.agents/skills/$s"
     cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.claude/skills/$s"

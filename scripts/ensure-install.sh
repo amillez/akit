@@ -18,6 +18,8 @@ Detects "installed" if ANY of:
      - ~/.claude/skills/setup-amillez-models OR ~/.agents/skills/setup-amillez-models
        
 If missing → run update-install.sh (skills + user rules + stamp).
+If present but a required skill (amillez-mode) is missing from ~/.claude/skills or
+~/.agents/skills → refresh (prints "updated").
 If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
 
 Groups (same as install.sh; default core,mobile):
@@ -132,6 +134,17 @@ plugin_present() {
   return 1
 }
 
+# Stamp present but a required first-party skill missing (older pack) -> refresh.
+required_skill_missing() {
+  local s
+  for s in amillez-mode; do
+    if [[ ! -f "$HOME/.claude/skills/$s/SKILL.md" || ! -f "$HOME/.agents/skills/$s/SKILL.md" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 run_install() {
   local update="$SKILLS_ROOT/scripts/update-install.sh"
   if [[ ! -x "$update" ]]; then
@@ -159,7 +172,7 @@ if plugin_present; then
   WAS_PRESENT=1
 fi
 
-if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]]; then
+if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! required_skill_missing; then
   echo "amillez plugin: already present"
   exit 0
 fi
