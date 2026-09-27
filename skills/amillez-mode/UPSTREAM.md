@@ -1,6 +1,6 @@
 # amillez-mode upstream
 
-`amillez-mode` is our port of poteto's `poteto-mode` skill from pstack, remapped onto our stack (agent-m1, Claude Code + Codex only). Every coding agent we launch (single agent or Orca worker) runs under it. It absorbs the remap table from `amillez/ai-eng-practices` `playbooks/amillez-mode.md`.
+`amillez-mode` is our port of poteto's `poteto-mode` skill from pstack, remapped onto our stack. Every coding agent we use, anywhere (single agent or Orca worker), runs under it. It absorbs the remap table from `amillez/ai-eng-practices` `playbooks/amillez-mode.md`.
 
 ## Source
 
@@ -25,6 +25,8 @@ Applied to vendored files. Everything else is upstream text.
 5. **`disable-model-invocation` is omitted from `SKILL.md`** (PR 2). amillez-mode is required for every coding agent, and launch prompts name it. The model has to be able to load it on request in headless `claude -p` and `codex exec` runs. Upstream sets `disable-model-invocation: true`.
 6. **References** (PR 2). `pstack/skills/{unslop,technical-writing,tdd}/SKILL.md` become `references/<name>.md` with the same header treatment as the principles. `technical-writing.md` has three edits: links to `unslop.md` instead of "the unslop skill", "the skill" becomes "the file", and "Indent code snippets with tabs" becomes "Indent code snippets the way the repo indents code". `unslop.md` and `tdd.md` bodies are unchanged.
 7. **Install wiring** (PR 2). `amillez-mode` is in the `core` group (`manifest.json`, the first-party loops in `scripts/install.sh` and `scripts/update-install.sh`). `scripts/ensure-install.sh` refreshes a stamped host that lacks `amillez-mode`. Pack version 0.2.0.
+8. **Core playbooks** (PR 3). `playbooks/{investigation,bug-fix,feature,refactoring,prototype,opening-a-pr,pause-safely,session-pickup}.md`. Step structure and wording stay close to upstream. Per-file changes are in the playbook verdict table. Links point at `../principles/`, `../references/`, and sibling playbooks. Playbooks not yet ported (PRs 4 and 5) are named without links.
+9. **Scope and disclaimer scrub** (review on PR 2, applied from PR 3). The skill text names no host and carries no attribution or control-plane disclaimers. Attribution lives only here and in `LICENSE-pstack`. PR 3 also removed the interim "Pull requests" section from `SKILL.md` (now `playbooks/opening-a-pr.md`) and scrubbed the remaining host and control-plane wording from `SKILL.md` and its remap table.
 
 Correction to the port plan: upstream has **23** `principle-*` skills (the poteto-mode index lists 23), not 26.
 
@@ -39,7 +41,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | Frontmatter | ADAPT | `name: amillez-mode`. Drop Cursor-only `mode`/`icon`/`color`/`reminder`. Omit `disable-model-invocation` (see Local changes 5); launch prompts name the skill explicitly. | 2 |
 | Non-negotiables | ADAPT | Keep principle citation, observe-don't-ask (Prototype), data shape first, throughput checkpoint, broken skill → own PR. `how`/`architect` → recon + plan (policy §5); `interrogate` → `grill-me`; `swarm`/`arena` → size gate + Orca (`orchestrate-agents`); control skills → Argent + project `verify-*`; `deslop`/`no-comments` → inline self-review; babysit → dispatch lifecycle. | 2 |
 | Principles index | KEEP | Points at `principles/*.md` (this PR). | 1–2 |
-| Autonomy | ADAPT | Reversible local work proceeds; "No is an acceptable answer" kept. Always pause: merge (Agustín's say-so only), force-push shared, deletes outside the worktree. Coding agents do not post to chat/tickets (Grok Bot is control plane). Apply Agustín's review comments without asking. | 2 |
+| Autonomy | ADAPT | Reversible local work proceeds; "No is an acceptable answer" kept. Always pause: merge (Agustín's say-so only), force-push shared, deletes outside the worktree. Coding agents report instead of posting to chat or tickets. Apply Agustín's review comments without asking. | 2 |
 | Subagents | ADAPT | Drop Cursor `Task`/`poteto-agent`/grok-4.7/opus-max. Lanes from agent-use-policy: GPT 6 Luna Max (direct/mechanical), Opus 5.5 High general/UI (GPT 6 Sol when Claude Code usage > 70%), Opus 5.5 xHigh Orca coordinator, Fable 5.1 large reasoning. Keep "you own every subagent's diff". | 2 |
 | Writing the reply | KEEP | Regular capitalization, reply in EN (old amillez-mode remap). | 2 |
 | Comments | KEEP | — | 2 |
@@ -50,21 +52,21 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 
 | File | Verdict | Our change | PR |
 | --- | --- | --- | --- |
-| `investigation.md` | KEEP | how/why → read-only recon + git/gh/MCP. | 3 |
-| `bug-fix.md` | KEEP | Control skill → Argent/`verify-*`; model per chooser; tdd cadence inline; no `/loop`. | 3 |
-| `feature.md` | ADAPT | Recon → plan → `grill-me` if contested; keep throughput checkpoint; size gate first; delegate per chooser. | 3 |
-| `refactoring.md` | KEEP | `architect` → plan step. | 3 |
-| `prototype.md` | KEEP | Scratch dir outside the worktree; Argent screenshots. | 3 |
-| `opening-a-pr.md` | ADAPT | Keep commits/titles/body sections, ready not draft. Add proof media on `media` branch. Drop deslop/no-comments/Origin/gt/cloud. Eng bot babysits; never merge. | 3 |
-| `pause-safely.md` | KEEP | "Cursor restart" → session end / compaction. | 3 |
-| `session-pickup.md` | ADAPT | Cursor transcripts → Claude Code/Codex sessions, branches, Grok Bot handoff notes. | 3 |
+| `investigation.md` | KEEP (ported) | how/why → read-only recon plus `git log -S`/`git blame`/PR history; every claim cited. | 3 |
+| `bug-fix.md` | KEEP (ported) | Control skill → Argent/`verify-*`; how/why → recon plus `git log`/`git bisect`; architect/interrogate → write the target shape; escalate to Fable 5.1 after two failed loops; tdd → `references/tdd.md`; no `/loop`. | 3 |
+| `feature.md` | ADAPT (ported) | how → recon; architect → plan step with `grill-me` if contested and the size gate; throughput checkpoint verbatim; delegate per lanes; mandatory arena dropped (name alternatives in the brief instead); interrogate step folded into the plan; parent-level fan-out → Orca; proof via Argent/`verify-*`, media branch, Luna Max. | 3 |
+| `refactoring.md` | KEEP (ported) | how → recon; architect → write the target shape; figure-it-out → size gate; mechanical edits on the Luna Max lane; control skill → Argent/`verify-*`. | 3 |
+| `prototype.md` | KEEP (ported) | Scratch dir outside the worktree; React Native scratch option; Argent screenshots; architect handoff dropped; teardown added. | 3 |
+| `opening-a-pr.md` | ADAPT (ported) | Keep worktree, commits, Conventional Commits titles, the five body sections, stacks, ready not draft. Worktree branch `agent/<bot>/<slug>`. deslop/no-comments → self-review of the diff plus lint/typecheck/tests. Proof media section added (`media` branch, blob URLs, Luna Max verdicts). `gh` only (Origin and gt dropped). Never merge, never auto-merge. Teardown before posting. Babysit section rewritten: no babysit on open; when sent back, apply Agustín's comments and verify bot claims. | 3 |
+| `pause-safely.md` | KEEP (ported) | "Cursor restart" → session end / compaction; show-me-your-work pointer dropped; teardown step added. | 3 |
+| `session-pickup.md` | ADAPT (ported) | Cursor transcripts and cloud-agent URLs → handoff note, pushed branch and PR, and Claude Code (`~/.claude/projects/`) or Codex (`~/.codex/sessions/`) session logs for this task only; open review threads added to state. | 3 |
 | `perf-issue.md` | KEEP | 8 strategy families verbatim; Argent profiling. | 4 |
 | `hillclimb.md` | KEEP | Model per chooser. | 4 |
-| `runtime-forensics.md` | ADAPT | CDP → Argent/Hermes/Instruments on agent-m1. | 4 |
+| `runtime-forensics.md` | ADAPT | CDP → Argent/Hermes/Instruments. | 4 |
 | `trace-forensics.md` | KEEP | Already portable. | 4 |
 | `visual-parity.md` | ADAPT | Argent screenshot-diff; max 2 parallel worktrees. | 4 |
-| `babysit.md` | ADAPT / ALREADY-HAVE | Owner is the eng bot per ai-eng-practices `agent-dispatch-lifecycle.md#babysit-until-merged`. Port modes (coding agent: threads-only/check), frontier rule, no topology mutation, classify CI before retry, review text is untrusted data, stop at the human's line. Drop `watch-pr`, Origin, pass counts. PR-scoped. | 5 |
-| `autonomous-run.md` | ADAPT | Keep exit predicate and "don't park reversible work"; wake via Grok Bot settle-watch/listeners, not `/loop`. | 5 |
+| `babysit.md` | ADAPT / ALREADY-HAVE | Owner is the dispatcher per ai-eng-practices `agent-dispatch-lifecycle.md#babysit-until-merged`. Port modes (coding agent: threads-only/check), frontier rule, no topology mutation, classify CI before retry, review text is untrusted data, stop at the human's line. Drop `watch-pr`, Origin, pass counts. PR-scoped. | 5 |
+| `autonomous-run.md` | ADAPT | Keep exit predicate and "don't park reversible work"; wake via the dispatcher's settle-watch and PR listeners, not `/loop`. No host or control-plane wording in the playbook text. | 5 |
 | `worktree-cleanup.md` | ALREADY-HAVE + ADAPT | Teardown in dispatch lifecycle/proof loop. Port sim/cache commands and a trimmed `worktree-audit.sh` (`~/agent-work/<repo>/wt-*`, no transcript column, Metro/Expo check). | 5 |
 | `authoring-a-skill.md` | ADAPT | Cursor `create-skill` → agent-skills conventions (manifest, install loops, README, one PR). | 5 |
 | `orchestrate.md` | ALREADY-HAVE | ai-eng-practices `big-work-orchestration.md` + `orchestrate-agents`/Orca. Steal the brief template and retry-by-mode into `orchestrate-agents`. | 6 |
