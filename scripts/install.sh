@@ -23,7 +23,8 @@ Install allowlisted skills + user rules for Claude Code + Codex + ~/.agents (nev
 
 Groups:
   core    Always installed: amillez-mode, grill-me, orchestrate-agents,
-          create-verification-skill, maintain-verification-skill, setup-amillez-models
+          create-verification-skill, maintain-verification-skill, setup-amillez-models,
+          typescript-best-practices
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Codex native vendor set
@@ -126,7 +127,7 @@ fi
 
 echo "== First-party (canonical tree: skills/) [core] =="
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-for s in amillez-mode orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models; do
+for s in amillez-mode orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models typescript-best-practices; do
   rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
