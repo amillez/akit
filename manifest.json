@@ -100,7 +100,7 @@
       "id": "orchestrate-agents",
       "group": "core",
       "path": "skills/orchestrate-agents",
-      "when": "Fan out large work into parallel isolated agent prompts (Codex/Claude/mixed workers OK)"
+      "when": "Size gate, then Orca with an Opus 5.5 xHigh coordinator for large work; worker brief template, retry by failure mode; every worker runs amillez-mode (brief template and retry rules adapted from pstack, MIT, see skills/orchestrate-agents/UPSTREAM.md)"
     },
     {
       "id": "create-verification-skill",

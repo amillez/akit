@@ -112,7 +112,7 @@ Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--group
 | `react-native-best-practices` | mobile | `software-mansion-labs/skills` | Skill description / when writing, reviewing, or debugging ANY React Native or Expo code |
 | `uniwind` | mobile | `uni-stack/uniwind` | Skill description / when building or debugging Uniwind className styling in RN |
 | `amillez-mode` | core | **first-party** (pstack `poteto-mode` port, MIT; see `skills/amillez-mode/UPSTREAM.md`) | **Required** working mode for every coding agent (single agent or Orca worker). Launch prompts name it explicitly. |
-| `orchestrate-agents` | core | **first-party** (`skills/`) | Fan out large work into parallel isolated prompts (Claude/Codex/mixed) |
+| `orchestrate-agents` | core | **first-party** (brief template and retry rules adapted from pstack, MIT; see `skills/orchestrate-agents/UPSTREAM.md`) | Size gate, then Orca with an Opus 5.5 xHigh coordinator for large work. Worker briefs name `amillez-mode`, which every invoked coding agent loads. |
 | `create-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Generate project-local `verify-<app>` (Launch/Doctor/Drive/Evidence/Cleanup + feature map) |
 | `maintain-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Keep a project `verify-<app>` skill + feature map honest |
 | `setup-amillez-models` | core | **first-party** (thin setup-pstack replacement) | Policy chooser + install/update **user** Claude/Codex rules templates; never Cursor / `pstack-models.mdc` |
