@@ -1,10 +1,10 @@
 # agent-skills
 
-Allowlisted engineering skills for **agent-m1** — **Claude Code + Codex only**.
+Allowlisted engineering skills for **Claude Code and Codex only**.
 
 Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://github.com/amillez/ai-eng-practices). This repo holds **skill bodies** + install/update scripts so we do not hand-duplicate folders on every machine.
 
-**Out of scope:** Cursor plugin / marketplace (`.cursor-plugin`), Cursor My Machines, `register-worker-dir`, `.cursor/skills`, `.cursor/rules`. Grok Bot remains the chat/control plane; coding runs on agent-m1 via Claude Code / Codex.
+**Out of scope:** Cursor plugin / marketplace (`.cursor-plugin`), Cursor My Machines, `register-worker-dir`, `.cursor/skills`, `.cursor/rules`.
 
 ## Install model (split)
 
@@ -19,7 +19,7 @@ The amillez plugin must **not** symlink or copy into project trees. No project `
 
 This repo is the **amillez** skill + rules pack (`amillez-plugin.json`): canonical `skills/` + `templates/models.md` + setup/update scripts. **Goal:** replace hand-copied custom skills. Allowlisted upstream packs still install via `./scripts/install.sh` / the `skills` CLI. Playbooks stay in [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices); **runtime skills live here**.
 
-Coding host is **agent-m1 Claude Code + Codex only**. Cursor plugin / My Machines are out of scope.
+The pack targets **Claude Code and Codex only**. Cursor plugin / My Machines are out of scope.
 
 ### 1. Clone this repo (or pull latest)
 
@@ -59,7 +59,7 @@ argent init -y --no-telemetry --global
 
 ### 3. **Required** — ensure host install before coding
 
-**Before coding sessions on agent-m1**, ensure the **host** has the amillez plugin (not a project path):
+**Before coding sessions**, ensure the **host** has the amillez plugin (not a project path):
 
 ```bash
 cd ~/agent-work/agent-skills
@@ -93,7 +93,7 @@ Refresh helpers:
 
 - Replaces hand-copied custom skills.
 - Cursor plugin / My Machines are **out of scope**.
-- Coding host is **agent-m1 Claude Code / Codex only**.
+- Harnesses are **Claude Code and Codex only**.
 - **Project skills** (verify-*, app-specific) stay committed in the project; do not expect ensure to put them there.
 
 ## Allowlist
