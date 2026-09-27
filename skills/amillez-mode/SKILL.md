@@ -21,7 +21,7 @@ Remaining triggers:
 - Docs, readmes, PR descriptions, or commit messages → [technical writing](references/technical-writing.md).
 - Bug with a cheap local test path → failing test first per [tdd](references/tdd.md), and the failing test lands before the fix in git history.
 - Before commit → reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments**. Keep only the smallest change that solves the problem.
-- UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent on agent-m1 with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
+- UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
 - Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Visual pass/fail is judged by a GPT 6 Luna Max verification session on Codex, not by your own heavy turns.
 - Review comments from Agustín → apply them as they appear. No permission chatter.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code. Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
@@ -78,8 +78,8 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 
 - Merging any PR, or arming auto-merge. Only Agustín's explicit say-so merges. Agents never merge.
 - Force-push to a shared branch, deploys, data deletion, deleting anything outside your worktree.
-- Messages to people, chat posts, and ticket updates. Grok Bot is the control plane and owns those.
-- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`). Not used here.
+- Messages to people, chat posts, and ticket updates. Report what you would send instead.
+- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`).
 
 **Session overrides.** "Don't stop", "run until done", or "be fully autonomous" in the launch prompt → keep going on reversible work. The always-pause list still holds.
 
@@ -130,27 +130,20 @@ End every task with a reply written this way, PR link as `https://github.com/<ow
 
 Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including a subagent's diff.
 
-## Pull requests
-
-- Work in your own worktree on `agent/<bot>/<slug>`, never in the `main` checkout. One agent per worktree.
-- Small, ordered commits. Prefer several narrow PRs to one large PR.
-- Open the PR ready, not draft. Title in Conventional Commits form, `type(scope): subject`. Body sections, in order, dropping empty ones: `## Why`, `## Scope`, `## Tradeoffs`, `## Blast Radius`, `## Verification`. Proof media links go under Verification.
-- Opening a PR does not start a babysit. Grok Bot babysits, scoped to that PR. Post the URL and stop.
-
 ## Playbooks
 
 Open a todolist whose first items are the matched playbook's steps, before any task-specific todos. A step you choose not to do stays in the list with a one-line `skip: <reason>`.
 
-Playbook files land in later PRs of the port (see [UPSTREAM.md](UPSTREAM.md)). Until a file exists, follow its one-line intent below plus the Non-negotiables and Principles.
+Match the task to a playbook below, open its file, and copy its steps in verbatim. Every playbook that changes code ends with [Opening a PR](playbooks/opening-a-pr.md). Entries marked (coming) have no file yet. For those, follow the one-line intent plus the Non-negotiables and Principles.
 
-- **Investigation** (coming). Read-only question. Produce a cited answer or a recommendation with a tradeoffs table. No code change.
-- **Bug fix** (coming). Reproduce on the real surface, binary-search the cause with runtime evidence, failing check before the fix, verify on the same surface.
-- **Feature** (coming). Recon, plan, throughput checkpoint, build from a named data shape, prove on the real surface, small commits.
-- **Refactoring** (coming). Pin the behavior first, subtract, reshape in small green steps, prove behavior is unchanged.
-- **Prototype** (coming). Throwaway sketch that settles a design or behavioral fork by observing it.
-- **Opening a PR** (coming). Expands **Pull requests** above.
-- **Pause safely** (coming). Stop at a safe boundary, `wip:` commit, resume note.
-- **Session pickup** (coming). Resume a prior agent's work from its branch and notes without redoing it.
+- **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. [playbooks/investigation.md](playbooks/investigation.md).
+- **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. [playbooks/bug-fix.md](playbooks/bug-fix.md).
+- **Feature.** New or changed behavior, built from a named data shape. [playbooks/feature.md](playbooks/feature.md).
+- **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move). [playbooks/refactoring.md](playbooks/refactoring.md).
+- **Prototype.** A throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it instead of asking. [playbooks/prototype.md](playbooks/prototype.md).
+- **Opening a PR.** Worktree, commits, title and body, proof media, stacks, readiness, never merge. [playbooks/opening-a-pr.md](playbooks/opening-a-pr.md).
+- **Pause safely.** Suspending in-flight work cleanly so it can be resumed, on an explicit pause, a session end, or imminent context compaction. [playbooks/pause-safely.md](playbooks/pause-safely.md).
+- **Session pickup.** Resuming or taking over a prior agent's in-flight work from its branch, PR, handoff note, or session log. [playbooks/session-pickup.md](playbooks/session-pickup.md).
 - **Perf issue** (coming). Baseline trace, hypotheses from the trace, before and after numbers.
 - **Hillclimb** (coming). One metric, a frozen harness, one change per iteration, keep or revert.
 - **Runtime forensics** (coming). Diagnose a live symptom from instrumentation. Diagnosis only.
@@ -158,25 +151,25 @@ Playbook files land in later PRs of the port (see [UPSTREAM.md](UPSTREAM.md)). U
 - **Visual parity** (coming). Baseline harness first, image diff to zero, one component at a time.
 - **Babysit, coding-agent side** (coming). Answer review threads and fix CI on your own PR when asked. Never merge.
 - **Autonomous run** (coming). State a checkable exit condition, then drive to it.
-- **Worktree and simulator cleanup** (coming). Reclaim disk safely on agent-m1.
+- **Worktree and simulator cleanup** (coming). Reclaim disk safely.
 - **Authoring a skill** (coming). Add or edit a skill in `amillez/agent-skills`.
 
-## Remap from poteto-mode and Cursor defaults
+## Remap from upstream and Cursor defaults
 
-This table replaces `playbooks/amillez-mode.md` in `amillez/ai-eng-practices` (Stella's remap, 2026-09-16, updated 2026-09-21). When upstream pstack text and this table disagree on host, model, done, skills, merge, or babysit, this table wins. On craft, the upstream text wins.
+When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on host, model, done, skills, merge, or babysit, this table wins. On craft, the upstream text wins.
 
-| poteto / Cursor default | amillez-mode | Source |
+| Upstream / Cursor default | amillez-mode | Source |
 | --- | --- | --- |
-| Cursor cloud, Composer, or My Machines as coding host | Override. agent-m1 Claude Code and Codex only. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
+| Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor coding path. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
 | Cursor `Task` subagents, `poteto-agent`, grok and opus-max defaults | Override. Lanes in **Subagents and model lanes**. Large work goes to Orca. | [agent-use-policy §2](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#2-default-model-posture) |
 | Fan-out skills (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `reflect`) | Dropped for v1. Recon and plan, `grill-me`, and Orca instead. | [UPSTREAM.md](UPSTREAM.md) |
 | Done means green CI or files changed | Override. Proof loop with flexible evidence, media on the `media` branch, Luna Max for visual. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |
 | `control-ui`, `control-cli`, `deslop`, `no-comments` (cursor-team-kit) | Override. Argent and project `verify-*` for proof. Self-review of the diff before commit. | This file |
 | Skills or plugins installed ad hoc | Override. Allowlist in `amillez/agent-skills`, installed by `scripts/ensure-install.sh`. | [agent-skills README](https://github.com/amillez/agent-skills#allowlist) |
 | Owners merge after a clean verdict (autopilot, shipping) | Override. Agents never merge. Only Agustín's say-so merges. | [agent-dispatch-lifecycle](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md) |
-| Background Shell wake or `/loop` as babysit | Override. Grok Bot babysits: finite settle-watch, then PR-scoped GitHub listeners that match `pr_number`. Terminal is merge, close, or abandon. | [agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged) |
-| External actions (team chat, tickets) proceed without asking | Override. Grok Bot owns messages. Coding agents report instead. | This file |
+| Background Shell wake or `/loop` as babysit | Override. Opening a PR does not start a babysit. Babysitting is PR-scoped, runs until merge, close, or abandon, and the coding agent acts on it only when sent back. | [agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged) |
+| External actions (team chat, tickets) proceed without asking | Override. Coding agents report instead of sending. | This file |
 | Teardown limited to worktrees | Override. Also simulators, emulators, Metro, Expo CLI processes, and a Metro port check. | [agent-proof-feedback-loop, teardown](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md#teardown-after-proof) |
-| poteto craft, one job, one voice | Keep. Label it amillez-mode, not poteto. | This file |
-| poteto "short lowercase OK" voice | Remap. Regular capitalization. | This file |
+| Upstream craft, one job, one voice | Keep. Label it amillez-mode. | This file |
+| Upstream "short lowercase OK" voice | Remap. Regular capitalization. | This file |
 | `ensure-project` named as the primary install | Override. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). `ensure-project.sh` is a thin alias. | [agent-dispatch-lifecycle, worktrees](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#worktrees-on-agent-m1) |
