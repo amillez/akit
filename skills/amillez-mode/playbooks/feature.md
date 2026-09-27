@@ -3,7 +3,7 @@
 **You own the design. Plan, review, verify.** Delegate implementation when the work is big enough to earn it. Stay in the lead.
 
 1. Recon the affected subsystem read-only: entry points, callers, data shapes, tests, and conventions.
-2. Plan before you build. Name the data shape and its organizing structure per [Model the Domain](../principles/model-the-domain.md), then the target types, signatures, and module layout, the files in play, risks, and success criteria. If the design is contested or a human will push back on it, stress-test the plan with the `grill-me` skill now, not after the build. If the size gate in `SKILL.md` says large, stop and report it for an Orca Run instead of continuing here.
+2. Plan before you build. Name the data shape and its organizing structure per [Model the Domain](../principles/model-the-domain.md), then the target types, signatures, and module layout, the files in play, risks, and success criteria. Settle empirical open questions (behavior, timing, layout, perf, whether an approach works) with a throwaway [Prototype](prototype.md) now, not after the build. Use the `grill-me` skill only for contested product or preference calls a prototype can't settle. Don't adversarially review the plan while it is still abstract. If the size gate in `SKILL.md` says large, stop and report it for an Orca Run instead of continuing here.
 3. Write the throughput checkpoint as four todo items. A dimension that genuinely does not apply (single file, no fan-out) keeps its item with `n/a: <reason>` rather than being dropped:
    - **Blocking first steps.** Gates run before fan-out.
    - **Independent workstreams.** Disjoint files, services, or layers parallelize. Shared writes serialize.
