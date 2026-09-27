@@ -1,29 +1,23 @@
 #!/usr/bin/env bash
-# Ensure the amillez plugin pack is installed at user/device root before coding.
-# Detects existing installs via stamp (or legacy user skills/rules); installs/refreshes otherwise.
-# Never touches project trees or .cursor/.
+# Ensure the amillez plugin pack is installed at user root before coding.
+# Installs or refreshes when the stamp or any first-party skill is missing. Never touches project trees.
 set -euo pipefail
 
 usage() {
   cat <<'USAGE'
 Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
 
-Required before coding sessions on agent-m1 (bots/agents run this automatically
-per ai-eng-practices policy). Ensures the **host** (user-root) amillez plugin pack.
+Run before coding sessions. Ensures the user-root amillez plugin pack.
 
-Detects "installed" if ANY of:
-  A) Stamp present: ~/.amillez-plugin.json OR ~/.agents/amillez-plugin.json
-  B) Legacy / minimum heuristic (both must pass):
-     - ~/.claude/rules/amillez-models.md OR ~/.agents/rules/amillez-models.md exists, AND
-     - ~/.claude/skills/setup-amillez-models OR ~/.agents/skills/setup-amillez-models
-       
-If missing → run update-install.sh (skills + user rules + stamp).
-If present but a required skill (amillez-mode) is missing from ~/.claude/skills or
-~/.agents/skills → refresh (prints "updated").
-If present → exit 0 quietly (print "already present") unless --force (then refresh + stamp).
+Installed means both:
+  - the stamp exists: ~/.amillez-plugin.json or ~/.agents/amillez-plugin.json
+  - every first-party skill under <skills-root>/skills/ is in ~/.claude/skills and ~/.agents/skills
 
-Groups (same as install.sh; default core,mobile):
-  core is always included. Pass --groups when known.
+Stamp missing: runs update-install.sh (skills, user rules, stamp) and prints "installed".
+Stamp present but a first-party skill missing: refreshes and prints "updated".
+Otherwise prints "already present", unless --force refreshes anyway.
+
+Groups (same as install.sh; default core,mobile). core is always included.
 
 Skills root resolution (first match):
   1. --skills-root
@@ -35,9 +29,6 @@ Prints exactly one status line:
   amillez plugin: installed
   amillez plugin: already present
   amillez plugin: updated
-
-Note: project path is NOT required. Project-specific skills (verify-*) live in the
-repo; the amillez plugin does not install into project .claude/skills or .agents/skills.
 USAGE
 }
 
@@ -77,12 +68,6 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      # Accept and ignore a legacy project path for backward compatibility
-      if [[ -d "$1" ]]; then
-        echo "note: project path ignored — amillez plugin installs at user root (use ensure-install.sh)" >&2
-        shift
-        continue
-      fi
       echo "error: unexpected argument: $1" >&2
       usage >&2
       exit 1
@@ -118,26 +103,13 @@ if [[ ! -d "$SKILLS_ROOT/skills" ]]; then
 fi
 
 plugin_present() {
-  if [[ -f "$HOME/.amillez-plugin.json" || -f "$HOME/.agents/amillez-plugin.json" ]]; then
-    return 0
-  fi
-  local has_rules=0 has_skill=0
-  if [[ -f "$HOME/.claude/rules/amillez-models.md" || -f "$HOME/.agents/rules/amillez-models.md" ]]; then
-    has_rules=1
-  fi
-  if [[ -e "$HOME/.claude/skills/setup-amillez-models" || -e "$HOME/.agents/skills/setup-amillez-models" ]]; then
-    has_skill=1
-  fi
-  if [[ "$has_rules" -eq 1 && "$has_skill" -eq 1 ]]; then
-    return 0
-  fi
-  return 1
+  [[ -f "$HOME/.amillez-plugin.json" || -f "$HOME/.agents/amillez-plugin.json" ]]
 }
 
-# Stamp present but a required first-party skill missing (older pack) -> refresh.
-required_skill_missing() {
-  local s
-  for s in amillez-mode; do
+first_party_skill_missing() {
+  local dir s
+  for dir in "$SKILLS_ROOT"/skills/*/; do
+    s="$(basename "$dir")"
     if [[ ! -f "$HOME/.claude/skills/$s/SKILL.md" || ! -f "$HOME/.agents/skills/$s/SKILL.md" ]]; then
       return 0
     fi
@@ -150,21 +122,11 @@ run_install() {
   if [[ ! -x "$update" ]]; then
     update="$SCRIPT_DIR/update-install.sh"
   fi
-  local args=()
-  if [[ "$FORCE" -eq 1 ]]; then
-    args+=(--force)
-  fi
-  if [[ -n "$SKILLS_ROOT_OVERRIDE" || -n "${AMILLEZ_SKILLS_ROOT:-}" ]]; then
-    args+=(--skills-root "$SKILLS_ROOT")
-  elif [[ "$SKILLS_ROOT" != "$REPO_ROOT" ]]; then
-    args+=(--skills-root "$SKILLS_ROOT")
-  fi
+  local args=(--skills-root "$SKILLS_ROOT")
   if [[ -n "$GROUPS_ARG" ]]; then
     args+=(--groups "$GROUPS_ARG")
   fi
-  # Prefer skip-upstream on ensure when already partially present? No — full install on missing.
-  # On --force full refresh including upstream is correct.
-  "$update" "${args[@]+"${args[@]}"}" >/dev/null
+  "$update" "${args[@]}" >/dev/null
 }
 
 WAS_PRESENT=0
@@ -172,7 +134,7 @@ if plugin_present; then
   WAS_PRESENT=1
 fi
 
-if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! required_skill_missing; then
+if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! first_party_skill_missing; then
   echo "amillez plugin: already present"
   exit 0
 fi
