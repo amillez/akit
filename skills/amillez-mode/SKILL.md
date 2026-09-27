@@ -24,7 +24,7 @@ Remaining triggers:
 - UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
 - Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Visual pass/fail is judged by a GPT 6 Luna Max verification session on Codex, not by your own heavy turns.
 - Review comments from Agustín → apply them as they appear. No permission chatter.
-- Automated review comments (bots) → skeptical posture. Verify each claim against the code. Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
+- Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
 - Broken skill mid-task → fix it in its own PR in `amillez/agent-skills`. Don't block. Don't silently work around it.
 - Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
 
@@ -134,7 +134,7 @@ Comments follow the same rule as the reply. Write them clean as you go. Keep a c
 
 Open a todolist whose first items are the matched playbook's steps, before any task-specific todos. A step you choose not to do stays in the list with a one-line `skip: <reason>`.
 
-Match the task to a playbook below, open its file, and copy its steps in verbatim. Every playbook that changes code ends with [Opening a PR](playbooks/opening-a-pr.md). Entries marked (coming) have no file yet. For those, follow the one-line intent plus the Non-negotiables and Principles.
+Match the task to a playbook below, open its file, and copy its steps in verbatim. Every playbook that changes code ends with [Opening a PR](playbooks/opening-a-pr.md).
 
 - **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. [playbooks/investigation.md](playbooks/investigation.md).
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. [playbooks/bug-fix.md](playbooks/bug-fix.md).
@@ -149,10 +149,10 @@ Match the task to a playbook below, open its file, and copy its steps in verbati
 - **Runtime forensics.** Diagnose a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation. The deliverable is a diagnosis, not a fix. [playbooks/runtime-forensics.md](playbooks/runtime-forensics.md).
 - **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix. [playbooks/trace-forensics.md](playbooks/trace-forensics.md).
 - **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system. [playbooks/visual-parity.md](playbooks/visual-parity.md).
-- **Babysit, coding-agent side** (coming). Answer review threads and fix CI on your own PR when asked. Never merge.
-- **Autonomous run** (coming). State a checkable exit condition, then drive to it.
-- **Worktree and simulator cleanup** (coming). Reclaim disk safely.
-- **Authoring a skill** (coming). Add or edit a skill in `amillez/agent-skills`.
+- **Babysit, coding-agent side.** Answer review threads and fix CI on your own PR when a wake or prompt sends you back. Apply Agustín's comments, verify automated claims, never merge or close. [playbooks/babysit.md](playbooks/babysit.md).
+- **Autonomous run.** State a checkable exit condition, then drive to it without parking reversible work. [playbooks/autonomous-run.md](playbooks/autonomous-run.md).
+- **Worktree and simulator cleanup.** Reclaim disk safely: worktrees, local branches, simulators, emulators, Metro and Expo processes, caches. [playbooks/worktree-cleanup.md](playbooks/worktree-cleanup.md).
+- **Authoring a skill.** Add or edit a skill in `amillez/agent-skills`. [playbooks/authoring-a-skill.md](playbooks/authoring-a-skill.md).
 
 ## Remap from upstream and Cursor defaults
 
