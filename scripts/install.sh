@@ -1,41 +1,37 @@
 #!/usr/bin/env bash
-# Install allowlisted skills onto this machine (Claude Code + Codex + shared agents dir).
-# Canonical first-party tree: skills/ (amillez plugin pack). Never installs into .cursor/.
-#
-# Groups:
-#   core   — always added (grill-me + first-party)
-#   mobile — RN/Expo/native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor)
-#
-# Usage:
-#   ./scripts/install.sh                     # default: core + mobile
-#   ./scripts/install.sh --groups core       # core only (skips mobile)
-#   ./scripts/install.sh --groups mobile     # core still added (always) + mobile
-#   ./scripts/install.sh --groups core,mobile
+# Install allowlisted skills, user rules, and the stamp at user root for Claude Code and Codex.
+# Never writes into project trees.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/install.sh [--groups core|mobile|core,mobile]
+Usage: ./scripts/install.sh [--groups core|mobile|core,mobile] [--skip-upstream]
 
-Install allowlisted skills + user rules for Claude Code + Codex + ~/.agents (never .cursor/, never project trees).
+Install allowlisted skills into ~/.claude/skills and ~/.agents/skills, the
+model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
+~/.amillez-plugin.json. Never writes into project trees.
 
 Groups:
-  core    Always installed: amillez-mode, grill-me, orchestrate-agents,
-          create-verification-skill, maintain-verification-skill, setup-amillez-models,
-          typescript-best-practices
+  core    Always installed: grill-me and every first-party skill under skills/
+          (amillez-mode, orchestrate-agents, create-verification-skill,
+          maintain-verification-skill, setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
-          Codex native vendor set
+          and the Codex native set under vendor/codex/
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
 --groups core skips mobile.
+
+--skip-upstream  Skip the npx upstream packs. Installs first-party skills,
+                 vendor snapshots, rules, and the stamp only.
 USAGE
 }
 
 GROUPS_ARG=""
+SKIP_UPSTREAM=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
@@ -49,6 +45,10 @@ while [[ $# -gt 0 ]]; do
         exit 1
       fi
       shift 2
+      ;;
+    --skip-upstream)
+      SKIP_UPSTREAM=1
+      shift
       ;;
     --*)
       echo "error: unknown option: $1" >&2
@@ -64,7 +64,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Resolve requested groups. Core is always included.
-WANT_CORE=1
 WANT_MOBILE=0
 if [[ -z "$GROUPS_ARG" ]]; then
   WANT_MOBILE=1
@@ -100,46 +99,49 @@ fi
 
 echo "Groups: core$([ "$WANT_MOBILE" -eq 1 ] && echo '+mobile' || true) (core always)"
 
-if ! command -v npx >/dev/null 2>&1; then
-  echo "npx required" >&2
-  exit 1
+if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "npx required (or pass --skip-upstream)" >&2
+    exit 1
+  fi
+
+  echo "== Upstream packs (npx skills add) =="
+
+  if [[ "$WANT_MOBILE" -eq 1 ]]; then
+    # Argent: all skills, pinned to the ref in manifest.json
+    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*' --agent '*' -g -y --copy
+
+    npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
+  fi
+
+  npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
+
+  if [[ "$WANT_MOBILE" -eq 1 ]]; then
+    npx -y skills add expo/skills --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
+
+    npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
+
+    npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
+  fi
 fi
 
-echo "== Upstream packs (npx skills add) =="
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  # Argent — all skills; pin matches manifest
-  npx -y skills add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*' --agent '*' -g -y --copy
-
-  npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
-fi
-
-# core: grill-me
-npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  npx -y skills add expo/skills --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
-
-  npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
-
-  npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
-fi
-
-echo "== First-party (canonical tree: skills/) [core] =="
-mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-for s in amillez-mode orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models typescript-best-practices; do
-  rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-  cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
-  cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
-done
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  echo "== Vendored Codex native skills [mobile] =="
-  for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
+copy_skills() {
+  local dir s
+  for dir in "$1"/*/; do
+    s="$(basename "$dir")"
     rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-    cp -R "$ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
-    cp -R "$ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
+    cp -R "${dir%/}" "$HOME/.agents/skills/$s"
+    cp -R "${dir%/}" "$HOME/.claude/skills/$s"
   done
+}
+
+mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
+echo "== First-party skills (skills/) [core] =="
+copy_skills "$ROOT/skills"
+
+if [[ "$WANT_MOBILE" -eq 1 ]]; then
+  echo "== Codex native snapshots (vendor/codex/) [mobile] =="
+  copy_skills "$ROOT/vendor/codex"
 fi
 
 echo "== User-level Claude/Codex rules templates =="
@@ -179,6 +181,5 @@ printf '%s\n' "$STAMP_BODY" > "$HOME/.agents/amillez-plugin.json"
 echo "stamp: $HOME/.amillez-plugin.json"
 
 echo "Done. Verify with: npx skills list -g  (and ls ~/.agents/skills ~/.claude/skills)"
-echo "Ensure before coding: ./scripts/ensure-install.sh   (alias: ensure-project.sh)"
+echo "Ensure before coding: ./scripts/ensure-install.sh"
 echo "Refresh: ./scripts/update-install.sh"
-echo "Groups: ./scripts/install.sh --groups core | --groups mobile | --groups core,mobile"
