@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Allowlisted eng skills for agent-m1 / Claude Code / Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/. Cursor plugin / My Machines out of scope.",
+  "description": "Allowlisted eng skills for Claude Code and Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/. Cursor plugin / My Machines out of scope.",
   "groups": {
     "core": {
       "always": true,
