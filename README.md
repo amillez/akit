@@ -1,25 +1,19 @@
 # agent-skills
 
-Allowlisted engineering skills for **Claude Code and Codex only**.
+Allowlisted engineering skills for **Claude Code and Codex**.
 
-Playbooks / *when to use* policy live in [`amillez/ai-eng-practices`](https://github.com/amillez/ai-eng-practices). This repo holds **skill bodies** + install/update scripts so we do not hand-duplicate folders on every machine.
+Policy on when to use what lives in [`amillez/ai-eng-practices`](https://github.com/amillez/ai-eng-practices). This repo holds the skill bodies, the model rules template, and the install scripts, so no device keeps hand-copied skill folders.
 
-**Out of scope:** Cursor plugin / marketplace (`.cursor-plugin`), Cursor My Machines, `register-worker-dir`, `.cursor/skills`, `.cursor/rules`.
-
-## Install model (split)
+## Install model
 
 | Pack | Where it lives | How |
 | --- | --- | --- |
-| **Amillez plugin** (first-party skills + models rules + allowlisted upstream) | **Device / user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
-| **Project skills** (e.g. `verify-*`) | **In the repo** | `.claude/skills/…`, `.agents/skills/…` committed with the project |
+| **Amillez plugin** (first-party skills, model rules, allowlisted upstream packs) | **Device user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
+| **Project skills** (e.g. `verify-*`) | **The project repo** | `.claude/skills/<name>/` and `.agents/skills/<name>/`, committed with the project |
 
-The amillez plugin must **not** symlink or copy into project trees. No project `.gitignore` block is needed for amillez skills/rules — we do not put them there.
+The install scripts never write into project trees. A project may also commit copies of selected stack skills under `.claude/skills/` and `.agents/skills/` as a mirror for teammates.
 
-## amillez plugin (Claude Code + Codex)
-
-This repo is the **amillez** skill + rules pack (`amillez-plugin.json`): canonical `skills/` + `templates/models.md` + setup/update scripts. **Goal:** replace hand-copied custom skills. Allowlisted upstream packs still install via `./scripts/install.sh` / the `skills` CLI. Playbooks stay in [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices); **runtime skills live here**.
-
-The pack targets **Claude Code and Codex only**. Cursor plugin / My Machines are out of scope.
+## Install
 
 ### 1. Clone this repo (or pull latest)
 
@@ -29,7 +23,7 @@ git clone git@github.com:amillez/agent-skills.git ~/agent-work/agent-skills
 cd ~/agent-work/agent-skills && git pull
 ```
 
-### 2. Global (user-root) install
+### 2. Install at user root
 
 ```bash
 cd ~/agent-work/agent-skills
@@ -39,101 +33,84 @@ cd ~/agent-work/agent-skills
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-Installs allowlisted upstream packs + copies first-party from `skills/` into `~/.agents/skills` and `~/.claude/skills`; copies `templates/models.md` to **user** rules dirs; writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). Never `.cursor/`, never project `.claude/` / `.agents/`.
+`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies every skill under `skills/` (and `vendor/codex/` for mobile) into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
 
-**Groups** (see `manifest.json` `groups` + per-entry `group` tags):
+**Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
 | Group | Always? | Contents |
 | --- | --- | --- |
 | `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices` |
 | `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Codex native vendor set |
 
-Default is **core+mobile**. `--groups core` skips mobile. Future groups (e.g. frontend/backend) will follow the same pattern.
+Default is **core+mobile**. `--groups core` skips mobile.
 
-Also install the **Argent CLI** on agent hosts (skills alone are not enough):
+Mobile work also needs the **Argent CLI** on the device (skills alone are not enough):
 
 ```bash
 npm install -g @swmansion/argent@0.25.0
 argent init -y --no-telemetry --global
 ```
 
-### 3. **Required** — ensure host install before coding
+### 3. Ensure the install before coding
 
-**Before coding sessions**, ensure the **host** has the amillez plugin (not a project path):
+Run this before every coding session. Bots and agents run it automatically per the [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy.
 
 ```bash
 cd ~/agent-work/agent-skills
 ./scripts/ensure-install.sh
-# thin alias (project path ignored if passed):
-# ./scripts/ensure-project.sh
 ```
 
-Bots/agents do this automatically per [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy (missing pack → install; already present → continue). Optional `--force` refreshes skills + user rules + stamp.
+- The pack counts as installed when the stamp exists and every first-party skill under `skills/` is in both `~/.claude/skills` and `~/.agents/skills`.
+- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a first-party skill is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
+- `--force` refreshes even when the pack is present. `--groups` works as in `install.sh`.
 
-- Detects install via `~/.amillez-plugin.json` (or `~/.agents/amillez-plugin.json`) **or** (legacy) user rules + `setup-amillez-models` under `~/.claude|~/.agents/skills`.
-- If missing → runs `update-install.sh` (install + user rules + stamp).
-- Prints one line: `amillez plugin: installed` / `already present` / `updated`.
+### Scripts
 
-Refresh helpers:
-
-```bash
-./scripts/update-install.sh              # refresh user-root skills + rules + stamp
-# ./scripts/update-install.sh --groups core
-# ./scripts/update-install.sh --skip-upstream   # first-party + vendor + rules only
-# deprecated alias (ignores project path): ./scripts/update-project.sh
-```
-
-- **`ensure-install.sh`** — **required** entrypoint before coding; idempotent detect → install/refresh at **user root**. Accepts `--groups` (default **core+mobile**).
-- **`ensure-project.sh`** — thin wrapper that only calls `ensure-install.sh` (legacy project path ignored).
-- **`update-install.sh`** — refresh user skills + copy `templates/models.md` → `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` + stamp.
-- **`install.sh`** — full global install (upstream + first-party + vendor + user rules + stamp).
-- **`link-project.sh`** — **OFF by default**. Optional `--project-local` convenience only; not used by ensure. Prefer in-repo project skills instead of linking the plugin into projects.
-
-### Explicit
-
-- Replaces hand-copied custom skills.
-- Cursor plugin / My Machines are **out of scope**.
-- Harnesses are **Claude Code and Codex only**.
-- **Project skills** (verify-*, app-specific) stay committed in the project; do not expect ensure to put them there.
+- **`ensure-install.sh`**. The required entry point before coding. It is idempotent. It detects the pack and installs or refreshes it at user root.
+- **`update-install.sh`**. Refreshes user-root skills, copies `templates/models.md` to `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md`, and rewrites the stamp. `--skip-upstream` skips the npx packs. `--skip-skills` refreshes only the rules and the stamp.
+- **`install.sh`**. Full install: upstream packs, first-party skills, vendor snapshots, user rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`test-install.sh`**. Runs the three install scripts against a temporary `HOME` with a stub `npx`. Run it after changing any install script.
+- **`check-links.sh`**. Checks relative Markdown links and their anchors outside `vendor/`.
+- **`update-upstream.sh`** and **`refresh-codex-vendor.sh`**. See [Keeping skills up to date](#keeping-skills-up-to-date).
 
 ## Allowlist
 
-Grouped as **core** / **mobile** in `manifest.json` (and selectable via `--groups` on install/ensure/update). `expo-native-ui` is excluded.
+Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups` on `install.sh`, `ensure-install.sh`, and `update-install.sh`.
 
 | Skill | Group | Source | When |
 | --- | --- | --- | --- |
 | All Argent `argent-*` | mobile | `software-mansion/argent` (pinned tag in `manifest.json`) | Skill description |
 | `animate-expo` | mobile | `emilkowalski/skills` | Building animations |
 | `apple-design` | mobile | `emilkowalski/skills` | Building UIs |
-| `review-animations` | mobile | `emilkowalski/skills` | Reviewing / critiquing animation and motion (Emil craft bar). Upstream sets `disable-model-invocation: true` — still allowlisted, but not auto-invoked: launch prompts must name it explicitly for critique passes. |
+| `review-animations` | mobile | `emilkowalski/skills` | Reviewing or critiquing animation and motion (Emil craft bar). Upstream sets `disable-model-invocation: true`, so the model never invokes it on its own. Launch prompts name it for critique passes. |
 | `grill-me` | core | `mattpocock/skills` | Stress-test a plan before build |
 | `expo-dev-client` | mobile | `expo/skills` | Build and distribute Expo development clients locally or via TestFlight for internal testing. For production TestFlight releases and store submission, use `eas-app-stores`. |
 | `expo-upgrade` | mobile | `expo/skills` | Skill description (Expo SDK upgrades, dependency conflicts, deprecated packages, cache cleanup) |
-| `react-native-best-practices` | mobile | `software-mansion-labs/skills` | Skill description / when writing, reviewing, or debugging ANY React Native or Expo code |
-| `uniwind` | mobile | `uni-stack/uniwind` | Skill description / when building or debugging Uniwind className styling in RN |
+| `react-native-best-practices` | mobile | `software-mansion-labs/skills` | Skill description, when writing, reviewing, or debugging any React Native or Expo code |
+| `uniwind` | mobile | `uni-stack/uniwind` | Skill description, when building or debugging Uniwind className styling in RN |
 | `amillez-mode` | core | **first-party** (pstack `poteto-mode` port, MIT; see `skills/amillez-mode/UPSTREAM.md`) | **Required** working mode for every coding agent (single agent or Orca worker). Launch prompts name it explicitly. |
 | `orchestrate-agents` | core | **first-party** (brief template and retry rules adapted from pstack, MIT; see `skills/orchestrate-agents/UPSTREAM.md`) | Size gate, then Orca with an Opus 5.5 xHigh coordinator for large work. Worker briefs name `amillez-mode`, which every invoked coding agent loads. |
-| `create-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Generate project-local `verify-<app>` (Launch/Doctor/Drive/Evidence/Cleanup + feature map) |
-| `maintain-verification-skill` | core | **first-party** (pstack port, amillez overlay) | Keep a project `verify-<app>` skill + feature map honest |
-| `setup-amillez-models` | core | **first-party** (thin setup-pstack replacement) | Policy chooser + install/update **user** Claude/Codex rules templates; never Cursor / `pstack-models.mdc` |
-| `typescript-best-practices` | core | **first-party** (pstack port, MIT; see `skills/typescript-best-practices/UPSTREAM.md`) | Skill description / when reading, writing, or reviewing any `.ts` or `.tsx` file. Claude Code also scopes it with `paths`. |
-| Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | **vendor snapshot** (no public skills-lock upstream) | Building native / Nitro modules |
+| `create-verification-skill` | core | **first-party** (pstack port, MIT; see `skills/create-verification-skill/UPSTREAM.md`) | Generate a project-local `verify-<app>` skill: Launch, Doctor, Drive, Evidence, Cleanup, an agent-friendly app CLI (dev setup, seeding, test users, reset, open a feature), and a feature map |
+| `maintain-verification-skill` | core | **first-party** (pstack port, MIT; see `skills/maintain-verification-skill/UPSTREAM.md`) | Keep a project `verify-<app>` skill, its feature map, and its app CLI honest |
+| `setup-amillez-models` | core | **first-party** | Pick the session's model lane from the policy and install or update the user-level model rules (`templates/models.md`) |
+| `typescript-best-practices` | core | **first-party** (pstack port, MIT; see `skills/typescript-best-practices/UPSTREAM.md`) | Skill description, when reading, writing, or reviewing any `.ts` or `.tsx` file. Claude Code also scopes it with `paths`. |
+| Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | **vendor snapshot** (no public skills-lock upstream) | Building native or Nitro modules |
 
-Excluded for now: `autoreview`, Superset pack, Orca orchestration, other design/planning skills, Cursor plugin / worker-dir skills, `expo-native-ui`.
+Not in the pack: `autoreview`, the Superset pack, other design and planning skills, and `expo-native-ui`. Orca's own skills (`orca-cli`, `orchestration`) come from `orca skills install` on the coordinator device (see `orchestrate-agents`).
 
 ## Model rule template
 
-| Template | Destination (amillez plugin) |
+| Template | Destination |
 | --- | --- |
-| `templates/models.md` | **`~/.claude/rules/amillez-models.md`** and **`~/.agents/rules/amillez-models.md`** (user-level) |
+| `templates/models.md` | `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` (user level) |
 
-Defaults (2026-09-25): super defined → **GPT 6 Luna Max** (Codex); general code + UI → **Opus 5.5 High** (Claude Code), or **GPT 6 Sol** (xHigh general / High UI, Codex) when Claude Code usage > 70%; Orca coordinator → **Opus 5.5 xHigh**; large reasoning → **Fable 5.1 Medium→High/xhigh**. Workers follow the policy chooser. **Never** writes Cursor rules, `pstack-models.mdc`, or project `.claude/rules/` for the plugin pack. `/setup-amillez-models` and `update-install.sh` / `install.sh` refresh user rules.
+Defaults: super defined → **GPT 6 Luna Max** (Codex); general code and UI → **Opus 5.5 High** (Claude Code), or **GPT 6 Sol** (xHigh general, High UI, Codex) when Claude Code usage is above 70%; Orca coordinator → **Opus 5.5 xHigh**; large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
 
 ## Keeping skills up to date
 
-Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are managed by the [`skills`](https://www.npmjs.com/package/skills) CLI — same tool as `npx skills add`.
+The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx skills add`) manages the upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind).
 
-1. **Routine refresh** (pulls latest for globally installed skills that the CLI tracks):
+1. **Routine refresh.** Pull the latest for globally installed skills that the CLI tracks:
 
    ```bash
    npx skills update -g -y
@@ -141,36 +118,34 @@ Upstream packs (Argent, Emil, Matt, Expo, Software Mansion Labs, Uniwind) are ma
 
    Or: `./scripts/update-upstream.sh`
 
-2. **Argent version bumps** — pin CLI and skills tag together. Update `manifest.json` `upstream[argent].ref`, upgrade `@swmansion/argent`, then re-run the Argent `skills add …#<ref>` line from `install.sh`.
+2. **Argent version bumps.** Pin the CLI and the skills tag together. Update the ref in `manifest.json` (`upstream[argent].ref`) and in `scripts/install.sh`, upgrade `@swmansion/argent`, then re-run `./scripts/install.sh`.
 
-3. **Codex native vendor** — those skills are not in a public skills package we lock. Refresh from a machine that has current Codex skills:
+3. **Codex native vendor.** No public skills package locks these skills. Refresh them from a device that has current Codex skills:
 
    ```bash
    ./scripts/refresh-codex-vendor.sh
    git commit -am "chore: refresh Codex native skill snapshots"
    ```
 
-   Then on other machines: `git pull && ./scripts/install.sh` (vendor copy step).
+   Then on other devices: `git pull && ./scripts/install.sh`.
 
-4. **First-party** (`amillez-mode`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`). Edit under `skills/`, commit, `git pull` + `./scripts/update-install.sh` (or full `install.sh`). Ensure gate: `./scripts/ensure-install.sh`.
+4. **First-party** (every directory under `skills/`). Edit under `skills/` and commit. On each device, `git pull` and run `./scripts/update-install.sh --skip-upstream`. `ensure-install.sh` only adds missing skills, so it does not pick up edits to installed ones.
 
-5. **Lockfile** — after installs, `~/.agents/.skill-lock.json` records source URLs/hashes for upstream packs. Prefer that + this repo’s `manifest.json` over ad-hoc copies.
+5. **Lockfile.** After installs, `~/.agents/.skill-lock.json` records source URLs and hashes for the upstream packs. Prefer it and this repo's `manifest.json` over ad hoc copies.
 
 ## Layout
 
 ```
-amillez-plugin.json          # lightweight pack metadata (NOT .cursor-plugin)
-skills/                      # canonical first-party skill tree
-templates/models.md          # Claude Code / Codex rules (model lanes) → user rules dirs
-first-party/README.md        # legacy pointer → skills/
-manifest.json                # allowlist + upstream pins (paths → skills/…)
-vendor/codex/                # snapshots without public upstream
-scripts/install.sh           # user-root Claude/Codex/~/.agents + user rules + stamp
-scripts/ensure-install.sh    # REQUIRED before coding: detect → user-root install/refresh + stamp
-scripts/ensure-project.sh    # thin alias → ensure-install.sh (project path ignored)
-scripts/update-install.sh    # refresh user-root skills + rules + stamp
-scripts/update-project.sh    # deprecated alias → update-install.sh
-scripts/link-project.sh      # OFF unless --project-local (optional convenience)
-scripts/update-upstream.sh
-scripts/refresh-codex-vendor.sh
+amillez-plugin.json          # pack metadata
+skills/                      # first-party skills, one directory each
+templates/models.md          # Claude Code and Codex model rules → user rules dirs
+manifest.json                # allowlist, groups, and upstream pins
+vendor/codex/                # snapshots without a public upstream
+scripts/install.sh           # user-root install: skills, user rules, stamp
+scripts/ensure-install.sh    # required before coding: detect, then install or refresh
+scripts/update-install.sh    # refresh user-root skills, rules, and stamp
+scripts/test-install.sh      # sandboxed test of the three install scripts
+scripts/check-links.sh       # relative Markdown link and anchor check
+scripts/update-upstream.sh   # npx skills update for upstream packs
+scripts/refresh-codex-vendor.sh  # refresh vendor/codex from ~/.agents/skills
 ```

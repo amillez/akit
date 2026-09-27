@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "description": "Allowlisted eng skills for Claude Code and Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/. Cursor plugin / My Machines out of scope.",
+  "description": "Allowlisted engineering skills for Claude Code and Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/.",
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode) + grill-me + first-party orchestration/verification/models setup/TypeScript practices"
+      "description": "Always installed: amillez-mode (required working mode), grill-me, and the first-party orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
-      "description": "React Native / Expo / native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -19,7 +19,7 @@
       "skills": [
         "*"
       ],
-      "note": "All Argent skills. Pin ref when upgrading @swmansion/argent CLI."
+      "note": "All Argent skills. Bump this ref and the one in scripts/install.sh together with the @swmansion/argent CLI."
     },
     {
       "id": "emil-animate-expo",
@@ -47,7 +47,7 @@
         "review-animations"
       ],
       "when": "Reviewing / critiquing animation and motion (Emil craft bar)",
-      "note": "Upstream sets disable-model-invocation: true \u2014 not auto-invoked; launch prompts must name it explicitly for critique passes."
+      "note": "Upstream sets disable-model-invocation: true, so the model never invokes it on its own. Launch prompts name it for critique passes."
     },
     {
       "id": "matt-grill-me",
@@ -106,19 +106,19 @@
       "id": "create-verification-skill",
       "group": "core",
       "path": "skills/create-verification-skill",
-      "when": "Generate a project-local verify-<app> skill (Launch/Doctor/Drive/Evidence/Cleanup + feature map); amillez-mode overlay"
+      "when": "Generate a project-local verify-<app> skill (Launch, Doctor, Drive, Evidence, Cleanup, an agent-friendly app CLI for dev setup, seeding, test users, reset, and opening a feature, plus a feature map); amillez-mode overlay"
     },
     {
       "id": "maintain-verification-skill",
       "group": "core",
       "path": "skills/maintain-verification-skill",
-      "when": "Audit/keep a project verify-<app> skill and feature map honest"
+      "when": "Audit and keep a project verify-<app> skill, its feature map, and its app CLI honest"
     },
     {
       "id": "setup-amillez-models",
       "group": "core",
       "path": "skills/setup-amillez-models",
-      "when": "Thin setup-pstack replacement: policy chooser + install/update Claude/Codex rules templates (do not write pstack-models.mdc or Cursor rules)"
+      "when": "Pick the session's model lane from the policy and install or update the user-level Claude Code and Codex model rules (templates/models.md)"
     },
     {
       "id": "typescript-best-practices",
@@ -143,7 +143,7 @@
         "react-native-vision-camera"
       ],
       "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream \u2014 refreshed manually from a machine with current Codex skills (see README)."
+      "note": "No public skills-lock upstream. Refreshed from a device with current Codex skills via scripts/refresh-codex-vendor.sh (see README)."
     }
   ],
   "excluded": [
@@ -152,8 +152,6 @@
     "orca-*",
     "orchestration",
     "planning extras",
-    "register-worker-dir",
-    "cursor-plugin",
     "expo-native-ui"
   ]
 }
