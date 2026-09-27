@@ -144,11 +144,11 @@ Match the task to a playbook below, open its file, and copy its steps in verbati
 - **Opening a PR.** Worktree, commits, title and body, proof media, stacks, readiness, never merge. [playbooks/opening-a-pr.md](playbooks/opening-a-pr.md).
 - **Pause safely.** Suspending in-flight work cleanly so it can be resumed, on an explicit pause, a session end, or imminent context compaction. [playbooks/pause-safely.md](playbooks/pause-safely.md).
 - **Session pickup.** Resuming or taking over a prior agent's in-flight work from its branch, PR, handoff note, or session log. [playbooks/session-pickup.md](playbooks/session-pickup.md).
-- **Perf issue** (coming). Baseline trace, hypotheses from the trace, before and after numbers.
-- **Hillclimb** (coming). One metric, a frozen harness, one change per iteration, keep or revert.
-- **Runtime forensics** (coming). Diagnose a live symptom from instrumentation. Diagnosis only.
-- **Trace forensics** (coming). Diagnose a captured profiling artifact. Diagnosis only.
-- **Visual parity** (coming). Baseline harness first, image diff to zero, one component at a time.
+- **Perf issue.** A measured slowness to trace and improve against a baseline. [playbooks/perf-issue.md](playbooks/perf-issue.md).
+- **Hillclimb.** Sustained, scientific improvement of one metric against a target: one hypothesis per iteration with before and after measurement, a decision log, and one commit per accepted win. Distinct from Perf issue, which is a one-off fix. [playbooks/hillclimb.md](playbooks/hillclimb.md).
+- **Runtime forensics.** Diagnose a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation. The deliverable is a diagnosis, not a fix. [playbooks/runtime-forensics.md](playbooks/runtime-forensics.md).
+- **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix. [playbooks/trace-forensics.md](playbooks/trace-forensics.md).
+- **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system. [playbooks/visual-parity.md](playbooks/visual-parity.md).
 - **Babysit, coding-agent side** (coming). Answer review threads and fix CI on your own PR when asked. Never merge.
 - **Autonomous run** (coming). State a checkable exit condition, then drive to it.
 - **Worktree and simulator cleanup** (coming). Reclaim disk safely.
@@ -172,4 +172,4 @@ When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on h
 | Teardown limited to worktrees | Override. Also simulators, emulators, Metro, Expo CLI processes, and a Metro port check. | [agent-proof-feedback-loop, teardown](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md#teardown-after-proof) |
 | Upstream craft, one job, one voice | Keep. Label it amillez-mode. | This file |
 | Upstream "short lowercase OK" voice | Remap. Regular capitalization. | This file |
-| `ensure-project` named as the primary install | Override. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). `ensure-project.sh` is a thin alias. | [agent-dispatch-lifecycle, worktrees](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#worktrees-on-agent-m1) |
+| `ensure-project` named as the primary install | Override. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). `ensure-project.sh` is a thin alias. | [agent-dispatch-lifecycle](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md) |
