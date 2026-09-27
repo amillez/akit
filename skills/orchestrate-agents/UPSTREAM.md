@@ -1,6 +1,6 @@
 # orchestrate-agents upstream
 
-`orchestrate-agents` is first-party. Two sections are adapted from poteto's `poteto-mode` Orchestrate playbook in pstack: **The brief** (the worker brief template and its sizing rules) and **Retry by failure mode**. The size gate, Orca loop, model lanes, and coordinator role are ours.
+`orchestrate-agents` is an amillez skill. Two sections are adapted from poteto's `poteto-mode` Orchestrate playbook in pstack: **The brief** (the worker brief template and its sizing rules) and **Retry by failure mode**. The size gate, Orca loop, model lanes, and coordinator role are ours.
 
 ## Source
 

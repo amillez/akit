@@ -14,7 +14,7 @@ model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
 ~/.amillez-plugin.json. Never writes into project trees.
 
 Groups:
-  core    Always installed: grill-me and every first-party skill under skills/
+  core    Always installed: grill-me and every amillez skill under skills/
           (amillez-mode, orchestrate-agents, create-verification-skill,
           maintain-verification-skill, setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
@@ -25,7 +25,7 @@ Default: core,mobile
 --groups mobile still includes core (core is always added).
 --groups core skips mobile.
 
---skip-upstream  Skip the npx upstream packs. Installs first-party skills,
+--skip-upstream  Skip the npx upstream packs. Installs amillez skills,
                  vendor snapshots, rules, and the stamp only.
 USAGE
 }
@@ -136,7 +136,7 @@ copy_skills() {
 }
 
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-echo "== First-party skills (skills/) [core] =="
+echo "== Amillez skills (skills/) [core] =="
 copy_skills "$ROOT/skills"
 
 if [[ "$WANT_MOBILE" -eq 1 ]]; then

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Refresh upstream skills from GitHub (does not touch first-party or vendor/codex).
+# Refresh upstream skills from GitHub (does not touch amillez skills or vendor/codex).
 set -euo pipefail
 echo "== npx skills update (global allowlisted installs) =="
 npx -y skills update -g -y
