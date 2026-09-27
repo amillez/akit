@@ -138,6 +138,7 @@ Open a todolist whose first items are the matched playbook's steps, before any t
 Match the task to a playbook below, open its file, and copy its steps in verbatim. Every playbook that changes code ends with [Opening a PR](playbooks/opening-a-pr.md).
 
 - **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. [playbooks/investigation.md](playbooks/investigation.md).
+- **Blast radius.** What a change could break beyond the diff, before it ships. Find the one fact it is safe because of and prove it by running real code. For "what could this break" or a small diff you don't trust. [playbooks/blast-radius.md](playbooks/blast-radius.md).
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. [playbooks/bug-fix.md](playbooks/bug-fix.md).
 - **Feature.** New or changed behavior, built from a named data shape. [playbooks/feature.md](playbooks/feature.md).
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move). [playbooks/refactoring.md](playbooks/refactoring.md).
