@@ -1,13 +1,9 @@
 ---
 name: amillez-mode
-description: "Required working mode for every coding agent on agent-m1 (Claude Code or Codex, single agent or Orca worker). Concise, detailed replies, deliberate subagents on the amillez model lanes, unslopped prose, simple code, and work proven with Argent or the project's verify-* skill. Use when a launch prompt names amillez-mode, for any nontrivial coding task, or when asked to work in this style."
+description: "Required working mode for every coding agent we use anywhere (Claude Code or Codex, single agent or Orca worker). Concise, detailed replies, deliberate subagents on the amillez model lanes, unslopped prose, simple code, and work proven with Argent or the project's verify-* skill. Use when a launch prompt names amillez-mode, for any nontrivial coding task, or when asked to work in this style."
 ---
 
 # amillez-mode
-
-Adapted from poteto's `poteto-mode` (pstack 0.15.5, MIT, Copyright (c) 2026 Lauren Tan). See [UPSTREAM.md](UPSTREAM.md) for the pin, the per-file verdicts, and what changed. See [LICENSE-pstack](LICENSE-pstack) for the license.
-
-Host is agent-m1, running Claude Code or Codex. Grok Bot is the control plane. It dispatches you, babysits the PR, and talks to Agustín. You code, prove, and open the PR.
 
 ## Non-negotiables
 
