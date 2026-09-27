@@ -46,15 +46,15 @@ check() {
 has_skill() { [[ -f "$HOME/.claude/skills/$1/SKILL.md" && -f "$HOME/.agents/skills/$1/SKILL.md" ]]; }
 ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -1; }
 
-FIRST_PARTY=()
-for d in "$REPO"/skills/*/; do FIRST_PARTY+=("$(basename "$d")"); done
+AMILLEZ_SKILLS=()
+for d in "$REPO"/skills/*/; do AMILLEZ_SKILLS+=("$(basename "$d")"); done
 VENDOR=()
 for d in "$REPO"/vendor/codex/*/; do VENDOR+=("$(basename "$d")"); done
 
 export HOME="$BASE/fresh"
 mkdir -p "$HOME"
 check "fresh HOME: ensure prints installed" '[[ "$(ensure)" == "amillez plugin: installed" ]]'
-for s in "${FIRST_PARTY[@]}" "${VENDOR[@]}"; do
+for s in "${AMILLEZ_SKILLS[@]}" "${VENDOR[@]}"; do
   check "fresh HOME: $s installed" 'has_skill "$s"'
 done
 check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.md" && -f "$HOME/.agents/rules/amillez-models.md" ]]'
@@ -64,7 +64,7 @@ check "fresh HOME: stamp written" '[[ -f "$HOME/.amillez-plugin.json" && -f "$HO
 check "installed HOME: ensure prints already present" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
 check "installed HOME: ensure runs no npx" '[[ ! -s "$HOME/npx.log" ]]'
 
-for s in "${FIRST_PARTY[@]}"; do
+for s in "${AMILLEZ_SKILLS[@]}"; do
   rm -rf "$HOME/.claude/skills/$s"
   check "missing $s: ensure prints updated" '[[ "$(ensure)" == "amillez plugin: updated" ]]'
   check "missing $s: reinstalled" 'has_skill "$s"'
@@ -81,7 +81,7 @@ export HOME="$BASE/skip-upstream"
 mkdir -p "$HOME"
 "$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
 check "update-install --skip-upstream: runs no npx" '[[ ! -s "$HOME/npx.log" ]]'
-for s in "${FIRST_PARTY[@]}" "${VENDOR[@]}"; do
+for s in "${AMILLEZ_SKILLS[@]}" "${VENDOR[@]}"; do
   check "update-install --skip-upstream: $s installed" 'has_skill "$s"'
 done
 check "update-install --skip-upstream: stamp written" '[[ -f "$HOME/.amillez-plugin.json" ]]'

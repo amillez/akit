@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "description": "Allowlisted engineering skills for Claude Code and Codex (amillez plugin pack). Upstream packs install via npx skills; first-party skills live under skills/.",
+  "description": "Allowlisted engineering skills for Claude Code and Codex (amillez plugin pack). Upstream packs install via npx skills; amillez skills live under skills/.",
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me, and the first-party orchestration, verification, model setup, and TypeScript skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."

@@ -2,10 +2,10 @@
 
 **You own the skill's voice.** Skills live in `amillez/agent-skills`.
 
-1. Work from a worktree of `amillez/agent-skills` per [Opening a PR](opening-a-pr.md). A first-party skill is a directory under `skills/<name>/` with a `SKILL.md` and only the files it links (`references/`, `scripts/`, templates).
+1. Work from a worktree of `amillez/agent-skills` per [Opening a PR](opening-a-pr.md). A amillez skill is a directory under `skills/<name>/` with a `SKILL.md` and only the files it links (`references/`, `scripts/`, templates).
 2. Write `SKILL.md` with YAML frontmatter holding `name` (matches the directory) and `description` (what it does and when to use it, since the description is what triggers the skill). Omit `disable-model-invocation` unless launch prompts must name the skill explicitly, and say so in the README row.
 3. Wire a new skill into the install. The install scripts copy every directory under `skills/`, so add it to `firstParty` in `manifest.json` with its group and to the README group and allowlist tables. A ported skill also carries its upstream pin, license, and local changes in its own `UPSTREAM.md`.
-4. Validate the skill. Frontmatter has `name` and `description`, referenced files exist, `./scripts/check-links.sh` passes, scripts keep their exec bit and pass `bash -n`, and `./scripts/test-install.sh` passes, which installs every first-party skill into a throwaway `HOME`.
+4. Validate the skill. Frontmatter has `name` and `description`, referenced files exist, `./scripts/check-links.sh` passes, scripts keep their exec bit and pass `bash -n`, and `./scripts/test-install.sh` passes, which installs every amillez skill into a throwaway `HOME`.
 5. Test cases if structural. Skip if subjective.
 6. Run [Opening a PR](opening-a-pr.md). One skill change per PR.
 
