@@ -1,6 +1,6 @@
 # create-verification-skill upstream
 
-`create-verification-skill` is our port of poteto's `create-verification-skill` skill from pstack, first added in this repo in `bc1cca6` (2026-09-16).
+`create-verification-skill` is our port of poteto's `create-verification-skill` skill from pstack.
 
 ## Source
 
@@ -17,9 +17,9 @@ Attribution: the generator workflow, proof standards, and the feature map exampl
 
 ## Local changes
 
-1. **Output location.** `.claude/skills/verify-<app>/` and `.codex/skills/verify-<app>/`, never `.cursor/skills/`.
+1. **Output location.** `.claude/skills/verify-<app>/` and `.agents/skills/verify-<app>/`, never `.cursor/skills/`.
 2. **Expo and React Native.** Drive and launch with Argent.
 3. **Visual proof.** Screenshots and video go to the repo's `media` branch with a GPT 6 Luna Max verify, per ai-eng-practices `agent-proof-feedback-loop`.
-4. **App CLI** (2026-09-27, from poteto's "The Complete Guide to pstack Pt. 1", https://x.com/poteto/status/2094457600259842065). The generated skill ships one agent-friendly repo CLI for dev setup, seeding, test users and auth, reset, and opening a feature, with subcommands, JSON output, `--dry-run` on destructive commands, actionable errors, and rich `--help`. For Expo and React Native it covers only the app layer, since Argent drives the device. Step 4 proves `--help` and one `--dry-run`.
-5. **Maintenance cadence.** Step 5 proposes a weekly Grok Bot routine running `/maintain-verification-skill` instead of suggesting a cadence only on request.
-6. **Scrub** (2026-09-27). Removed the bot-designer and host sections, host names, the in-skill attribution line, and long dashes. Attribution lives here.
+4. **App CLI** (from poteto's "The Complete Guide to pstack Pt. 1", https://x.com/poteto/status/2094457600259842065). The generated skill ships one agent-friendly repo CLI for dev setup, seeding, test users and auth, reset, and opening a feature, with subcommands, JSON output, `--dry-run` on destructive commands, actionable errors, and rich `--help`. For Expo and React Native it covers only the app layer, since Argent drives the device. Step 4 proves `--help` and one `--dry-run`.
+5. **Maintenance cadence.** Step 5 proposes a weekly scheduled routine running `/maintain-verification-skill` instead of suggesting a cadence only on request.
+6. **Skill text only.** `SKILL.md` names no host and carries no attribution or long dashes. Attribution lives here.

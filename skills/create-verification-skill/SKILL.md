@@ -13,10 +13,7 @@ Every serious project needs a scripted way to drive the real app and prove behav
 
 ## Output location
 
-Write the generated skill under the project:
-
-- **Default:** `.claude/skills/verify-<app>/` and/or `.codex/skills/verify-<app>/` (install both when both hosts are in play; one is enough if the project uses only one).
-- **Never** write `.cursor/skills/`.
+Write the generated skill under the project, in `.claude/skills/verify-<app>/` for Claude Code and `.agents/skills/verify-<app>/` for Codex. Write both when the project uses both agents. One is enough when it uses only one.
 
 ## 1. Interview the repo, not the user
 
@@ -59,4 +56,4 @@ Run its own instructions end to end once: run the app CLI's `--help` and one `--
 
 ## 5. Offer the maintenance loop
 
-Point the user at `/maintain-verification-skill` for keeping the map, harness, and app CLI honest as the app changes. Propose a weekly Grok Bot routine that runs it against this repo and opens a PR only when the outcome is `changed`. Offer it; don't set it up unasked.
+Point the user at `/maintain-verification-skill` for keeping the map, harness, and app CLI honest as the app changes. Propose a weekly scheduled routine that runs it against this repo and opens a PR only when the outcome is `changed`. Offer it; don't set it up unasked.

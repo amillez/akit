@@ -95,7 +95,7 @@ orca orchestration check --wait --types worker_done,escalation,question --timeou
 orca orchestration check --ack <deliveryId> --wait --types worker_done,escalation,question --timeout-ms 900000 --json
 ```
 
-Do **not** use the retired `orca orchestration run`, `run-stop`, or `coordinator-start`. Completion is `worker_done` with `--outcome`, taskId, and dispatchId. After accept, `worker-release` (or `worker-retain` for debug).
+Drive runs with `run-create` and `worker-start`, never `orca orchestration run`, `run-stop`, or `coordinator-start`. Completion is `worker_done` with `--outcome`, taskId, and dispatchId. After accept, `worker-release` (or `worker-retain` for debug).
 
 Runtime ownership and the DAG live in Orca. Prompt text alone is not a substitute for Dispatches.
 
@@ -141,7 +141,7 @@ For **large**: the Orca command sequence (run, task, worker, check), the standin
 - A mega agent outside Orca for large work.
 - Two workers on one checkout.
 - `--agent cursor` or any Cursor coding host.
-- Retired `orchestration run` instead of `run-create` + `worker-start`.
+- `orchestration run` instead of `run-create` + `worker-start`.
 - Opus 5.5 xHigh on every worker.
 - Retrying without classifying the failure, or a third retry of the same task.
 - Opening a PR before prove.
