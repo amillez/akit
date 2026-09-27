@@ -20,6 +20,7 @@ Remaining triggers:
 - Any prose surface → [unslop](references/unslop.md). Your reply is a prose surface. Write it per **Writing the reply**.
 - Docs, readmes, PR descriptions, or commit messages → [technical writing](references/technical-writing.md).
 - Bug with a cheap local test path → failing test first per [tdd](references/tdd.md), and the failing test lands before the fix in git history.
+- Long, autonomous, or multi-phase work, or any task Agustín steps away from to review later → a decision trail per [show me your work](references/show-me-your-work.md). Commit it when stakes need an auditable record. Keep it local otherwise.
 - Before commit → reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments**. Keep only the smallest change that solves the problem.
 - UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
 - Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Visual pass/fail is judged by a GPT 6 Luna Max verification session on Codex, not by your own heavy turns.
