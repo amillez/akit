@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Copy current ~/.agents/skills snapshots (Codex uses ~/.agents) into vendor/codex (run on daily driver, then commit).
+# Refresh each vendor/codex/<skill> snapshot from ~/.agents/skills (where Codex reads user skills), then commit.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
+for dir in "$ROOT"/vendor/codex/*/; do
+  s="$(basename "$dir")"
   src="$HOME/.agents/skills/$s"
   if [ ! -d "$src" ]; then
     echo "missing $src" >&2

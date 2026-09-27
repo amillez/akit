@@ -1,38 +1,31 @@
 #!/usr/bin/env bash
-# Refresh user-root amillez plugin skills + rules (idempotent). Never writes under project trees or .cursor/.
+# Refresh the user-root amillez plugin skills, rules, and stamp (idempotent). Never writes under project trees.
 set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/update-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-rules] [--skip-upstream]
+Usage: ./scripts/update-install.sh [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-upstream]
 
-Idempotent **user-root** refresh for the amillez plugin pack:
-  1. Re-run install.sh (upstream + first-party + vendor → ~/.claude|~/.agents/skills)
-  2. Copy/update templates/models.md →
+Idempotent user-root refresh for the amillez plugin pack:
+  1. Run install.sh (upstream, first-party, and vendor skills → ~/.claude/skills and ~/.agents/skills)
+  2. Copy templates/models.md →
        ~/.claude/rules/amillez-models.md
        ~/.agents/rules/amillez-models.md
-  3. Write/refresh stamp ~/.amillez-plugin.json (and ~/.agents/amillez-plugin.json)
+  3. Write the stamp ~/.amillez-plugin.json (and ~/.agents/amillez-plugin.json)
 
-Does NOT symlink/copy into project .claude/skills or .agents/skills.
-Does NOT write Cursor rules or any .cursor/ paths.
-
-Project-specific skills (e.g. verify-*) stay in the repo — not managed here.
+Never writes into project .claude/ or .agents/ trees. Project skills (e.g. verify-*) stay in the project repo.
 
 Options:
-  --force         Passed through to install where applicable; overwrite diverged rules
   --skills-root   Agent-skills checkout (default: this repo or ~/agent-work/agent-skills)
   --groups        Passed through to install.sh (default core,mobile; core always)
-  --skip-skills   Only refresh rules templates + stamp
-  --skip-rules    Only refresh skills (install.sh) + stamp
-  --skip-upstream Skip npx upstream packs; only first-party + vendor + rules (faster refresh)
+  --skip-skills   Only refresh the rules and the stamp
+  --skip-upstream Skip the npx upstream packs; first-party, vendor, rules, and stamp only (faster)
 USAGE
 }
 
-FORCE=0
 SKILLS_ROOT_OVERRIDE=""
 GROUPS_ARG=""
 SKIP_SKILLS=0
-SKIP_RULES=0
 SKIP_UPSTREAM=0
 
 while [[ $# -gt 0 ]]; do
@@ -40,10 +33,6 @@ while [[ $# -gt 0 ]]; do
     -h|--help)
       usage
       exit 0
-      ;;
-    --force)
-      FORCE=1
-      shift
       ;;
     --skills-root)
       SKILLS_ROOT_OVERRIDE="${2:-}"
@@ -65,10 +54,6 @@ while [[ $# -gt 0 ]]; do
       SKIP_SKILLS=1
       shift
       ;;
-    --skip-rules)
-      SKIP_RULES=1
-      shift
-      ;;
     --skip-upstream)
       SKIP_UPSTREAM=1
       shift
@@ -79,7 +64,7 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      echo "error: unexpected argument: $1 (user-root update takes no project path)" >&2
+      echo "error: unexpected argument: $1" >&2
       usage >&2
       exit 1
       ;;
@@ -153,87 +138,39 @@ STAMP
   echo "stamp: $HOME/.amillez-plugin.json"
 }
 
-install_first_party_and_vendor() {
-  # Lightweight path when --skip-upstream: copy first-party + optional vendor without npx
-  local WANT_MOBILE=0
-  if [[ -z "$GROUPS_ARG" ]]; then
-    WANT_MOBILE=1
-  else
-    IFS=',' read -ra RAW_GROUPS <<< "$GROUPS_ARG"
-    for g in "${RAW_GROUPS[@]}"; do
-      g="${g#"${g%%[![:space:]]*}"}"
-      g="${g%"${g##*[![:space:]]}"}"
-      g="$(printf '%s' "$g" | tr '[:upper:]' '[:lower:]')"
-      case "$g" in
-        mobile) WANT_MOBILE=1 ;;
-      esac
-    done
-  fi
-
-  echo "== First-party (canonical tree: skills/) [core] =="
-  mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-  for s in amillez-mode orchestrate-agents create-verification-skill maintain-verification-skill setup-amillez-models typescript-best-practices; do
-    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-    cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.agents/skills/$s"
-    cp -R "$SKILLS_ROOT/skills/$s" "$HOME/.claude/skills/$s"
-  done
-
-  if [[ "$WANT_MOBILE" -eq 1 ]]; then
-    echo "== Vendored Codex native skills [mobile] =="
-    for s in api-design build-nitro-modules cpp kotlin swift react-native-mmkv react-native-nitro-fetch react-native-vision-camera; do
-      if [[ -d "$SKILLS_ROOT/vendor/codex/$s" ]]; then
-        rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-        cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.agents/skills/$s"
-        cp -R "$SKILLS_ROOT/vendor/codex/$s" "$HOME/.claude/skills/$s"
-      fi
-    done
-  fi
-}
-
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then
-  if [[ "$SKIP_UPSTREAM" -eq 1 ]]; then
-    echo "== Refresh first-party + vendor (skip upstream) =="
-    install_first_party_and_vendor
-  else
-    echo "== Refresh user-root skills (install.sh) =="
-    INSTALL_ARGS=()
-    if [[ -n "$GROUPS_ARG" ]]; then
-      INSTALL_ARGS+=(--groups "$GROUPS_ARG")
-    fi
-    # install.sh lives next to us; it cds to its repo root
-    "$SKILLS_ROOT/scripts/install.sh" "${INSTALL_ARGS[@]+"${INSTALL_ARGS[@]}"}"
+  echo "== Refresh user-root skills (install.sh) =="
+  INSTALL_ARGS=()
+  if [[ -n "$GROUPS_ARG" ]]; then
+    INSTALL_ARGS+=(--groups "$GROUPS_ARG")
   fi
+  if [[ "$SKIP_UPSTREAM" -eq 1 ]]; then
+    INSTALL_ARGS+=(--skip-upstream)
+  fi
+  "$SKILLS_ROOT/scripts/install.sh" "${INSTALL_ARGS[@]+"${INSTALL_ARGS[@]}"}"
   echo
 fi
 
-if [[ "$SKIP_RULES" -eq 0 ]]; then
-  echo "== Refresh user-level Claude/Codex rules templates =="
-  for dest_dir in "$HOME/.claude/rules" "$HOME/.agents/rules"; do
-    dest="$dest_dir/amillez-models.md"
-    mkdir -p "$dest_dir"
-    if [[ -e "$dest" || -L "$dest" ]]; then
-      if [[ -L "$dest" ]]; then
-        rm -f "$dest"
-        cp "$TEMPLATE" "$dest"
-        echo "updated (was symlink): $dest"
-      elif cmp -s "$TEMPLATE" "$dest"; then
-        echo "ok (unchanged): $dest"
-      else
-        cp "$TEMPLATE" "$dest"
-        if [[ "$FORCE" -eq 1 ]]; then
-          echo "updated (--force): $dest"
-        else
-          echo "updated: $dest"
-        fi
-      fi
-    else
-      cp "$TEMPLATE" "$dest"
-      echo "installed: $dest"
-    fi
-  done
-  echo
-fi
+echo "== Refresh user-level Claude/Codex rules templates =="
+for dest_dir in "$HOME/.claude/rules" "$HOME/.agents/rules"; do
+  dest="$dest_dir/amillez-models.md"
+  mkdir -p "$dest_dir"
+  if [[ -L "$dest" ]]; then
+    rm -f "$dest"
+    cp "$TEMPLATE" "$dest"
+    echo "updated (was symlink): $dest"
+  elif [[ ! -e "$dest" ]]; then
+    cp "$TEMPLATE" "$dest"
+    echo "installed: $dest"
+  elif cmp -s "$TEMPLATE" "$dest"; then
+    echo "ok (unchanged): $dest"
+  else
+    cp "$TEMPLATE" "$dest"
+    echo "updated: $dest"
+  fi
+done
+echo
 
 write_stamp
 echo
-echo "Done. User-root amillez skills + rules refreshed (no project trees, no .cursor paths)."
+echo "Done. User-root amillez skills and rules refreshed."
