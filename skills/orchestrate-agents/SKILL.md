@@ -18,6 +18,8 @@ Every coding agent you invoke, a single direct agent or an Orca worker, loads an
 | **Small** | Single surface or package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch one agent directly on the matching lane (see **Model lanes**), with a brief that names amillez-mode. |
 | **Large** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xHigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude Code or Codex workers. The coordinator plans, dispatches, and waits. Workers own implement, integrate, and prove. |
 
+One-line rule: needs parallel workers → Orca; one agent can own the whole loop but the work is long, cross-cutting, or reviewed after stepping away → dispatch one agent on amillez-mode's [Figure it out](../amillez-mode/playbooks/figure-it-out.md) playbook, no Orca Run.
+
 Do not collapse big work into one mega agent. Do not over-orchestrate a rename.
 
 ## Model lanes
