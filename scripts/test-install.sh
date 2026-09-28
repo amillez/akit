@@ -74,6 +74,7 @@ export HOME="$BASE/core"
 mkdir -p "$HOME"
 "$REPO/scripts/install.sh" --groups core >/dev/null 2>&1
 check "install --groups core: adds grill-me" 'grep -q "mattpocock/skills --skill grill-me" "$HOME/npx.log"'
+check "install --groups core: adds grilling, which grill-me forwards to" 'grep -q "mattpocock/skills .*--skill grilling" "$HOME/npx.log"'
 check "install --groups core: skips Argent" '! grep -q argent "$HOME/npx.log"'
 check "install --groups core: skips vendor" '[[ ! -e "$HOME/.claude/skills/${VENDOR[0]}" ]]'
 

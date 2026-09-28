@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me, and the amillez orchestration, verification, model setup, and TypeScript skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
@@ -54,10 +54,12 @@
       "group": "core",
       "package": "mattpocock/skills",
       "skills": [
-        "grill-me"
+        "grill-me",
+        "grilling"
       ],
       "skillPathHint": "skills/productivity/grill-me",
-      "when": "Stress-test a plan/design before build"
+      "when": "Stress-test a plan/design before build",
+      "note": "Upstream grill-me is a shim that calls the Skill tool with \"grilling\". Install both, or /grill-me fails with \"Unknown skill: grilling\"."
     },
     {
       "id": "expo",
