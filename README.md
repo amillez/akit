@@ -39,7 +39,7 @@ cd ~/agent-work/agent-skills
 
 | Group | Always? | Contents |
 | --- | --- | --- |
-| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices` |
+| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices` |
 | `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Codex native vendor set |
 
 Default is **core+mobile**. `--groups core` skips mobile.
@@ -84,6 +84,7 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `apple-design` | mobile | `emilkowalski/skills` | Building UIs |
 | `review-animations` | mobile | `emilkowalski/skills` | Reviewing or critiquing animation and motion (Emil craft bar). Upstream sets `disable-model-invocation: true`, so the model never invokes it on its own. Launch prompts name it for critique passes. |
 | `grill-me` | core | `mattpocock/skills` | Stress-test a plan before build |
+| `grilling` | core | `mattpocock/skills` | Holds the `grill-me` content. Upstream `grill-me` only forwards to it. |
 | `expo-dev-client` | mobile | `expo/skills` | Build and distribute Expo development clients locally or via TestFlight for internal testing. For production TestFlight releases and store submission, use `eas-app-stores`. |
 | `expo-upgrade` | mobile | `expo/skills` | Skill description (Expo SDK upgrades, dependency conflicts, deprecated packages, cache cleanup) |
 | `react-native-best-practices` | mobile | `software-mansion-labs/skills` | Skill description, when writing, reviewing, or debugging any React Native or Expo code |

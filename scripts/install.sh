@@ -14,7 +14,7 @@ model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
 ~/.amillez-plugin.json. Never writes into project trees.
 
 Groups:
-  core    Always installed: grill-me and every amillez skill under skills/
+  core    Always installed: grill-me, grilling, and every amillez skill under skills/
           (amillez-mode, orchestrate-agents, create-verification-skill,
           maintain-verification-skill, setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
@@ -114,7 +114,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
     npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
   fi
 
-  npx -y skills add mattpocock/skills --skill grill-me --agent '*' -g -y --copy
+  npx -y skills add mattpocock/skills --skill grill-me --skill grilling --agent '*' -g -y --copy
 
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
     npx -y skills add expo/skills --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
