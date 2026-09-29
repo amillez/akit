@@ -4,7 +4,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/update-install.sh [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-upstream]
+Usage: ./scripts/update-install.sh [--skills-root /path/to/akit] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-upstream]
 
 Idempotent user-root refresh for the amillez plugin pack:
   1. Run install.sh (upstream, amillez, and vendor skills → ~/.claude/skills and ~/.agents/skills)
@@ -16,7 +16,7 @@ Idempotent user-root refresh for the amillez plugin pack:
 Never writes into project .claude/ or .agents/ trees. Project skills (e.g. verify-*) stay in the project repo.
 
 Options:
-  --skills-root   Agent-skills checkout (default: this repo or ~/agent-work/agent-skills)
+  --skills-root   akit checkout (default: this repo or ~/agent-work/akit)
   --groups        Passed through to install.sh (default core,mobile; core always)
   --skip-skills   Only refresh the rules and the stamp
   --skip-upstream Skip the npx upstream packs; amillez, vendor, rules, and stamp only (faster)
@@ -87,7 +87,7 @@ resolve_skills_root() {
     echo "$REPO_ROOT"
     return
   fi
-  local home_clone="${HOME}/agent-work/agent-skills"
+  local home_clone="${HOME}/agent-work/akit"
   if [[ -d "$home_clone/skills" ]]; then
     echo "$home_clone"
     return

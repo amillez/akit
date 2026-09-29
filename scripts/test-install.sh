@@ -49,7 +49,7 @@ ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -
 AMILLEZ_SKILLS=()
 for d in "$REPO"/skills/*/; do AMILLEZ_SKILLS+=("$(basename "$d")"); done
 VENDOR=()
-for d in "$REPO"/vendor/codex/*/; do VENDOR+=("$(basename "$d")"); done
+for d in "$REPO"/vendor/nitro/*/; do VENDOR+=("$(basename "$d")"); done
 
 export HOME="$BASE/fresh"
 mkdir -p "$HOME"
