@@ -26,7 +26,7 @@ Remaining triggers:
 - Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Visual pass/fail is judged by a GPT 6 Luna Max verification session on Codex, not by your own heavy turns.
 - Review comments from Agustín → apply them as they appear. No permission chatter.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
-- Broken skill mid-task → fix it in its own PR in `amillez/agent-skills`. Don't block. Don't silently work around it.
+- Broken skill mid-task → fix it in its own PR in `amillez/akit`. Don't block. Don't silently work around it.
 - Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
 
 ## Principles
@@ -155,7 +155,7 @@ Match the task to a playbook below, open its file, and copy its steps in verbati
 - **Babysit, coding-agent side.** Answer review threads and fix CI on your own PR when a wake or prompt sends you back. Apply Agustín's comments, verify automated claims, never merge or close. [playbooks/babysit.md](playbooks/babysit.md).
 - **Autonomous run.** State a checkable exit condition, then drive to it without parking reversible work. [playbooks/autonomous-run.md](playbooks/autonomous-run.md).
 - **Worktree and simulator cleanup.** Reclaim disk safely: worktrees, local branches, simulators, emulators, Metro and Expo processes, caches. [playbooks/worktree-cleanup.md](playbooks/worktree-cleanup.md).
-- **Authoring a skill.** Add or edit a skill in `amillez/agent-skills`. [playbooks/authoring-a-skill.md](playbooks/authoring-a-skill.md).
+- **Authoring a skill.** Add or edit a skill in `amillez/akit`. [playbooks/authoring-a-skill.md](playbooks/authoring-a-skill.md).
 - **Reflect.** Only when Agustín says "reflect", "reflect on this session", or "reflect on session <id>". Three reviewers on different lanes mine a finished Claude Code or Codex session log, a synthesizer routes the learnings to concrete skill or ai-eng-practices edits, and the result goes out as one small PR for review or to the weekly garden. Never edits installed skills in place. [playbooks/reflect.md](playbooks/reflect.md).
 
 ## Remap from upstream and Cursor defaults
@@ -169,7 +169,7 @@ When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on h
 | Fan-out skills (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `reflect`) | Not part of amillez-mode. Recon and plan, `grill-me`, and Orca instead. The exception is `reflect`, ported as the [Reflect](playbooks/reflect.md) playbook, with its three reviewers on our lanes and its output as one PR for review or a garden hand-off. | [UPSTREAM.md](UPSTREAM.md) |
 | Done means green CI or files changed | Override. Proof loop with flexible evidence, media on the `media` branch, Luna Max for visual. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |
 | `control-ui`, `control-cli`, `deslop`, `no-comments` (cursor-team-kit) | Override. Argent and project `verify-*` for proof. Self-review of the diff before commit. | This file |
-| Skills or plugins installed ad hoc | Override. Allowlist in `amillez/agent-skills`. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). | [agent-skills README](https://github.com/amillez/agent-skills#allowlist) |
+| Skills or plugins installed ad hoc | Override. Allowlist in `amillez/akit`. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). | [akit README](https://github.com/amillez/akit#allowlist) |
 | Owners merge after a clean verdict (autopilot, shipping) | Override. Agents never merge. Only Agustín's say-so merges. | [agent-dispatch-lifecycle](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md) |
 | Background Shell wake or `/loop` as babysit | Override. Opening a PR does not start a babysit. Babysitting is PR-scoped, driven by GitHub event listeners, runs until merge, close, or abandon, and the coding agent acts on it only when sent back. | [agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged) |
 | External actions (team chat, tickets) proceed without asking | Override. Coding agents report instead of sending. | This file |

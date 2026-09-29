@@ -19,7 +19,7 @@ Groups:
           maintain-verification-skill, setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
-          and the Codex native set under vendor/codex/
+          and the Nitro modules set under vendor/nitro/
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
@@ -140,8 +140,8 @@ echo "== Amillez skills (skills/) [core] =="
 copy_skills "$ROOT/skills"
 
 if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  echo "== Codex native snapshots (vendor/codex/) [mobile] =="
-  copy_skills "$ROOT/vendor/codex"
+  echo "== Nitro modules snapshots (vendor/nitro/) [mobile] =="
+  copy_skills "$ROOT/vendor/nitro"
 fi
 
 echo "== User-level Claude/Codex rules templates =="

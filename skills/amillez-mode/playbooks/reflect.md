@@ -2,7 +2,7 @@
 
 **You own turning one finished session into reviewed skill edits.** Mine a finished Claude Code or Codex session for durable learnings, route each to a concrete edit on an existing skill or ai-eng-practices doc, and hand the result to Agustín as one small PR or as input to the weekly ai-eng-practices garden. Invoke only when Agustín asks ("reflect", "reflect on this session", "reflect on session <id>"). Skip when the session was trivial, off-topic, or already covered by a skill the agent followed correctly. One-offs are not learnings.
 
-**Never edit skills in place.** Installed copies under `~/.claude/skills/` and `~/.agents/skills/` are overwritten by the next install and never reviewed. Every edit lands in a worktree of `amillez/agent-skills` or `amillez/ai-eng-practices`.
+**Never edit skills in place.** Installed copies under `~/.claude/skills/` and `~/.agents/skills/` are overwritten by the next install and never reviewed. Every edit lands in a worktree of `amillez/akit` or `amillez/ai-eng-practices`.
 
 #### 1. Locate the finished session log
 
@@ -41,7 +41,7 @@ Sanity-check the Accepted list. Any item a lint rule, script, metadata flag, ins
 
 Default is one small PR. When Agustín says the garden, or the Accepted list is thin enough that a PR would be noise, use the garden instead.
 
-**One small PR.** Apply the Accepted rows in one worktree of the repo that holds most of them, per [Authoring a skill](authoring-a-skill.md) and [Opening a PR](opening-a-pr.md). This PR is the one exception to one skill change per PR. It carries only this run's Accepted rows. Rows for the other repo go into the PR body as a garden hand-off. Map installed paths the reviewers cite back to their source (`skills/<name>/` in `amillez/agent-skills`) before editing.
+**One small PR.** Apply the Accepted rows in one worktree of the repo that holds most of them, per [Authoring a skill](authoring-a-skill.md) and [Opening a PR](opening-a-pr.md). This PR is the one exception to one skill change per PR. It carries only this run's Accepted rows. Rows for the other repo go into the PR body as a garden hand-off. Map installed paths the reviewers cite back to their source (`skills/<name>/` in `amillez/akit`) before editing.
 
 - Trivial edit (a one-line bullet, a tightened sentence, a stale fact corrected) → edit directly.
 - Substantive edit (a new section, a new pattern table, more than about 10 lines) → run the full [Authoring a skill](authoring-a-skill.md) loop for it.

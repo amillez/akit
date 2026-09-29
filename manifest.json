@@ -7,7 +7,7 @@
       "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
-      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Codex vendor). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Nitro modules vendor). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -131,9 +131,9 @@
   ],
   "vendor": [
     {
-      "id": "codex-native",
+      "id": "nitro-modules",
       "group": "mobile",
-      "path": "vendor/codex",
+      "path": "vendor/nitro",
       "skills": [
         "api-design",
         "build-nitro-modules",
@@ -144,8 +144,8 @@
         "react-native-nitro-fetch",
         "react-native-vision-camera"
       ],
-      "when": "Building native / Nitro modules",
-      "note": "No public skills-lock upstream. Refreshed from a device with current Codex skills via scripts/refresh-codex-vendor.sh (see README)."
+      "when": "Building Nitro / native modules",
+      "note": "Nitro modules skills (same mobile category as other native RN skills). No public skills-lock upstream. Refresh via scripts/refresh-nitro-vendor.sh from ~/.agents/skills on a device that has current snapshots (see README)."
     }
   ],
   "excluded": [

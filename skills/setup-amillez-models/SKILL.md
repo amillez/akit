@@ -13,7 +13,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
 
 ## Steps
 
-0. **Ensure the amillez plugin pack is installed at user root.** From the agent-skills checkout (or `AMILLEZ_SKILLS_ROOT`), run:
+0. **Ensure the amillez plugin pack is installed at user root.** From the akit checkout (or `AMILLEZ_SKILLS_ROOT`), run:
 
    ```bash
    ./scripts/ensure-install.sh
@@ -41,7 +41,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
    | Claude Code **user** | `templates/models.md` | `~/.claude/rules/amillez-models.md` |
    | Codex / shared agents **user** | `templates/models.md` | `~/.agents/rules/amillez-models.md` |
 
-   Resolve the agent-skills checkout (`~/agent-work/agent-skills`, or the repo that owns this skill). Copy (or re-copy) the template. The copy is idempotent. The template sets **bot/orchestrator** defaults (**Opus 5.5 High** on Claude Code). Workers still follow the policy chooser. Never copy the template into project `.claude/rules/` or `.agents/rules/`.
+   Resolve the akit checkout (`~/agent-work/akit`, or the repo that owns this skill). Copy (or re-copy) the template. The copy is idempotent. The template sets **bot/orchestrator** defaults (**Opus 5.5 High** on Claude Code). Workers still follow the policy chooser. Never copy the template into project `.claude/rules/` or `.agents/rules/`.
 
    `./scripts/update-install.sh` refreshes the skills, the user rules, and the stamp in one run.
 

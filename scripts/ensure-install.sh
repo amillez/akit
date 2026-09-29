@@ -5,7 +5,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/agent-skills] [--groups core|mobile|core,mobile]
+Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/akit] [--groups core|mobile|core,mobile]
 
 Run before coding sessions. Ensures the user-root amillez plugin pack.
 
@@ -22,7 +22,7 @@ Groups (same as install.sh; default core,mobile). core is always included.
 Skills root resolution (first match):
   1. --skills-root
   2. env AMILLEZ_SKILLS_ROOT
-  3. ~/agent-work/agent-skills (if it has skills/)
+  3. ~/agent-work/akit (if it has skills/)
   4. script-relative repo root (parent of scripts/)
 
 Prints exactly one status line:
@@ -87,7 +87,7 @@ resolve_skills_root() {
     echo "$AMILLEZ_SKILLS_ROOT"
     return
   fi
-  local home_clone="${HOME}/agent-work/agent-skills"
+  local home_clone="${HOME}/agent-work/akit"
   if [[ -d "$home_clone/skills" ]]; then
     echo "$home_clone"
     return
@@ -98,7 +98,7 @@ resolve_skills_root() {
 SKILLS_ROOT="$(resolve_skills_root)"
 if [[ ! -d "$SKILLS_ROOT/skills" ]]; then
   echo "error: skills directory not found under $SKILLS_ROOT" >&2
-  echo "Set AMILLEZ_SKILLS_ROOT, pass --skills-root, or clone to ~/agent-work/agent-skills." >&2
+  echo "Set AMILLEZ_SKILLS_ROOT, pass --skills-root, or clone to ~/agent-work/akit." >&2
   exit 1
 fi
 

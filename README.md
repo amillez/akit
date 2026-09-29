@@ -1,4 +1,4 @@
-# agent-skills
+# akit
 
 Allowlisted engineering skills for **Claude Code and Codex**.
 
@@ -18,29 +18,29 @@ The install scripts never write into project trees. A project may also commit co
 ### 1. Clone this repo (or pull latest)
 
 ```bash
-git clone git@github.com:amillez/agent-skills.git ~/agent-work/agent-skills
+git clone git@github.com:amillez/akit.git ~/agent-work/akit
 # or, if already cloned:
-cd ~/agent-work/agent-skills && git pull
+cd ~/agent-work/akit && git pull
 ```
 
 ### 2. Install at user root
 
 ```bash
-cd ~/agent-work/agent-skills
+cd ~/agent-work/akit
 ./scripts/install.sh                 # default: core + mobile
 # ./scripts/install.sh --groups core           # core only
 # ./scripts/install.sh --groups mobile         # core still included + mobile
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies every skill under `skills/` (and `vendor/codex/` for mobile) into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
+`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies every skill under `skills/` (and `vendor/nitro/` for mobile) into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
 
 **Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
 | Group | Always? | Contents |
 | --- | --- | --- |
 | `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices` |
-| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Codex native vendor set |
+| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Nitro modules vendor set |
 
 Default is **core+mobile**. `--groups core` skips mobile.
 
@@ -56,7 +56,7 @@ argent init -y --no-telemetry --global
 Run this before every coding session. Bots and agents run it automatically per the [`ai-eng-practices`](https://github.com/amillez/ai-eng-practices) policy.
 
 ```bash
-cd ~/agent-work/agent-skills
+cd ~/agent-work/akit
 ./scripts/ensure-install.sh
 ```
 
@@ -71,7 +71,7 @@ cd ~/agent-work/agent-skills
 - **`install.sh`**. Full install: upstream packs, amillez skills, vendor snapshots, user rules, and the stamp. `--skip-upstream` skips the npx packs.
 - **`test-install.sh`**. Runs the three install scripts against a temporary `HOME` with a stub `npx`. Run it after changing any install script.
 - **`check-links.sh`**. Checks relative Markdown links and their anchors outside `vendor/`.
-- **`update-upstream.sh`** and **`refresh-codex-vendor.sh`**. See [Keeping skills up to date](#keeping-skills-up-to-date).
+- **`update-upstream.sh`** and **`refresh-nitro-vendor.sh`**. See [Keeping skills up to date](#keeping-skills-up-to-date).
 
 ## Allowlist
 
@@ -95,7 +95,7 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `maintain-verification-skill` | core | **amillez** (pstack port, MIT; see `skills/maintain-verification-skill/UPSTREAM.md`) | Keep a project `verify-<app>` skill, its feature map, and its app CLI honest |
 | `setup-amillez-models` | core | **amillez** | Pick the session's model lane from the policy and install or update the user-level model rules (`templates/models.md`) |
 | `typescript-best-practices` | core | **amillez** (pstack port, MIT; see `skills/typescript-best-practices/UPSTREAM.md`) | Skill description, when reading, writing, or reviewing any `.ts` or `.tsx` file. Claude Code also scopes it with `paths`. |
-| Codex native set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | **vendor snapshot** (no public skills-lock upstream) | Building native or Nitro modules |
+| Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | **vendor snapshot** (no public skills-lock upstream) | Building native or Nitro modules |
 
 Not in the pack: `autoreview`, the Superset pack, other design and planning skills, and `expo-native-ui`. Orca's own skills (`orca-cli`, `orchestration`) come from `orca skills install` on the coordinator device (see `orchestrate-agents`).
 
@@ -121,11 +121,11 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx s
 
 2. **Argent version bumps.** Pin the CLI and the skills tag together. Update the ref in `manifest.json` (`upstream[argent].ref`) and in `scripts/install.sh`, upgrade `@swmansion/argent`, then re-run `./scripts/install.sh`.
 
-3. **Codex native vendor.** No public skills package locks these skills. Refresh them from a device that has current Codex skills:
+3. **Nitro modules vendor.** No public skills package locks these skills. Refresh them from a device that has current Nitro modules skill snapshots:
 
    ```bash
-   ./scripts/refresh-codex-vendor.sh
-   git commit -am "chore: refresh Codex native skill snapshots"
+   ./scripts/refresh-nitro-vendor.sh
+   git commit -am "chore: refresh Nitro modules skill snapshots"
    ```
 
    Then on other devices: `git pull && ./scripts/install.sh`.
@@ -141,12 +141,12 @@ amillez-plugin.json          # pack metadata
 skills/                      # amillez skills, one directory each
 templates/models.md          # Claude Code and Codex model rules → user rules dirs
 manifest.json                # allowlist, groups, and upstream pins
-vendor/codex/                # snapshots without a public upstream
+vendor/nitro/                # snapshots without a public upstream
 scripts/install.sh           # user-root install: skills, user rules, stamp
 scripts/ensure-install.sh    # required before coding: detect, then install or refresh
 scripts/update-install.sh    # refresh user-root skills, rules, and stamp
 scripts/test-install.sh      # sandboxed test of the three install scripts
 scripts/check-links.sh       # relative Markdown link and anchor check
 scripts/update-upstream.sh   # npx skills update for upstream packs
-scripts/refresh-codex-vendor.sh  # refresh vendor/codex from ~/.agents/skills
+scripts/refresh-nitro-vendor.sh  # refresh vendor/nitro from ~/.agents/skills
 ```

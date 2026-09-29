@@ -42,7 +42,7 @@ Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Cod
 1. `orca status --json` succeeds (runtime up).
 2. Orchestration enabled: Settings → Experimental.
 3. Skills: `orca skills install --skill orca-cli` (or `npx skills add https://github.com/stablyai/orca --skill orca-cli`) and the **orchestration** skill. Refresh with `orca skills get orchestration --full` when flags drift.
-4. The amillez plugin is installed (`scripts/ensure-install.sh` in `amillez/agent-skills`) before workers code, so every worker can load amillez-mode.
+4. The amillez plugin is installed (`scripts/ensure-install.sh` in `amillez/akit`) before workers code, so every worker can load amillez-mode.
 
 ## Coordinator role
 
