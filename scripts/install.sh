@@ -19,14 +19,14 @@ Groups:
           maintain-verification-skill, setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
-          and the Nitro modules set under vendor/nitro/
+          and Margelo Nitro modules (margelo/react-native-skills)
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
 --groups core skips mobile.
 
 --skip-upstream  Skip the npx upstream packs. Installs amillez skills,
-                 vendor snapshots, rules, and the stamp only.
+                 rules, and the stamp only.
 USAGE
 }
 
@@ -122,6 +122,17 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
     npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
 
     npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
+
+    npx -y skills add margelo/react-native-skills \
+      --skill api-design \
+      --skill build-nitro-modules \
+      --skill cpp \
+      --skill kotlin \
+      --skill swift \
+      --skill react-native-mmkv \
+      --skill react-native-nitro-fetch \
+      --skill react-native-vision-camera \
+      --agent '*' -g -y --copy
   fi
 fi
 
@@ -138,11 +149,6 @@ copy_skills() {
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
 echo "== Amillez skills (skills/) [core] =="
 copy_skills "$ROOT/skills"
-
-if [[ "$WANT_MOBILE" -eq 1 ]]; then
-  echo "== Nitro modules snapshots (vendor/nitro/) [mobile] =="
-  copy_skills "$ROOT/vendor/nitro"
-fi
 
 echo "== User-level Claude/Codex rules templates =="
 TEMPLATE="$ROOT/templates/models.md"
