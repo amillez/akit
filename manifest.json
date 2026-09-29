@@ -7,7 +7,7 @@
       "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
-      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Nitro modules vendor). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -89,6 +89,23 @@
         "uniwind"
       ],
       "when": "Building or debugging Uniwind className styling in RN"
+    },
+    {
+      "id": "margelo-react-native-skills",
+      "group": "mobile",
+      "package": "margelo/react-native-skills",
+      "skills": [
+        "api-design",
+        "build-nitro-modules",
+        "cpp",
+        "kotlin",
+        "swift",
+        "react-native-mmkv",
+        "react-native-nitro-fetch",
+        "react-native-vision-camera"
+      ],
+      "when": "Building Nitro / native modules",
+      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet."
     }
   ],
   "firstParty": [
@@ -127,25 +144,6 @@
       "group": "core",
       "path": "skills/typescript-best-practices",
       "when": "Reading, writing, or reviewing any .ts or .tsx file; TypeScript grounding of amillez-mode type-system and boundary principles (ported from pstack, MIT, see skills/typescript-best-practices/UPSTREAM.md)"
-    }
-  ],
-  "vendor": [
-    {
-      "id": "nitro-modules",
-      "group": "mobile",
-      "path": "vendor/nitro",
-      "skills": [
-        "api-design",
-        "build-nitro-modules",
-        "cpp",
-        "kotlin",
-        "swift",
-        "react-native-mmkv",
-        "react-native-nitro-fetch",
-        "react-native-vision-camera"
-      ],
-      "when": "Building Nitro / native modules",
-      "note": "Nitro modules skills (same mobile category as other native RN skills). No public skills-lock upstream. Refresh via scripts/refresh-nitro-vendor.sh from ~/.agents/skills on a device that has current snapshots (see README)."
     }
   ],
   "excluded": [

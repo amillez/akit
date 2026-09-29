@@ -48,13 +48,11 @@ ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -
 
 AMILLEZ_SKILLS=()
 for d in "$REPO"/skills/*/; do AMILLEZ_SKILLS+=("$(basename "$d")"); done
-VENDOR=()
-for d in "$REPO"/vendor/nitro/*/; do VENDOR+=("$(basename "$d")"); done
 
 export HOME="$BASE/fresh"
 mkdir -p "$HOME"
 check "fresh HOME: ensure prints installed" '[[ "$(ensure)" == "amillez plugin: installed" ]]'
-for s in "${AMILLEZ_SKILLS[@]}" "${VENDOR[@]}"; do
+for s in "${AMILLEZ_SKILLS[@]}"; do
   check "fresh HOME: $s installed" 'has_skill "$s"'
 done
 check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.md" && -f "$HOME/.agents/rules/amillez-models.md" ]]'
@@ -76,13 +74,13 @@ mkdir -p "$HOME"
 check "install --groups core: adds grill-me" 'grep -q "mattpocock/skills --skill grill-me" "$HOME/npx.log"'
 check "install --groups core: adds grilling, which grill-me forwards to" 'grep -q "mattpocock/skills .*--skill grilling" "$HOME/npx.log"'
 check "install --groups core: skips Argent" '! grep -q argent "$HOME/npx.log"'
-check "install --groups core: skips vendor" '[[ ! -e "$HOME/.claude/skills/${VENDOR[0]}" ]]'
+check "install --groups core: skips Margelo Nitro" '! grep -q margelo/react-native-skills "$HOME/npx.log"'
 
 export HOME="$BASE/skip-upstream"
 mkdir -p "$HOME"
 "$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
 check "update-install --skip-upstream: runs no npx" '[[ ! -s "$HOME/npx.log" ]]'
-for s in "${AMILLEZ_SKILLS[@]}" "${VENDOR[@]}"; do
+for s in "${AMILLEZ_SKILLS[@]}"; do
   check "update-install --skip-upstream: $s installed" 'has_skill "$s"'
 done
 check "update-install --skip-upstream: stamp written" '[[ -f "$HOME/.amillez-plugin.json" ]]'

@@ -7,7 +7,7 @@ usage() {
 Usage: ./scripts/update-install.sh [--skills-root /path/to/akit] [--groups core|mobile|core,mobile] [--skip-skills] [--skip-upstream]
 
 Idempotent user-root refresh for the amillez plugin pack:
-  1. Run install.sh (upstream, amillez, and vendor skills → ~/.claude/skills and ~/.agents/skills)
+  1. Run install.sh (upstream and amillez skills → ~/.claude/skills and ~/.agents/skills)
   2. Copy templates/models.md →
        ~/.claude/rules/amillez-models.md
        ~/.agents/rules/amillez-models.md
@@ -19,7 +19,7 @@ Options:
   --skills-root   akit checkout (default: this repo or ~/agent-work/akit)
   --groups        Passed through to install.sh (default core,mobile; core always)
   --skip-skills   Only refresh the rules and the stamp
-  --skip-upstream Skip the npx upstream packs; amillez, vendor, rules, and stamp only (faster)
+  --skip-upstream Skip the npx upstream packs; amillez skills, rules, and stamp only (faster)
 USAGE
 }
 

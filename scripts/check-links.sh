@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Check relative Markdown links (and their #anchors) in this repo. vendor/ is skipped.
+# Check relative Markdown links (and their #anchors) in this repo.
 set -euo pipefail
 
 usage() {
   cat <<'USAGE'
 Usage: ./scripts/check-links.sh
 
-Checks every relative link in the repo's Markdown files (vendor/ excluded):
+Checks every relative link in the repo's Markdown files:
 the target file or directory exists, and a #anchor matches a heading in the
 target Markdown file. http(s) and mailto links are not fetched.
 
