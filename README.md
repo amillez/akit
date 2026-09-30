@@ -33,14 +33,14 @@ cd ~/agent-work/akit
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies every skill under `skills/` into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
+`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
 
 **Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
 | Group | Always? | Contents |
 | --- | --- | --- |
 | `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices` |
-| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules |
+| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet` |
 
 Default is **core+mobile**. `--groups core` skips mobile.
 
@@ -49,6 +49,15 @@ Mobile work also needs the **Argent CLI** on the device (skills alone are not en
 ```bash
 npm install -g @swmansion/argent@0.25.0
 argent init -y --no-telemetry --global
+```
+
+The `simfleet` skill needs the **simfleet CLI** and its device tools. Skip this block on a host that does not run simfleet. The skill falls back to the Argent setup skills when `simfleet serve` is not up.
+
+```bash
+brew install bun
+bun add -g simfleet@0.1.1
+brew install mobai-app/tap/simslim baguette watchman
+brew tap kdbhalala/avdslim https://github.com/kdbhalala/avdslim.git && brew install avdslim scrcpy
 ```
 
 ### 3. Ensure the install before coding
@@ -60,7 +69,7 @@ cd ~/agent-work/akit
 ./scripts/ensure-install.sh
 ```
 
-- The pack counts as installed when the stamp exists and every amillez skill under `skills/` is in both `~/.claude/skills` and `~/.agents/skills`.
+- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`.
 - If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
 - `--force` refreshes even when the pack is present. `--groups` works as in `install.sh`.
 
@@ -96,6 +105,7 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `setup-amillez-models` | core | **amillez** | Pick the session's model lane from the policy and install or update the user-level model rules (`templates/models.md`) |
 | `typescript-best-practices` | core | **amillez** (pstack port, MIT; see `skills/typescript-best-practices/UPSTREAM.md`) | Skill description, when reading, writing, or reviewing any `.ts` or `.tsx` file. Claude Code also scopes it with `paths`. |
 | Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` | Building native or Nitro modules |
+| `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
 
 Not in the pack: `autoreview`, the Superset pack, other design and planning skills, and `expo-native-ui`. Orca's own skills (`orca-cli`, `orchestration`) come from `orca skills install` on the coordinator device (see `orchestrate-agents`).
 

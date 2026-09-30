@@ -7,7 +7,7 @@
       "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
-      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -144,6 +144,13 @@
       "group": "core",
       "path": "skills/typescript-best-practices",
       "when": "Reading, writing, or reviewing any .ts or .tsx file; TypeScript grounding of amillez-mode type-system and boundary principles (ported from pstack, MIT, see skills/typescript-best-practices/UPSTREAM.md)"
+    },
+    {
+      "id": "simfleet",
+      "group": "mobile",
+      "path": "skills/simfleet",
+      "when": "Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports; Argent still drives proof (ported from entropyconquers/simfleet, MIT, see skills/simfleet/UPSTREAM.md)",
+      "note": "Needs the simfleet CLI and its host tools (see README). Bump the pin in skills/simfleet/UPSTREAM.md with the CLI version. Keep MOBILE_AMILLEZ_SKILLS in scripts/install.sh in sync."
     }
   ],
   "excluded": [
