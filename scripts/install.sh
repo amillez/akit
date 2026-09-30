@@ -33,7 +33,7 @@ Default: core,mobile
 USAGE
 }
 
-# amillez skills under skills/ tagged "group": "mobile" in manifest.json firstParty.
+# amillez skills under skills/ tagged "group": "mobile" in the manifest.json `amillez` list.
 MOBILE_AMILLEZ_SKILLS=(simfleet)
 
 GROUPS_ARG=""
