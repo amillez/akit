@@ -75,7 +75,7 @@ check "install --groups core: adds grill-me" 'grep -q "mattpocock/skills --skill
 check "install --groups core: adds grilling, which grill-me forwards to" 'grep -q "mattpocock/skills .*--skill grilling" "$HOME/npx.log"'
 check "install --groups core: skips Argent" '! grep -q argent "$HOME/npx.log"'
 check "install --groups core: skips Margelo Nitro" '! grep -q margelo/react-native-skills "$HOME/npx.log"'
-MOBILE_AMILLEZ=$(python3 -c 'import json,sys; print(" ".join(sorted(e["id"] for e in json.load(open(sys.argv[1]))["firstParty"] if e["group"] == "mobile")))' "$REPO/manifest.json")
+MOBILE_AMILLEZ=$(python3 -c 'import json,sys; print(" ".join(sorted(e["id"] for e in json.load(open(sys.argv[1]))["amillez"] if e["group"] == "mobile")))' "$REPO/manifest.json")
 CORE_ONLY=$("$REPO/scripts/install.sh" --list-skills --groups core | tr '\n' ' ')
 check "install --groups core: skips manifest mobile amillez skills ($MOBILE_AMILLEZ)" '[[ "$(comm -23 <(printf "%s\n" "${AMILLEZ_SKILLS[@]}") <(printf "%s\n" $CORE_ONLY) | tr "\n" " ")" == "$MOBILE_AMILLEZ " ]]'
 for s in $MOBILE_AMILLEZ; do

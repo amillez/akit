@@ -24,4 +24,4 @@ Attribution: the rules, the lane recipe, and `references/api.md` are Vishesh Rah
 6. **Drive.** Upstream's "Drive a device" section (`sim ui`, `tap`, `swipe`, and the Android equivalents) is replaced by "Drive and prove with Argent". The Android addressing notes move into the lane section.
 7. **Stop.** Adds stopping a server you started and the raw teardown when the server is down.
 8. **Style.** Em dashes and slash pairs rewritten per amillez-mode unslop. Otherwise the wording stays upstream.
-9. **Install wiring.** `manifest.json` lists `simfleet` in `firstParty` with group `mobile`. `scripts/install.sh` holds the matching `MOBILE_AMILLEZ_SKILLS` entry and skips it for `--groups core`.
+9. **Install wiring.** `manifest.json` lists `simfleet` in `amillez` with group `mobile`. `scripts/install.sh` holds the matching `MOBILE_AMILLEZ_SKILLS` entry and skips it for `--groups core`.
