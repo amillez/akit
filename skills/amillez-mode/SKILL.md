@@ -27,7 +27,7 @@ Remaining triggers:
 - Review comments from Agustín → apply them as they appear. No permission chatter.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
 - Broken skill mid-task → fix it in its own PR in `amillez/akit`. Don't block. Don't silently work around it.
-- Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
+- Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. When `simfleet serve` is up, stop lanes, release claims, and shut down devices through simfleet per the `simfleet` skill. Otherwise use the raw commands. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
 
 ## Principles
 
