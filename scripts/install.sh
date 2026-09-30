@@ -7,7 +7,7 @@ cd "$ROOT"
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/install.sh [--groups core|mobile|core,mobile] [--skip-upstream]
+Usage: ./scripts/install.sh [--groups core|mobile|core,mobile] [--skip-upstream] [--list-skills]
 
 Install allowlisted skills into ~/.claude/skills and ~/.agents/skills, the
 model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
@@ -15,11 +15,13 @@ model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
 
 Groups:
   core    Always installed: grill-me, grilling, and every amillez skill under skills/
-          (amillez-mode, orchestrate-agents, create-verification-skill,
-          maintain-verification-skill, setup-amillez-models, typescript-best-practices)
+          except the mobile ones (amillez-mode, orchestrate-agents,
+          create-verification-skill, maintain-verification-skill,
+          setup-amillez-models, typescript-best-practices)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
-          and Margelo Nitro modules (margelo/react-native-skills)
+          Margelo Nitro modules (margelo/react-native-skills), and the amillez
+          simfleet skill
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
@@ -27,11 +29,16 @@ Default: core,mobile
 
 --skip-upstream  Skip the npx upstream packs. Installs amillez skills,
                  rules, and the stamp only.
+--list-skills    Print the amillez skill names the chosen groups install, then exit.
 USAGE
 }
 
+# amillez skills under skills/ tagged "group": "mobile" in manifest.json firstParty.
+MOBILE_AMILLEZ_SKILLS=(simfleet)
+
 GROUPS_ARG=""
 SKIP_UPSTREAM=0
+LIST_SKILLS=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
@@ -48,6 +55,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --skip-upstream)
       SKIP_UPSTREAM=1
+      shift
+      ;;
+    --list-skills)
+      LIST_SKILLS=1
       shift
       ;;
     --*)
@@ -97,6 +108,22 @@ else
   fi
 fi
 
+amillez_skills() {
+  local dir s
+  for dir in "$ROOT"/skills/*/; do
+    s="$(basename "$dir")"
+    if [[ "$WANT_MOBILE" -eq 0 && " ${MOBILE_AMILLEZ_SKILLS[*]} " == *" $s "* ]]; then
+      continue
+    fi
+    echo "$s"
+  done
+}
+
+if [[ "$LIST_SKILLS" -eq 1 ]]; then
+  amillez_skills
+  exit 0
+fi
+
 echo "Groups: core$([ "$WANT_MOBILE" -eq 1 ] && echo '+mobile' || true) (core always)"
 
 if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
@@ -136,19 +163,13 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
   fi
 fi
 
-copy_skills() {
-  local dir s
-  for dir in "$1"/*/; do
-    s="$(basename "$dir")"
-    rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
-    cp -R "${dir%/}" "$HOME/.agents/skills/$s"
-    cp -R "${dir%/}" "$HOME/.claude/skills/$s"
-  done
-}
-
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-echo "== Amillez skills (skills/) [core] =="
-copy_skills "$ROOT/skills"
+echo "== Amillez skills (skills/) =="
+while read -r s; do
+  rm -rf "$HOME/.agents/skills/$s" "$HOME/.claude/skills/$s"
+  cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
+  cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
+done < <(amillez_skills)
 
 echo "== User-level Claude/Codex rules templates =="
 TEMPLATE="$ROOT/templates/models.md"

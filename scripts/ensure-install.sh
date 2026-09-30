@@ -11,7 +11,8 @@ Run before coding sessions. Ensures the user-root amillez plugin pack.
 
 Installed means both:
   - the stamp exists: ~/.amillez-plugin.json or ~/.agents/amillez-plugin.json
-  - every amillez skill under <skills-root>/skills/ is in ~/.claude/skills and ~/.agents/skills
+  - every amillez skill the groups install (install.sh --list-skills) is in
+    ~/.claude/skills and ~/.agents/skills
 
 Stamp missing: runs update-install.sh (skills, user rules, stamp) and prints "installed".
 Stamp present but a amillez skill missing: refreshes and prints "updated".
@@ -107,13 +108,15 @@ plugin_present() {
 }
 
 amillez_skill_missing() {
-  local dir s
-  for dir in "$SKILLS_ROOT"/skills/*/; do
-    s="$(basename "$dir")"
+  local args=(--list-skills) s
+  if [[ -n "$GROUPS_ARG" ]]; then
+    args+=(--groups "$GROUPS_ARG")
+  fi
+  while read -r s; do
     if [[ ! -f "$HOME/.claude/skills/$s/SKILL.md" || ! -f "$HOME/.agents/skills/$s/SKILL.md" ]]; then
       return 0
     fi
-  done
+  done < <("$SKILLS_ROOT/scripts/install.sh" "${args[@]}")
   return 1
 }
 
