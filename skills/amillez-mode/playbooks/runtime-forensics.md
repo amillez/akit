@@ -6,7 +6,7 @@
 2. Reduce the artifact to the smoking gun: the function on the hot path, the retainer chain from the leaked object to a GC root, the loop firing without input. Parse large artifacts in a subagent ([Guard the Context Window](../principles/guard-the-context-window.md)), keep the reduced finding in the main thread. For the reduction itself, follow [Trace forensics](trace-forensics.md) steps 2 to 4.
 3. Prove the mechanism before believing it. Inject instrumentation into the running app to confirm the hypothesis cheaply: a log line or counter picked up by Fast Refresh, a debugger evaluate against the Hermes or V8 runtime, or a temporary patch without a full rebuild. Revert every probe once it has answered.
 4. Map the finding back to source: file, symbol, the line that allocates or schedules.
-5. For a visual glitch, save the recording or screenshots and have a GPT 6 Luna Max verification session confirm the glitch frames against the expected behavior. Keep the media out of the tree.
+5. For a visual glitch, save the recording or screenshots and confirm the glitch frames against the expected behavior. Keep the media out of the tree.
 6. Tear down what you started: simulators, emulators, Metro and dev servers, matching Expo CLI processes, debuggers, profilers.
 7. Throughput checkpoint stays one line: `throughput checkpoint: n/a, read-only forensics`.
 

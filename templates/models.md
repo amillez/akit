@@ -24,7 +24,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 
 | Policy label | Model id | Harness |
 | --- | --- | --- |
-| Luna | `gpt-6-luna` (Max) | Codex. Super defined, mechanical, visual verify |
+| Luna | `gpt-6-luna` (Max) | Codex. Super defined, mechanical |
 | Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator) | Claude Code. General code, UI, plans, orchestration |
 | Sol | `gpt-6.1-sol` (xHigh general, High UI) | Codex. Fallback when Claude Code usage > 70% |
 | Fable | Fable 5.1 (Medium → High/xHigh) | Claude Code. Large reasoning, non-orch |
