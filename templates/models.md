@@ -5,12 +5,12 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 | Situation | Pick | CLI |
 | --- | --- | --- |
 | Very direct / super defined | **GPT 6 Luna** · **Max** | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
-| General code / some reasoning | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6 Sol** · **xHigh** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6-sol -c model_reasoning_effort=xhigh` |
-| UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6 Sol** · **High** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6-sol -c model_reasoning_effort=high` |
+| General code / some reasoning | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **xHigh** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
+| UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **High** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
 | Large-work orchestration (Orca coordinator) | **Opus 5.5** · **xHigh** | `claude --model claude-opus-5-5 --effort xhigh` + Orca |
 | Large reasoning (non-orch) | **Fable 5.1** · **Medium** → High → xHigh | Claude Code |
 
-**Claude Code usage > 70%.** Before a Claude Code general-code or UI launch, check `/usage` (or `/status`) in Claude Code. It shows plan usage for the current window. Above 70% → run that task on Codex **GPT 6 Sol** (xHigh general, High UI). At or below 70% → Opus 5.5 High.
+**Claude Code usage > 70%.** Before a Claude Code general-code or UI launch, check `/usage` (or `/status`) in Claude Code. It shows plan usage for the current window. Above 70% → run that task on Codex **GPT 6.1 Sol** (xHigh general, High UI). At or below 70% → Opus 5.5 High.
 
 **Workers** do **not** inherit these defaults blindly. Pick model + effort **per slice** from the policy chooser.
 
@@ -26,7 +26,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 | --- | --- | --- |
 | Luna | `gpt-6-luna` (Max) | Codex. Super defined, mechanical, visual verify |
 | Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator) | Claude Code. General code, UI, plans, orchestration |
-| Sol | `gpt-6-sol` (xHigh general, High UI) | Codex. Fallback when Claude Code usage > 70% |
+| Sol | `gpt-6.1-sol` (xHigh general, High UI) | Codex. Fallback when Claude Code usage > 70% |
 | Fable | Fable 5.1 (Medium → High/xHigh) | Claude Code. Large reasoning, non-orch |
 
 Claude Code (Opus 5.5) is the default. Codex runs Luna work and the Sol fallback when Claude Code usage is above 70%.

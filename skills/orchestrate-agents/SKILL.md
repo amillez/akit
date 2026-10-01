@@ -29,8 +29,8 @@ Pick `--agent`, `--model`, and `--effort` per task. These match the lanes in `am
 | Work | Lane | Orca worker flags |
 | --- | --- | --- |
 | Very direct, defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `--agent codex --model gpt-6-luna --effort max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6 Sol, xHigh | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6-sol --effort xhigh` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6 Sol, High | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6-sol --effort high` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort xhigh` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort high` |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
 | Visual proof verification (screenshots, video) | GPT 6 Luna, Max, verification only | `--agent codex --model gpt-6-luna --effort max` |
 | Orchestration (the coordinator only) | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |

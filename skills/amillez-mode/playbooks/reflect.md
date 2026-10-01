@@ -21,8 +21,8 @@ Each reviewer is a fresh headless session with its own lens. Launch all three at
 
 | Lens | Lane | Template |
 | --- | --- | --- |
-| Judgment | General-code lane on Claude Code, Opus 5.5 High. Claude Code usage above 70% → GPT 6 Sol, xHigh. | [references/reflect-judgment.md](../references/reflect-judgment.md) |
-| Tooling | General-code lane on Codex, GPT 6 Sol, xHigh, always, so the panel spans two model families. | [references/reflect-tooling.md](../references/reflect-tooling.md) |
+| Judgment | General-code lane on Claude Code, Opus 5.5 High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh. | [references/reflect-judgment.md](../references/reflect-judgment.md) |
+| Tooling | General-code lane on Codex, GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | [references/reflect-tooling.md](../references/reflect-tooling.md) |
 | Divergent | Same lane as Judgment. | [references/reflect-divergent.md](../references/reflect-divergent.md) |
 
 The lanes and their launch commands are in `SKILL.md` **Subagents and model lanes**, which follows the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, it wins over this table. Never GPT 5.6 or Opus 5.
@@ -31,7 +31,7 @@ Reviewers need MCP access for context the log references (issues, PRs, chat thre
 
 #### 3. Synthesize
 
-One fresh headless session on Opus 5.5 xHigh (`claude --model claude-opus-5-5 --effort xhigh`), the only non-Orca use of that lane. Claude Code usage does not move it. If Claude Code is exhausted, say so and use GPT 6 Sol xHigh. Pass [references/reflect-synthesizer.md](../references/reflect-synthesizer.md) verbatim with each reviewer's full output inlined where marked. It returns an Accepted, Rejected, and Backlog list.
+One fresh headless session on Opus 5.5 xHigh (`claude --model claude-opus-5-5 --effort xhigh`), the only non-Orca use of that lane. Claude Code usage does not move it. If Claude Code is exhausted, say so and use GPT 6.1 Sol xHigh. Pass [references/reflect-synthesizer.md](../references/reflect-synthesizer.md) verbatim with each reviewer's full output inlined where marked. It returns an Accepted, Rejected, and Backlog list.
 
 #### 4. Structural enforcement check
 

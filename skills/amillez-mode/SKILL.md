@@ -95,8 +95,8 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 | Task | Lane | Command |
 | --- | --- | --- |
 | Very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6-sol -c model_reasoning_effort=xhigh` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6-sol -c model_reasoning_effort=high` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
 | Large-work orchestration (Orca coordinator), and the [Reflect](playbooks/reflect.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
 | Visual proof verification (screenshots, video) | GPT 6 Luna, Max, verification only | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
