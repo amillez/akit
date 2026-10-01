@@ -25,12 +25,12 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
    - Coding agents are Claude Code and Codex only.
    - Default picks (roles → harness):
      - Very direct / super defined → **GPT 6 Luna Max** (Codex `gpt-6-luna`).
-     - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6 Sol xHigh** (Codex `gpt-6-sol`).
-     - UI work → **Opus 5.5 High**; Claude Code usage > 70% → **GPT 6 Sol High**.
+     - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6.1 Sol xHigh** (Codex `gpt-6.1-sol`).
+     - UI work → **Opus 5.5 High**; Claude Code usage > 70% → **GPT 6.1 Sol High**.
      - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
      - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xHigh.
      - Never GPT 5.6 or Opus 5.
-   - **Claude Code usage > 70%.** Check `/usage` (or `/status`) in Claude Code for current-window plan usage. Above 70%, route general and UI work to Codex GPT 6 Sol. Escalate one knob at a time.
+   - **Claude Code usage > 70%.** Check `/usage` (or `/status`) in Claude Code for current-window plan usage. Above 70%, route general and UI work to Codex GPT 6.1 Sol. Escalate one knob at a time.
 
 2. **Confirm the session pick.** State which model + effort + harness (Claude Code vs Codex) this session should use and why (one sentence). Do not invent freestyle frontier spends outside the chooser.
 

@@ -115,7 +115,7 @@ Not in the pack: `autoreview`, the Superset pack, other design and planning skil
 | --- | --- |
 | `templates/models.md` | `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` (user level) |
 
-Defaults: super defined → **GPT 6 Luna Max** (Codex); general code and UI → **Opus 5.5 High** (Claude Code), or **GPT 6 Sol** (xHigh general, High UI, Codex) when Claude Code usage is above 70%; Orca coordinator → **Opus 5.5 xHigh**; large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
+Defaults: super defined → **GPT 6 Luna Max** (Codex); general code and UI → **Opus 5.5 High** (Claude Code), or **GPT 6.1 Sol** (xHigh general, High UI, Codex) when Claude Code usage is above 70%; Orca coordinator → **Opus 5.5 xHigh**; large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
 
 ## Keeping skills up to date
 
