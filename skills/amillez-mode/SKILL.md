@@ -23,7 +23,7 @@ Remaining triggers:
 - Long, autonomous, or multi-phase work, or any task Agustín steps away from to review later → a decision trail per [show me your work](references/show-me-your-work.md). Commit it when stakes need an auditable record. Keep it local otherwise.
 - Before commit → reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments**. Keep only the smallest change that solves the problem.
 - UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
-- Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Visual pass/fail is judged by a GPT 6 Luna Max verification session on Codex, not by your own heavy turns.
+- Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Inspect each asset against the success criteria and record pass or fail with what matched and what didn't. Proof is required. No model is pinned as the visual judge.
 - Review comments from Agustín → apply them as they appear. No permission chatter.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
 - Broken skill mid-task → fix it in its own PR in `amillez/akit`. Don't block. Don't silently work around it.
@@ -99,7 +99,6 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 | UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
 | Large-work orchestration (Orca coordinator), and the [Reflect](playbooks/reflect.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
-| Visual proof verification (screenshots, video) | GPT 6 Luna, Max, verification only | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
 
 Rules for the lanes:
 
@@ -108,6 +107,7 @@ Rules for the lanes:
 - Escalate one knob at a time (model, effort, context) and say why. De-escalate once the hard part is done.
 - The Orca coordinator plans, dispatches, and waits. It does not implement, integrate, or validate. Workers do.
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
+- A separate proof verifier is optional. Its brief holds the success criteria and the proof links. It inspects and reports pass or fail with specifics, and never implements. It is the one subagent that runs with the model unset.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A resumed subagent can silently drop directives, so start a fresh one with consolidated scope rather than trusting a "done" summary.
 
@@ -167,7 +167,7 @@ When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on h
 | Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor coding path. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
 | Cursor `Task` subagents, `poteto-agent`, grok and opus-max defaults | Override. Lanes in **Subagents and model lanes**. Large work goes to Orca. | [agent-use-policy §2](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#2-default-model-posture) |
 | Fan-out skills (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `reflect`) | Not part of amillez-mode. Recon and plan, `grill-me`, and Orca instead. The exception is `reflect`, ported as the [Reflect](playbooks/reflect.md) playbook, with its three reviewers on our lanes and its output as one PR for review or a garden hand-off. | [UPSTREAM.md](UPSTREAM.md) |
-| Done means green CI or files changed | Override. Proof loop with flexible evidence, media on the `media` branch, Luna Max for visual. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |
+| Done means green CI or files changed | Override. Proof loop with flexible evidence, media on the `media` branch, each asset inspected against the success criteria. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |
 | `control-ui`, `control-cli`, `deslop`, `no-comments` (cursor-team-kit) | Override. Argent and project `verify-*` for proof. Self-review of the diff before commit. | This file |
 | Skills or plugins installed ad hoc | Override. Allowlist in `amillez/akit`. `scripts/ensure-install.sh` installs core+mobile at `~/.claude` and `~/.agents` (no `~/.codex`). | [akit README](https://github.com/amillez/akit#allowlist) |
 | Owners merge after a clean verdict (autopilot, shipping) | Override. Agents never merge. Only Agustín's say-so merges. | [agent-dispatch-lifecycle](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md) |
