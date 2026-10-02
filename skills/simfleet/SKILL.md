@@ -18,11 +18,6 @@ Metro, or a device outside the fleet.
 
 ## Setup
 
-simfleet governs only projects that have `.sim-fleet/project.json`. A project without that file uses the
-raw Argent device path (`argent-ios-simulator-setup` or `argent-android-emulator-setup`) and picks Metro
-ports with `lsof`, even while `simfleet serve` is up for another project. Do not probe a guessed port or
-read another project's state.
-
 ```bash
 brew install bun
 bun add -g simfleet            # or: bunx simfleet <command>
@@ -46,7 +41,8 @@ simfleet sim list | emu list | lane list | agents
 ```
 
 If the server is down and the project has `.sim-fleet/project.json`, start `simfleet serve --no-tray` in
-the background from that project. Otherwise use the raw device path.
+the background from that project. Otherwise use the raw device path from the
+`argent-ios-simulator-setup` or `argent-android-emulator-setup` skill.
 
 Read [`references/api.md`](references/api.md) when the CLI lacks an operation or another program needs
 the HTTP/WebSocket contract.
