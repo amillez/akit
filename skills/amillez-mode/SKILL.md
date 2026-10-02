@@ -22,13 +22,12 @@ Remaining triggers:
 - Bug with a cheap local test path → failing test first per [tdd](references/tdd.md), and the failing test lands before the fix in git history.
 - Long, autonomous, or multi-phase work, or any task Agustín steps away from to review later → a decision trail per [show me your work](references/show-me-your-work.md). Commit it when stakes need an auditable record. Keep it local otherwise.
 - Before commit → reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments**. Keep only the smallest change that solves the problem.
-- UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself. Before proof, and before changing code for a symptom one device shows and another doesn't, confirm the device runs HEAD: a binary rebuilt with `expo prebuild --clean` after the last native-surface change, and a Metro bundle that contains a newly added symbol.
-- Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. When matching a reference, list per-element checks (each icon's glyph, relative sizes, presentation type, native versus drawn chrome) and report pass or fail per element, not an overall match. When a diff removes or replaces a visible element, include a before/after crop of that element against the previous proof, compared with Argent `screenshot-diff` rather than hand-written pixel scripts. Proof is required. No model is pinned as the visual judge.
-- Dependency patch, native override, or workaround being added, restored, or removed → first reproduce the symptom on a clean build with and without it. Keep every piece that still works without it. When it stays, record the upstream issue and the removal condition. Links [Subtract Before You Add](principles/subtract-before-you-add.md).
-- Review comments from Agustín → apply them as they appear. No permission chatter. Carve-out: a comment that can only be met by overriding platform behavior (new native module, dependency patch, native build change) ships the platform default plus a thread reply that names the override's cost. Build the override only on the reviewer's go.
+- UI, app, or CLI behavior → prove it on the real surface. For Expo and React Native use Argent with a provisioned simulator or emulator. Use the project's `verify-<app>` skill when the repo has one. For bug fixes, reproduce first on the same surface yourself.
+- Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Inspect each asset against the success criteria and record pass or fail with what matched and what didn't. Proof is required. No model is pinned as the visual judge.
+- Review comments from Agustín → apply them as they appear. No permission chatter.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
 - Broken skill mid-task → fix it in its own PR in `amillez/akit`. Don't block. Don't silently work around it.
-- Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. When the project has `.sim-fleet/project.json` and `simfleet serve` is up, stop lanes, release claims, and shut down devices through simfleet per the `simfleet` skill. Otherwise use the raw commands and pick Metro ports with `lsof`, even while serve is up for another project. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
+- Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. When `simfleet serve` is up, stop lanes, release claims, and shut down devices through simfleet per the `simfleet` skill. Otherwise use the raw commands. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
 
 ## Principles
 
@@ -95,20 +94,20 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 
 | Task | Lane | Command |
 | --- | --- | --- |
-| Very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max - < brief.md` (close or feed stdin; never leave stdin open) |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh - < brief.md` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high - < brief.md` |
+| Very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
 | Large-work orchestration (Orca coordinator), and the [Reflect](playbooks/reflect.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
 
 Rules for the lanes:
 
 - Check Claude Code usage with `/usage` (or `/status`) before a Claude Code general-code or UI launch. Above 70% → the Sol lane.
-- Never use GPT 5.6 or Opus 5. Never use Cursor lanes (Composer, Grok via Cursor). Close or feed stdin on every `codex exec` (`- < brief.md`, or `-- "$(cat brief.md)" < /dev/null` when images are attached with `-i`). An open stdin hangs at "Reading additional input from stdin…".
+- Never use GPT 5.6 or Opus 5. Never use Cursor lanes (Composer, Grok via Cursor).
 - Escalate one knob at a time (model, effort, context) and say why. De-escalate once the hard part is done.
 - The Orca coordinator plans, dispatches, and waits. It does not implement, integrate, or validate. Workers do.
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
-- A separate proof verifier is optional. Its brief holds the success criteria and the proof links. For visual success criteria it reports pass or fail per element, not an overall match. It never implements. It is the one subagent that runs with the model unset.
+- A separate proof verifier is optional. Its brief holds the success criteria and the proof links. It inspects and reports pass or fail with specifics, and never implements. It is the one subagent that runs with the model unset.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A resumed subagent can silently drop directives, so start a fresh one with consolidated scope rather than trusting a "done" summary.
 
