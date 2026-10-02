@@ -7,7 +7,7 @@
       "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
     },
     "mobile": {
-      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet, amillez-react-native-mode). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -151,6 +151,13 @@
       "path": "skills/simfleet",
       "when": "Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports; Argent still drives proof (ported from entropyconquers/simfleet, MIT, see skills/simfleet/UPSTREAM.md)",
       "note": "Needs the simfleet CLI and its host tools (see README). Bump the pin in skills/simfleet/UPSTREAM.md with the CLI version. Keep MOBILE_AMILLEZ_SKILLS in scripts/install.sh in sync."
+    },
+    {
+      "id": "amillez-react-native-mode",
+      "group": "mobile",
+      "path": "skills/amillez-react-native-mode",
+      "when": "React Native and Expo twin of amillez-mode, attached alongside it on RN coding dispatches; picks a house playbook from its allowlist and links into the amillez/rn-bedrock docs as the source of truth",
+      "note": "Keep MOBILE_AMILLEZ_SKILLS in scripts/install.sh in sync."
     }
   ],
   "excluded": [

@@ -34,7 +34,7 @@ USAGE
 }
 
 # amillez skills under skills/ tagged "group": "mobile" in the manifest.json `amillez` list.
-MOBILE_AMILLEZ_SKILLS=(simfleet)
+MOBILE_AMILLEZ_SKILLS=(simfleet amillez-react-native-mode)
 
 GROUPS_ARG=""
 SKIP_UPSTREAM=0
