@@ -34,14 +34,15 @@ Pick `--agent`, `--model`, and `--effort` per task. These match the lanes in `am
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
 | Orchestration (the coordinator only) | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 
-Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Coding agents are `claude` or `codex` only, never `--agent cursor`.
+Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Coding agents are `claude` or `codex` only, never `--agent cursor`. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `gpt-6.1-sol`, `gpt-6-luna`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
 
 ## Prerequisites (large only)
 
 1. `orca status --json` succeeds (runtime up).
 2. Orchestration enabled: Settings → Experimental.
-3. Skills: `orca skills install --skill orca-cli` (or `npx skills add https://github.com/stablyai/orca --skill orca-cli`) and the **orchestration** skill. Refresh with `orca skills get orchestration --full` when flags drift.
+3. Skills: `orca skills install --skill orca-cli` (or `npx skills add https://github.com/stablyai/orca --skill orca-cli`) and the **orchestration** skill. Refresh with `orca skills get orchestration --full` when flags drift. Prefer that reference for per-subcommand flags instead of restating them here.
 4. The amillez plugin is installed (`scripts/ensure-install.sh` in `amillez/akit`) before workers code, so every worker can load amillez-mode.
+5. Sender terminal: `orca terminal create`, then pass `--from <handle>` on `run-create` and related calls. Without an active sender terminal, `run-create` fails with `no_active_sender_terminal`.
 
 ## Coordinator role
 
@@ -58,9 +59,16 @@ MODE         Load and follow the amillez-mode skill. Name each principle that sh
 GOAL         one sentence, the outcome, executable by a stranger with no chat access
 SCOPE        paths this task may write; paths it may not; its exclusive worktree or branch
 CONTEXT      pointers to files and PRs; upstream reports pasted in full when this task
-             depends on them, because workers cannot see siblings
+             depends on them, because workers cannot see siblings. Link each review
+             comment by id or quote it verbatim. Label any interpretation and any claim
+             about the current tree as unverified for the worker to check during recon.
+             The reviewer's text wins over the brief. For a symptom reported before,
+             list each prior attempt with its premise and outcome and tell the worker
+             to apply Attack the Premise before writing another fix.
 ACCEPTANCE   checkable criteria, one per line
-VERIFY       exact commands, or the Argent or project verify-* path, plus known gotchas
+VERIFY       exact commands, or the Argent or project verify-* path, plus known gotchas.
+             Pick the proof device and OS version from the changed code's platform and
+             version gates, not from a default simulator roster.
 TIMEBOX      rough cap on runtime; on expiry, return partial findings and stop rather than run on
 FORBIDDEN    no merge, no auto-merge, no PR close, no rebase or force-push outside your own
              branch, no fixes outside scope, plus task-specific bans
@@ -76,25 +84,30 @@ Size the brief to the task. A one-command task gets the template collapsed to a 
 ## Preferred supervised Orca loop
 
 ```bash
-orca orchestration run-create --objective "<objective>" --json
+orca orchestration run-create --objective "<objective>" --from <handle> --json
 orca orchestration task-create --spec "<brief>" --task-title "<slice>" --json
 orca orchestration worker-start \
   --task <taskId> \
   --worktree new-child \
   --name <slug> \
   --agent claude \
-  --model <opaque-model-id> \
+  --model claude-opus-5-5 \
   --effort high \
   --setup run \
   --json
+# --model is the full lanes-table id (claude-opus-5-5, gpt-6.1-sol, gpt-6-luna).
+# Never an alias (opus) and never an id from ~/.codex/models_cache.json.
+# After start, check the worker banner for the expected model.
 # or sequential under disk pressure:
 #   --worktree current   (one worker at a time)
 
-orca orchestration check --wait --types worker_done,escalation,question --timeout-ms 900000 --json
-orca orchestration check --ack <deliveryId> --wait --types worker_done,escalation,question --timeout-ms 900000 --json
+# Cap foreground waits at 590000 ms (Bash tool foreground cap is 600000).
+# Longer waits: run in the background and poll, or see orca skills get orchestration --full.
+orca orchestration check --wait --types worker_done,escalation,question --timeout-ms 590000 --json
+orca orchestration check --ack <deliveryId> --wait --types worker_done,escalation,question --timeout-ms 590000 --json
 ```
 
-Drive runs with `run-create` and `worker-start`, never `orca orchestration run`, `run-stop`, or `coordinator-start`. Completion is `worker_done` with `--outcome`, taskId, and dispatchId. After accept, `worker-release` (or `worker-retain` for debug).
+Drive runs with `run-create` and `worker-start` (with `--from <handle>` on create), never `orca orchestration run`, `run-stop`, or `coordinator-start`. Completion is `worker_done` with `--outcome`, taskId, and dispatchId. After accept, `worker-release` (or `worker-retain` for debug).
 
 Runtime ownership and the DAG live in Orca. Prompt text alone is not a substitute for Dispatches.
 
@@ -109,6 +122,7 @@ Classify a failed or silent worker before any retry. Probe read-only first (`orc
 - **Cap hit or out of memory** (context, usage, or memory limit) → respawn with smaller scope.
 - **Network drop** → retry as is.
 - **Tool error** → retry on a different lane.
+- **Readiness timeout** → read the worker terminal, answer the blocking prompt for this launch only (workspace trust, update offer), retry into the same terminal with `--retry-of`, and re-check the model banner. Do not treat this as a blind flake.
 - **Unknown** → retry once.
 - **Two retries** → abandon the task and replan around it.
 
@@ -119,10 +133,10 @@ A worker that returns late reconciles against the current branch and PR state be
 1. Confirm the size gate says large. If small, stop and dispatch one direct agent on its lane with a brief that names amillez-mode.
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed, amillez plugin installed).
 3. Scout only enough to decompose. Never implement product work in the coordinator session.
-4. Write the standing orders. `run-create`, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed.
-5. Assign `--agent`, `--model`, and `--effort` per task from **Model lanes**.
-6. `worker-start` with the disk mode (sequential `current` vs `new-child`).
-7. `check --wait` for `worker_done`, escalation, or question. Ack deliveries. Use gates or `ask` for blocking decisions only. Apply **Retry by failure mode** to every failure.
+4. Write the standing orders. `run-create`, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Between integrate and prove, add a worker task that reviews the integrated diff against the repo's own practice docs so structure settles before proof rounds start.
+5. Assign `--agent`, `--model`, and `--effort` per task from **Model lanes**. Pass the full lanes-table id to `--model`.
+6. `worker-start` with the disk mode (sequential `current` vs `new-child`). Confirm the worker banner shows the expected model.
+7. `check --wait` (cap 590000 ms foreground) for `worker_done`, escalation, or question. Ack deliveries. Use gates or `ask` for blocking decisions only. Apply **Retry by failure mode** to every failure.
 8. Prove before PR. Workers open PRs per amillez-mode's Opening a PR playbook, never merge, and tear down what they started.
 9. PR babysits belong to the dispatcher ([agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged)). The coordinator does not babysit, merge, or close.
 
@@ -142,6 +156,7 @@ For **large**: the Orca command sequence (run, task, worker, check), the standin
 - `--agent cursor` or any Cursor coding host.
 - `orchestration run` instead of `run-create` + `worker-start`.
 - Opus 5.5 xHigh on every worker.
+- `--model` as an alias (`opus`) or an id from `~/.codex/models_cache.json` instead of the lanes-table id.
 - Retrying without classifying the failure, or a third retry of the same task.
 - Opening a PR before prove.
 - Treating this skill's prompt text as a substitute for Orca Dispatches and `worker_done`.

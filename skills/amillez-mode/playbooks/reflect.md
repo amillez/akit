@@ -27,7 +27,7 @@ Each reviewer is a fresh headless session with its own lens. Launch all three at
 
 The lanes and their launch commands are in `SKILL.md` **Subagents and model lanes**, which follows the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, it wins over this table. Never GPT 5.6 or Opus 5.
 
-Reviewers need MCP access for context the log references (issues, PRs, chat threads, error traces), so launch them with your normal user config. Run the Codex reviewer with `--sandbox read-only`.
+Reviewers need MCP access for context the log references (issues, PRs, chat threads, error traces), so launch them with your normal user config. Run the Codex reviewer with `--sandbox read-only`. Close or feed stdin on every `codex exec` (`codex exec … - < brief.md`, or `codex exec … -- "$(cat brief.md)" < /dev/null` when images are attached with `-i`). An open stdin hangs at "Reading additional input from stdin…".
 
 #### 3. Synthesize
 

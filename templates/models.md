@@ -4,9 +4,9 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 
 | Situation | Pick | CLI |
 | --- | --- | --- |
-| Very direct / super defined | **GPT 6 Luna** · **Max** | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
-| General code / some reasoning | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **xHigh** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
-| UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **High** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
+| Very direct / super defined | **GPT 6 Luna** · **Max** | `codex exec -m gpt-6-luna -c model_reasoning_effort=max - < brief.md` |
+| General code / some reasoning | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **xHigh** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh - < brief.md` |
+| UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **High** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high - < brief.md` |
 | Large-work orchestration (Orca coordinator) | **Opus 5.5** · **xHigh** | `claude --model claude-opus-5-5 --effort xhigh` + Orca |
 | Large reasoning (non-orch) | **Fable 5.1** · **Medium** → High → xHigh | Claude Code |
 
@@ -19,6 +19,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 - Leave **Fast** off unless the human explicitly asks.
 - Coding agents are **Claude Code** and **Codex** only.
 - Never use GPT 5.6 or Opus 5.
+- Close or feed stdin on every `codex exec` (`- < brief.md`, or `-- "$(cat brief.md)" < /dev/null` with `-i` images). An open stdin hangs at "Reading additional input from stdin…".
 
 ## Role labels → harness
 
