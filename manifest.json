@@ -149,8 +149,8 @@
       "id": "correct",
       "group": "core",
       "path": "skills/correct",
-      "when": "/correct entry point that runs amillez-mode's Correct playbook: make each mistake agents repeat in a repo impossible (ported from pstack, MIT, see skills/correct/UPSTREAM.md)",
-      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /correct loads it. A repeated correction reaches the playbook through amillez-mode."
+      "when": "/correct: find the mistakes agents repeat in a repo and make each one impossible; the procedure lives in the skill (ported from pstack, MIT, see skills/correct/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /correct loads it. amillez-mode's repeated-correction trigger names it."
     },
     {
       "id": "simfleet",
