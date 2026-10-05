@@ -1,6 +1,6 @@
 ### Correct
 
-**You own making each repeated mistake impossible.** Agustín keeps correcting agents in this repo for the same mistakes. Change the repo so the next agent can't make them. Use for "correct", "/correct", "make this mistake impossible", or the second time Agustín corrects the same mistake. This is the runnable form of [Encode Lessons in Structure](../principles/encode-lessons-in-structure.md).
+**You own making each repeated mistake impossible.** Agustín keeps correcting agents in this repo for the same mistakes. Change the repo so the next agent can't make them. Use for "correct", the [`/correct`](../../correct/SKILL.md) skill, "make this mistake impossible", or the second time Agustín corrects the same mistake. This is the runnable form of [Encode Lessons in Structure](../principles/encode-lessons-in-structure.md).
 
 Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Design the repo so a change that looks right from one file is right for the whole repo.
 
