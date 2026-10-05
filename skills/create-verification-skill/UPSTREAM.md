@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/create-verification-skill/` (`SKILL.md`, `references/feature-map-example/`) |
-| Compared against | `ecc249f1e306fc64ddf83c7bed16cacf7c2239db` (pstack `0.15.5`). `references/feature-map-example/` is byte-identical at that commit. |
+| Compared against | `00b52d954a99ff67802cad428ff19218659f76fd` (pstack `0.15.11`). `references/feature-map-example/` is byte-identical at that commit. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.

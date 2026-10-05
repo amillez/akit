@@ -61,6 +61,7 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 - **Fix Root Causes** ([principles/fix-root-causes.md](principles/fix-root-causes.md)). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
 - **Sequence Work into Verifiable Units** ([principles/sequence-verifiable-units.md](principles/sequence-verifiable-units.md)). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 - **Test Behavior, Not Implementation** ([principles/test-behavior-not-implementation.md](principles/test-behavior-not-implementation.md)). Writing, changing, or keeping a test. Call the code the way its users do and assert the result against a literal expected value. If the test would still pass when every imported function returns `undefined`, rewrite the assertion or delete the test.
+- **Explain the Number** ([principles/explain-the-number.md](principles/explain-the-number.md)). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
 
 **Delegation**
 
@@ -109,7 +110,9 @@ Rules for the lanes:
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
 - A separate proof verifier is optional. Its brief holds the success criteria and the proof links. It inspects and reports pass or fail with specifics, and never implements. It is the one subagent that runs with the model unset.
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A resumed subagent can silently drop directives, so start a fresh one with consolidated scope rather than trusting a "done" summary.
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said.
+
+**Fresh subagents by default.** Give new work to a fresh subagent with consolidated scope, meaning the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. Resume or message an existing subagent only when the new work strictly needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server, Metro, or a simulator. A stop or hold order to a running agent is not reuse. A role such as a PR owner outlives its agent. Once that agent returns, a fresh agent takes the role's next round. A resumed subagent can silently drop directives, so start a fresh one with consolidated scope rather than trusting a "done" summary.
 
 ## Writing the reply
 
