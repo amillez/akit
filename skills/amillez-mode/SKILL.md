@@ -26,6 +26,7 @@ Remaining triggers:
 - Visual proof (screenshots, video) → push media to the repo's `media` branch, never the PR branch, and link it with GitHub blob URLs. Inspect each asset against the success criteria and record pass or fail with what matched and what didn't. Proof is required. No model is pinned as the visual judge.
 - Review comments from Agustín → apply them as they appear. No permission chatter.
 - Agustín corrects the same mistake a second time → run the sibling [`correct`](../correct/SKILL.md) skill on that class.
+- A diff you don't trust, or "what could this break" → run the sibling [`blast-radius`](../blast-radius/SKILL.md) skill and prove the one fact the change is safe because of.
 - Automated review comments (bots) → skeptical posture. Verify each claim against the code per [review triage](references/review-triage.md). Fix real findings, dismiss noise with a concrete reason, and never churn code to quiet a bot.
 - Broken skill mid-task → fix it in its own PR in `amillez/akit`. Don't block. Don't silently work around it.
 - Done → tear down what you started. Simulators, emulators, Metro and dev servers, matching `expo/bin/cli`, `expo start`, and `expo run` processes, watchers, tunnels. When `simfleet serve` is up, stop lanes, release claims, and shut down devices through simfleet per the `simfleet` skill. Otherwise use the raw commands. Then check that no used Metro port (commonly 8081, 8090) is listening. The worktree and local branch go after merge or abandon.
@@ -142,7 +143,6 @@ Open a todolist whose first items are the matched playbook's steps, before any t
 Match the task to a playbook below, open its file, and copy its steps in verbatim. Every playbook that changes code ends with [Opening a PR](playbooks/opening-a-pr.md).
 
 - **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. [playbooks/investigation.md](playbooks/investigation.md).
-- **Blast radius.** What a change could break beyond the diff, before it ships. Find the one fact it is safe because of and prove it by running real code. For "what could this break" or a small diff you don't trust. [playbooks/blast-radius.md](playbooks/blast-radius.md).
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. [playbooks/bug-fix.md](playbooks/bug-fix.md).
 - **Feature.** New or changed behavior, built from a named data shape. [playbooks/feature.md](playbooks/feature.md).
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move). [playbooks/refactoring.md](playbooks/refactoring.md).

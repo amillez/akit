@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, and correct skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, and blast-radius skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -151,6 +151,13 @@
       "path": "skills/correct",
       "when": "/correct: find the mistakes agents repeat in a repo and make each one impossible; the procedure lives in the skill (ported from pstack, MIT, see skills/correct/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /correct loads it. amillez-mode's repeated-correction trigger names it."
+    },
+    {
+      "id": "blast-radius",
+      "group": "core",
+      "path": "skills/blast-radius",
+      "when": "/blast-radius: find what a change could break beyond the diff and prove the one fact it is safe because of by running real code; the procedure lives in the skill (ported from pstack, MIT, see skills/blast-radius/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /blast-radius loads it. amillez-mode's untrusted-diff trigger names it."
     },
     {
       "id": "simfleet",
