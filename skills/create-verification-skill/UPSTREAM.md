@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/create-verification-skill/` (`SKILL.md`, `references/feature-map-example/`) |
-| Compared against | `ecc249f1e306fc64ddf83c7bed16cacf7c2239db` (pstack `0.15.5`). `references/feature-map-example/` is byte-identical at that commit. |
+| Compared against | `00b52d954a99ff67802cad428ff19218659f76fd` (pstack `0.15.11`). `references/feature-map-example/` is byte-identical at that commit. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
@@ -18,7 +18,7 @@ Attribution: the generator workflow, proof standards, and the feature map exampl
 ## Local changes
 
 1. **Output location.** `.claude/skills/verify-<app>/` and `.agents/skills/verify-<app>/`, never `.cursor/skills/`.
-2. **Expo and React Native.** Drive and launch with Argent.
+2. **Expo and React Native.** Drive and launch with Argent, on an iOS 26 simulator by default for iOS, since iOS 18 has no liquid glass.
 3. **Visual proof.** Screenshots and video go to the repo's `media` branch, per ai-eng-practices `agent-proof-feedback-loop`. Each asset gets an inspected pass or fail against the feature's end state. A separate verifier is optional and runs with the model unset.
 4. **App CLI** (from poteto's "The Complete Guide to pstack Pt. 1", https://x.com/poteto/status/2094457600259842065). The generated skill ships one agent-friendly repo CLI for dev setup, seeding, test users and auth, reset, and opening a feature, with subcommands, JSON output, `--dry-run` on destructive commands, actionable errors, and rich `--help`. For Expo and React Native it covers only the app layer, since Argent drives the device. Step 4 proves `--help` and one `--dry-run`.
 5. **Maintenance cadence.** Step 5 proposes a weekly scheduled routine running `/maintain-verification-skill` instead of suggesting a cadence only on request.

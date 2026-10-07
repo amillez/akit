@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, and TypeScript skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, and correct skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet, amillez-react-native-mode). Not installed with --groups core alone."
@@ -144,6 +144,13 @@
       "group": "core",
       "path": "skills/typescript-best-practices",
       "when": "Reading, writing, or reviewing any .ts or .tsx file; TypeScript grounding of amillez-mode type-system and boundary principles (ported from pstack, MIT, see skills/typescript-best-practices/UPSTREAM.md)"
+    },
+    {
+      "id": "correct",
+      "group": "core",
+      "path": "skills/correct",
+      "when": "/correct: find the mistakes agents repeat in a repo and make each one impossible; the procedure lives in the skill (ported from pstack, MIT, see skills/correct/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /correct loads it. amillez-mode's repeated-correction trigger names it."
     },
     {
       "id": "simfleet",
