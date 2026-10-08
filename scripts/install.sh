@@ -17,7 +17,8 @@ Groups:
   core    Always installed: grill-me, grilling, and every amillez skill under skills/
           except the mobile ones (amillez-mode, orchestrate-agents,
           create-verification-skill, maintain-verification-skill,
-          setup-amillez-models, typescript-best-practices, correct)
+          setup-amillez-models, typescript-best-practices, correct,
+          blast-radius)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
