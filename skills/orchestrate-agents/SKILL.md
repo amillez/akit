@@ -65,9 +65,7 @@ CONTEXT      pointers to files and PRs; upstream reports pasted in full when thi
              The reviewer's text wins over the brief. For a symptom reported before,
              list each prior attempt with its premise and outcome and tell the worker
              to apply Attack the Premise before writing another fix.
-ACCEPTANCE   checkable criteria, one per line. A task that pushes to a PR adds one
-             more line. Run the repo's review skill (or its practice docs) on the diff
-             and fix MAJOR findings before pushing.
+ACCEPTANCE   checkable criteria, one per line
 VERIFY       the package scripts CI runs, or the repo's verify skill, or the Argent
              path, plus known gotchas. Never run a linter file by file, because that
              skips the package's lint config. Pick the proof device and OS version
@@ -142,7 +140,7 @@ A worker that returns late reconciles against the current branch and PR state be
 1. Confirm the size gate says large. If small, stop and dispatch one direct agent on its lane with a brief that names amillez-mode.
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed, amillez plugin installed).
 3. Scout only enough to decompose. Never implement product work in the coordinator session.
-4. At `run-create`, create `~/orca/runs/<run-id>/` for the standing orders, briefs, reports, and `decisions.tsv`. Never keep run state under `/tmp`. Write the standing orders, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Every task that pushes to a PR carries the review line in ACCEPTANCE, sequential `--worktree current` runs included. Before each `worker-start`, check that every path its spec cites exists.
+4. At `run-create`, create `~/orca/runs/<run-id>/` for the standing orders, briefs, reports, and `decisions.tsv`. Never keep run state under `/tmp`. Write the standing orders, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Between integrate and prove, add a worker task that reviews the integrated diff against the repo's own practice docs so structure settles before proof rounds start. Before each `worker-start`, check that every path its spec cites exists.
 5. Assign `--agent`, `--model`, and `--effort` per task from **Model lanes**. Pass the full lanes-table id to `--model`.
 6. `worker-start` with the disk mode (sequential `current` vs `new-child`). Confirm the worker banner shows the expected model.
 7. `check --wait` (cap 590000 ms foreground) for `worker_done`, escalation, or question. Orca messages reach you only while that wait is pending, so keep one pending while any worker is live and never hand the turn back to the human without it. Ack deliveries. Use gates or `ask` for blocking decisions only. Apply **Retry by failure mode** to every failure.
