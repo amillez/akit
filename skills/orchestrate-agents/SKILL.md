@@ -13,9 +13,9 @@ Every coding agent you invoke, a single direct agent or an Orca worker, loads an
 
 ## Size gate (do this first)
 
-| Gate | Condition | Action |
-| --- | --- | --- |
-| **Small** | Single surface or package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch one agent directly on the matching lane (see **Model lanes**), with a brief that names amillez-mode. |
+| Gate      | Condition                                                                                                                     | Action                                                                                                                                                                                                                       |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Small** | Single surface or package, one PR, clear blast radius, one focused session                                                    | **Skip Orca.** Dispatch one agent directly on the matching lane (see **Model lanes**), with a brief that names amillez-mode.                                                                                                 |
 | **Large** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xHigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude Code or Codex workers. The coordinator plans, dispatches, and waits. Workers own implement, integrate, and prove. |
 
 One-line rule: needs parallel workers → Orca; one agent can own the whole loop but the work is long, cross-cutting, or reviewed after stepping away → dispatch one agent on amillez-mode's [Figure it out](../amillez-mode/playbooks/figure-it-out.md) playbook, no Orca Run.
@@ -26,13 +26,13 @@ Do not collapse big work into one mega agent. Do not over-orchestrate a rename.
 
 Pick `--agent`, `--model`, and `--effort` per task. These match the lanes in `amillez-mode` ([Subagents and model lanes](../amillez-mode/SKILL.md#subagents-and-model-lanes)).
 
-| Work | Lane | Orca worker flags |
-| --- | --- | --- |
-| Very direct, defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `--agent codex --model gpt-6-luna --effort max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort xhigh` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort high` |
-| Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
-| Orchestration (the coordinator only) | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
+| Work                                                                        | Lane                                                             | Orca worker flags                                                                                            |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Very direct, defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max                                                  | `--agent codex --model gpt-6-luna --effort max`                                                              |
+| General code, some reasoning                                                | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort xhigh` |
+| UI work                                                                     | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High  | `--agent claude --model claude-opus-5-5 --effort high` or `--agent codex --model gpt-6.1-sol --effort high`  |
+| Large reasoning, gnarly single-agent debugging                              | Fable 5.1, Medium, then High, then xhigh one step at a time      | `--agent claude` with the Fable 5.1 model id                                                                 |
+| Orchestration (the coordinator only)                                        | Opus 5.5, xHigh                                                  | `claude --model claude-opus-5-5 --effort xhigh` driving Orca                                                 |
 
 Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Coding agents are `claude` or `codex` only, never `--agent cursor`. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `gpt-6.1-sol`, `gpt-6-luna`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
 
@@ -109,6 +109,8 @@ orca orchestration worker-start \
 # background Bash that wakes you). Never end your turn without one.
 # Cap foreground waits at 590000 ms (Bash tool foreground cap is 600000).
 # Longer waits: run in the background and poll, or see orca skills get orchestration --full.
+# --types only picks what wakes the wait. An unacked batch replays at once whatever its
+# types, so an unacked heartbeat keeps waking it. Ack heartbeat-only batches and wait again.
 orca orchestration check --wait --types worker_done,escalation,question --timeout-ms 590000 --json
 orca orchestration check --ack <deliveryId> --wait --types worker_done,escalation,question --timeout-ms 590000 --json
 ```
