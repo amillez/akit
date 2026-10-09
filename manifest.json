@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, and reflect skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, and show-me-your-work skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -165,6 +165,13 @@
       "path": "skills/reflect",
       "when": "/reflect: three reviewers on different model lanes mine a finished Claude Code or Codex session log, and a synthesizer routes the learnings to concrete skill or ai-eng-practices edits as one small PR or a garden hand-off; the procedure lives in the skill (ported from pstack, MIT, see skills/reflect/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /reflect loads it. amillez-mode's reflect trigger names it."
+    },
+    {
+      "id": "show-me-your-work",
+      "group": "core",
+      "path": "skills/show-me-your-work",
+      "when": "/show-me-your-work: keep a reviewable TSV decision trail for long, autonomous, or multi-phase work, audit it against this run's session log, and get a cross-model review before handing back; the format lives in the skill (ported from pstack, MIT, see skills/show-me-your-work/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /show-me-your-work loads it. amillez-mode's long-work trigger and its playbooks name it."
     },
     {
       "id": "simfleet",

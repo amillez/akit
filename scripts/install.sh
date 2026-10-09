@@ -18,7 +18,7 @@ Groups:
           except the mobile ones (amillez-mode, orchestrate-agents,
           create-verification-skill, maintain-verification-skill,
           setup-amillez-models, typescript-best-practices, correct,
-          blast-radius, reflect)
+          blast-radius, reflect, show-me-your-work)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
