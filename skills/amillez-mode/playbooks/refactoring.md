@@ -2,7 +2,7 @@
 
 **You own the contract. The structure changes. The behavior does not.** Distinct from [Feature](feature.md), which adds behavior, and [Bug fix](bug-fix.md), which corrects it.
 
-If the cleanup reveals a missing feature or a real bug, split it out and ship the structural change first against the pinned contract. A redesign is allowed, but name it and route to Feature. Large or cross-cutting structural work that one agent can own belongs to [Figure it out](figure-it-out.md). Work that needs parallel workers goes through the size gate in `SKILL.md`. This playbook is the focused-to-medium change.
+If the cleanup reveals a missing feature or a real bug, split it out and ship the structural change first against the pinned contract. A redesign is allowed, but name it and route to Feature. Large or cross-cutting structural work that one agent can own belongs to the sibling [`figure-it-out`](../../figure-it-out/SKILL.md) skill. Work that needs parallel workers goes through the size gate in `SKILL.md`. This playbook is the focused-to-medium change.
 
 1. Pin the behavior contract first. Recon the affected subsystem read-only to learn the contract, then write a characterization test, snapshot, or equivalence harness that captures current behavior before any structure moves. If the area has no coverage, write the pin before touching structure. Type check and lint are not a pin.
 2. Name the structure the code is missing per [Model the Domain](../principles/model-the-domain.md). Boring code stays when the shape is already clear and local. The reshape must delete branches or invalid states, not add indirection.

@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, and show-me-your-work skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, and figure-it-out skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -172,6 +172,13 @@
       "path": "skills/show-me-your-work",
       "when": "/show-me-your-work: keep a reviewable TSV decision trail for long, autonomous, or multi-phase work, audit it against this run's session log, and get a cross-model review before handing back; the format lives in the skill (ported from pstack, MIT, see skills/show-me-your-work/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /show-me-your-work loads it. amillez-mode's long-work trigger and its playbooks name it."
+    },
+    {
+      "id": "figure-it-out",
+      "group": "core",
+      "path": "skills/figure-it-out",
+      "when": "/figure-it-out: design and run a bespoke, auditable workflow when no narrower playbook fits or one agent owns a long migration, an ambitious multi-part change, or work reviewed after stepping away; parallel workers go to Orca instead; the procedure lives in the skill (ported from pstack, MIT, see skills/figure-it-out/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /figure-it-out loads it. amillez-mode's no-fitting-playbook and size-gate triggers name it."
     },
     {
       "id": "simfleet",
