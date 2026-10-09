@@ -1,6 +1,10 @@
-# Unslop
+---
+name: unslop
+description: Cut AI tells from any writing. Must always apply.
+disable-model-invocation: true
+---
 
-**Trigger.** Cut AI tells from any writing. Must always apply.
+# Unslop
 
 Edit text to remove AI patterns.
 

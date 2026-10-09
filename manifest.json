@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, and figure-it-out skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, and unslop skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -179,6 +179,13 @@
       "path": "skills/figure-it-out",
       "when": "/figure-it-out: design and run a bespoke, auditable workflow when no narrower playbook fits or one agent owns a long migration, an ambitious multi-part change, or work reviewed after stepping away; parallel workers go to Orca instead; the procedure lives in the skill (ported from pstack, MIT, see skills/figure-it-out/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /figure-it-out loads it. amillez-mode's no-fitting-playbook and size-gate triggers name it."
+    },
+    {
+      "id": "unslop",
+      "group": "core",
+      "path": "skills/unslop",
+      "when": "/unslop: cut AI tells from any writing with the slop-pattern catalog; the catalog lives in the skill (ported from pstack, MIT, see skills/unslop/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /unslop loads it. amillez-mode's prose trigger, playbooks, and technical-writing reference, and the show-me-your-work and blast-radius skills, link it."
     },
     {
       "id": "simfleet",
