@@ -39,7 +39,7 @@ cd ~/agent-work/akit
 
 | Group | Always? | Contents |
 | --- | --- | --- |
-| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius` |
+| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius`, `reflect` |
 | `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet`, `amillez-react-native-mode` |
 
 Default is **core+mobile**. `--groups core` skips mobile.
@@ -106,6 +106,7 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `typescript-best-practices` | core | **amillez** (pstack port, MIT; see `skills/typescript-best-practices/UPSTREAM.md`) | Skill description, when reading, writing, or reviewing any `.ts` or `.tsx` file. Claude Code also scopes it with `paths`. |
 | `correct` | core | **amillez** (pstack port, MIT; see `skills/correct/UPSTREAM.md`) | `/correct`, a standalone skill that holds the whole procedure for making each mistake agents repeat in a repo impossible. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's repeated-correction trigger names it. |
 | `blast-radius` | core | **amillez** (pstack port, MIT; see `skills/blast-radius/UPSTREAM.md`) | `/blast-radius`, a standalone skill that holds the whole procedure for finding what a change could break beyond the diff and proving the one fact it is safe because of. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's untrusted-diff trigger names it. |
+| `reflect` | core | **amillez** (pstack port, MIT; see `skills/reflect/UPSTREAM.md`) | `/reflect`, a standalone skill that holds the whole procedure for mining a finished Claude Code or Codex session log with three reviewers on different model lanes and routing the learnings to concrete skill or ai-eng-practices edits, as one small PR for review or a hand-off to the weekly garden. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's reflect trigger names it. |
 | Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` | Building native or Nitro modules |
 | `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
 | `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. |

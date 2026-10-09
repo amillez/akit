@@ -15,7 +15,7 @@ Attach this skill **alongside** `amillez-mode` on React Native and Expo coding w
 - `grill-me` and the [Prototype](../amillez-mode/playbooks/prototype.md) playbook for open questions.
 - Process playbooks such as [Feature](../amillez-mode/playbooks/feature.md), [Bug fix](../amillez-mode/playbooks/bug-fix.md), and [Refactoring](../amillez-mode/playbooks/refactoring.md).
 - Proof on a simulator or emulator through Argent or the project's `verify-*` skill, media on the `media` branch, and teardown.
-- [Opening a PR](../amillez-mode/playbooks/opening-a-pr.md), never merge, [Babysit](../amillez-mode/playbooks/babysit.md), and [Reflect](../amillez-mode/playbooks/reflect.md).
+- [Opening a PR](../amillez-mode/playbooks/opening-a-pr.md), never merge, [Babysit](../amillez-mode/playbooks/babysit.md), and the sibling [`reflect`](../reflect/SKILL.md) skill.
 
 ## Docs are the source of truth
 

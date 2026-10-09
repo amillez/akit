@@ -33,7 +33,7 @@ Scan for:
 Findings must point to skills, tools, or MCPs invoked in this transcript. Speculative routings to skills the parent never opened do not count. To check whether a skill was used, scan the transcript for:
 
 - Reads of any `SKILL.md` file (user-level `~/.claude/skills/` or `~/.agents/skills/`, or repo-level `.claude/skills/`, `.agents/skills/`, or `.codex/skills/`)
-- Subagent or headless-session prompts (`claude -p`, `codex exec`, Orca worker briefs) that name a skill
+- Subagent or headless-session prompts (`claude -p`, `codex exec`, or a worker or subagent brief) that name a skill
 - Tool calls (shell, search, MCP, etc.) that match a skill's documented commands
 
 Two valid finding shapes:
