@@ -40,7 +40,7 @@ Apply [Sequence Work into Verifiable Units](../principles/sequence-verifiable-un
 
 #### Phase D: Keep the audit trail
 
-Log the run per [show me your work](../references/show-me-your-work.md). Figure it out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. The trail plus the diff is what lets the human come back and trust the work.
+Log the run per the [`show-me-your-work`](../../show-me-your-work/SKILL.md) skill. Figure it out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. The trail plus the diff is what lets the human come back and trust the work.
 
 #### Phase E: Verify and hand back
 

@@ -5,7 +5,7 @@
 1. Stop at a safe boundary. Finish the current atomic step or back out of it. Start nothing new, and cancel any nested subagents.
 2. Take no irreversible action to pause. No PR and no push unless you already had one out.
 3. Make the work durable. Commit uncommitted edits as one clear `wip:` commit on the current branch so nothing is lost. If the tree is broken, say so in the commit body in one line.
-4. Write the resume note off-context. Capture intent, what you were doing, progress and what's verified, current state, next steps, key files, and gotchas. For a session end or imminent context compaction, write it to a file like `/tmp/<slug>-resume.md` and name the path in the reply. If a [show me your work](../references/show-me-your-work.md) trail exists, point at it instead of duplicating it.
+4. Write the resume note off-context. Capture intent, what you were doing, progress and what's verified, current state, next steps, key files, and gotchas. For a session end or imminent context compaction, write it to a file like `/tmp/<slug>-resume.md` and name the path in the reply. If a trail from the [`show-me-your-work`](../../show-me-your-work/SKILL.md) skill exists, point at it instead of duplicating it.
 5. Tear down what the task started (simulators, emulators, Metro and dev servers, watchers) unless the resume needs them running, and say which you left up.
 
 **Reply:** where you are in the loop, what's on disk versus still in your head (paths, no diff dumps), the commits you made and whether the tree is clean, and the first action on resume. This is a pause, not a final report.
