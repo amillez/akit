@@ -6,7 +6,7 @@ Invoked at the end of every other playbook that changes code.
 
 **Commits.** Commit liberally. Rebase into small, ordered commits before opening PRs. Each commit is a future PR: landable, ordered to tell the story. Amend when the fix belongs in a just-made commit. New commit when separable.
 
-**Before the PR.** Reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments** in `SKILL.md`. Run the repo's lint, typecheck, and tests on the committed head. Write every PR title, PR description, and commit body with [technical writing](../references/technical-writing.md), then apply [unslop](../references/unslop.md). Apply every technical-writing layer except Diátaxis. Use one word for each action, keep articles, and avoid `-ing` when a plain verb works.
+**Before the PR.** Reread your own diff. Delete slop, dead code, debug output, and comments that fail **Comments** in `SKILL.md`. Run the repo's lint, typecheck, and tests on the committed head. Write every PR title, PR description, and commit body with [technical writing](../references/technical-writing.md), then apply the sibling [`unslop`](../../unslop/SKILL.md) skill. Apply every technical-writing layer except Diátaxis. Use one word for each action, keep articles, and avoid `-ing` when a plain verb works.
 
 **Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area as the scope. Keep the subject short and imperative. Name a real symbol when one carries the change. For example, `fix(checkout): retry payment intent on 409`. Do not add a trailing period. Follow the repo's own title convention when it has one.
 
