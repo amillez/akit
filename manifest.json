@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, and blast-radius skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, and reflect skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -158,6 +158,13 @@
       "path": "skills/blast-radius",
       "when": "/blast-radius: find what a change could break beyond the diff and prove the one fact it is safe because of by running real code; the procedure lives in the skill (ported from pstack, MIT, see skills/blast-radius/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /blast-radius loads it. amillez-mode's untrusted-diff trigger names it."
+    },
+    {
+      "id": "reflect",
+      "group": "core",
+      "path": "skills/reflect",
+      "when": "/reflect: three reviewers on different model lanes mine a finished Claude Code or Codex session log, and a synthesizer routes the learnings to concrete skill or ai-eng-practices edits as one small PR or a garden hand-off; the procedure lives in the skill (ported from pstack, MIT, see skills/reflect/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /reflect loads it. amillez-mode's reflect trigger names it."
     },
     {
       "id": "simfleet",
