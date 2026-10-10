@@ -1,6 +1,6 @@
 ---
 name: amillez-react-native-mode
-description: React Native and Expo twin of amillez-mode. Picks a house recipe (playbook) for RN work from an allowlist, opens the todolist with its steps, and links into the amillez/rn-bedrock docs as the source of truth. Use alongside amillez-mode on any React Native, Expo, or rn-bedrock-style coding dispatch, such as bootstrapping an app, adding a domain module, building queries, UI components, paywalls, analytics, or overlays.
+description: React Native and Expo twin of amillez-mode. Picks a house recipe (playbook) for RN work from an allowlist, opens the todolist with its steps, and links into the amillez/rn-bedrock docs as the source of truth. Use alongside amillez-mode on any React Native, Expo, or rn-bedrock-style coding dispatch, such as adding a domain module, building queries, UI components, paywalls, analytics, or overlays. Bootstrapping a new app is the standalone bootstrap-empty-app skill.
 ---
 
 # amillez-react-native-mode
@@ -32,7 +32,8 @@ Before any edit, restate the task in two or three sentences. Name the RN playboo
 1. Match the task to one slug in the allowlist below.
 2. **Shipped** slug. Open its file. Copy its steps into the todolist as the first items. The `amillez-mode` process playbook (usually Feature) still governs plan, proof, and PR, and its steps follow.
 3. **Planned** slug. No file exists yet. Say so in the restatement. Read the rn-bedrock docs listed for the slug, then run the `amillez-mode` process playbook alone. Do not write the playbook file in the same PR.
-4. No slug fits. Use the `amillez-mode` playbook alone, and start at the rn-bedrock `AGENTS.md` reading order.
+4. **Skill** slug. The procedure lives in a standalone skill. Load that skill and follow it. Its steps are not repeated here.
+5. No slug fits. Use the `amillez-mode` playbook alone, and start at the rn-bedrock `AGENTS.md` reading order.
 
 Package catalog pages under `docs/packages/` stay reference links inside playbooks. They are not playbooks.
 
@@ -40,7 +41,7 @@ Planned playbooks ship one per PR, in wave order, each after the previous one me
 
 | Slug | Wave | Status | rn-bedrock sources |
 | --- | --- | --- | --- |
-| [`bootstrap-empty-app`](playbooks/bootstrap-empty-app.md) | P0 | shipped | `docs/architecture.md`, `docs/tooling.md`, `docs/stack.md`, `docs/workarounds.md`, `examples/bedrock/` |
+| [`bootstrap-empty-app`](../bootstrap-empty-app/SKILL.md) | P0 | skill | `docs/architecture.md`, `docs/tooling.md`, `docs/stack.md`, `docs/workarounds.md`, `examples/bedrock/` |
 | `add-domain-module` | P0 | planned | `docs/practices/modules.md`, `docs/architecture.md` |
 | `build-queries` | P0 | planned | `docs/practices/data-fetching.md`, `docs/packages/data.md` |
 | `build-ui-components` | P0 | planned | `docs/practices/ui-components.md`, `docs/practices/theming.md`, `docs/packages/styling.md` |

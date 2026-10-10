@@ -7,7 +7,7 @@
       "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, and unslop skills"
     },
     "mobile": {
-      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet, amillez-react-native-mode). Not installed with --groups core alone."
+      "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet, amillez-react-native-mode, bootstrap-empty-app). Not installed with --groups core alone."
     }
   },
   "upstream": [
@@ -198,8 +198,15 @@
       "id": "amillez-react-native-mode",
       "group": "mobile",
       "path": "skills/amillez-react-native-mode",
-      "when": "React Native and Expo twin of amillez-mode, attached alongside it on RN coding dispatches; picks a house playbook from its allowlist and links into the amillez/rn-bedrock docs as the source of truth",
+      "when": "React Native and Expo twin of amillez-mode, attached alongside it on RN coding dispatches; picks a house playbook from its allowlist and links into the amillez/rn-bedrock docs as the source of truth; its bootstrap-empty-app slug names the standalone skill",
       "note": "Keep MOBILE_AMILLEZ_SKILLS in scripts/install.sh in sync."
+    },
+    {
+      "id": "bootstrap-empty-app",
+      "group": "mobile",
+      "path": "skills/bootstrap-empty-app",
+      "when": "Start a brand-new Expo or React Native app from the amillez/rn-bedrock stack (or bring an app up to the house layout); the whole procedure, with age-gated versions and proof on both platforms, lives in the skill",
+      "note": "Standalone: needs neither amillez-mode nor amillez-react-native-mode. amillez-react-native-mode's bootstrap-empty-app slug names it. Keep MOBILE_AMILLEZ_SKILLS in scripts/install.sh in sync."
     }
   ],
   "excluded": [

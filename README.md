@@ -40,7 +40,7 @@ cd ~/agent-work/akit
 | Group | Always? | Contents |
 | --- | --- | --- |
 | `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius`, `reflect`, `show-me-your-work`, `figure-it-out`, `unslop` |
-| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet`, `amillez-react-native-mode` |
+| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet`, `amillez-react-native-mode`, `bootstrap-empty-app` |
 
 Default is **core+mobile**. `--groups core` skips mobile.
 
@@ -112,7 +112,8 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `unslop` | core | **amillez** (pstack port, MIT; see `skills/unslop/UPSTREAM.md`) | `/unslop`, a standalone skill that holds the whole slop-pattern catalog for cutting AI tells from any writing, byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's prose trigger, its playbooks and technical-writing reference, and the `show-me-your-work` and `blast-radius` skills link it. |
 | Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` | Building native or Nitro modules |
 | `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
-| `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. |
+| `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. Its `bootstrap-empty-app` slug names the standalone skill. |
+| `bootstrap-empty-app` | mobile | **amillez** | A standalone skill that holds the whole procedure for starting a brand-new Expo or React Native app from the `amillez/rn-bedrock` stack, with age-gated dependency versions and proof on both platforms. Needs neither `amillez-mode` nor `amillez-react-native-mode`. |
 
 Not in the pack: `autoreview`, the Superset pack, other design and planning skills, and `expo-native-ui`. Orca's own skills (`orca-cli`, `orchestration`) come from `orca skills install` on the coordinator device (see `orchestrate-agents`).
 

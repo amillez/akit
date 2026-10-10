@@ -22,7 +22,7 @@ Groups:
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
-          simfleet skill
+          simfleet, amillez-react-native-mode, and bootstrap-empty-app skills
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
@@ -35,7 +35,7 @@ USAGE
 }
 
 # amillez skills under skills/ tagged "group": "mobile" in the manifest.json `amillez` list.
-MOBILE_AMILLEZ_SKILLS=(simfleet amillez-react-native-mode)
+MOBILE_AMILLEZ_SKILLS=(simfleet amillez-react-native-mode bootstrap-empty-app)
 
 GROUPS_ARG=""
 SKIP_UPSTREAM=0

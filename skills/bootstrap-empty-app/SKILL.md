@@ -1,8 +1,20 @@
-### Bootstrap an empty app
+---
+name: bootstrap-empty-app
+description: >-
+  Stand up a brand-new Expo / React Native app on the amillez/rn-bedrock stack:
+  canonical tree, polyfills-first entry, provider order, startup gates, TS
+  alias, Metro, Babel, logic-only Jest, app.config.ts and prebuild, dev client,
+  EAS, and age-gated dependency versions, proven on an iOS simulator and an
+  Android emulator. Use when starting a new Expo or React Native app from the
+  rn-bedrock stack, or bringing an app that never had the house layout up to
+  it. Works on its own; amillez-mode and amillez-react-native-mode are optional.
+---
+
+# Bootstrap an empty app
 
 **You own the tree and the startup order.** Stand up an empty Expo app with house tooling that runs in a dev client on iOS and Android. Every later playbook assumes this shape.
 
-Use it for a new app, or to bring an app that never had the house layout up to it. The decisions live in rn-bedrock. [`examples/bedrock/`](https://github.com/amillez/rn-bedrock/tree/main/examples/bedrock) is the working reference. Copy its shape, not its product.
+Use it for a new app, or to bring an app that never had the house layout up to it. This skill holds the whole procedure, so it needs no other skill loaded. When `amillez-mode` is loaded too, its process (plan, PR, never merge, babysit) still governs around these steps. The decisions live in rn-bedrock. [`examples/bedrock/`](https://github.com/amillez/rn-bedrock/tree/main/examples/bedrock) is the working reference. Copy its shape, not its product.
 
 **Hard don'ts.** Each one is in rn-bedrock [`AGENTS.md` § Hard invariants](https://github.com/amillez/rn-bedrock/blob/main/AGENTS.md#hard-invariants) or [`docs/architecture.md` § Boundaries that hold](https://github.com/amillez/rn-bedrock/blob/main/docs/architecture.md#boundaries-that-hold).
 
@@ -27,8 +39,8 @@ Use it for a new app, or to bring an app that never had the house layout up to i
 11. Keep native config in `app.config.ts` per [`docs/tooling.md` § Native builds and release](https://github.com/amillez/rn-bedrock/blob/main/docs/tooling.md#native-builds-and-release). Config plugins go in `plugins/with-*.js` and read build-time data from `app.config.ts`. Gitignore `ios/` and `android/`. After any native change, run `pnpm prebuild`. Use one scheme everywhere it appears.
 12. Add `expo-dev-client` at the newest version that passes the step 2 age gate. Build and run with `pnpm ios` and `pnpm android`. Add `eas.json` for EAS builds. Allowlist in pnpm every dependency lifecycle script that must run at install, since pnpm blocks them by default.
 13. Pick each library from the `docs/stack.md` § By layer table, at the newest version that passes the step 2 age gate. Before you add or swap one, read its entry in [`docs/packages/`](https://github.com/amillez/rn-bedrock/blob/main/docs/packages/README.md) and its **Rejected** list.
-14. Verify. Run `pnpm typecheck` and `pnpm test`. Confirm that `src/modules/` holds no `.tsx` file and that the first import in `src/main.ts` is `./polyfills`. Build the dev client on an iOS simulator and an Android emulator, and prove the first screen renders after the splash hides, per the proof rules in `amillez-mode`. Then tear down.
+14. Verify. Run `pnpm typecheck` and `pnpm test`. Confirm that `src/modules/` holds no `.tsx` file and that the first import in `src/main.ts` is `./polyfills`. Build the dev client on an iOS simulator (iOS 26 by default) and an Android emulator, and prove the first screen renders after the splash hides. Capture a screenshot or recording on each platform, through Argent or the project's `verify-*` skill when one exists, and link both in the PR. Then tear down: stop Metro, shut down the simulator and emulator you booted, and remove any worktree you created for the run.
 
-The domain, data, UI, and product-SDK layers are later playbooks. A bootstrap PR stops at an app that starts, renders one screen, and passes typecheck and tests.
+The domain, data, UI, and product-SDK layers are later work (see the `amillez-react-native-mode` playbook allowlist). A bootstrap PR stops at an app that starts, renders one screen, and passes typecheck and tests.
 
 **Reply:** the tree you created, the provider order and gates, any pin or workaround you kept and its removal condition, and the proof links for both platforms.
