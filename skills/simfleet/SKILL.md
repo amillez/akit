@@ -74,6 +74,9 @@ the HTTP/WebSocket contract.
   natively only when native inputs changed, and only through `native plan` and `native ensure`
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
+- **One Android emulator on `agent-m1`.** Check `simfleet emu list` before `emu boot` and reuse or wait
+  if one runs. Don't boot under 20 GB free (`df -h ~`). Policy source is
+  [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
 - Work in existing worktrees. Create one only when asked, via `simfleet worktree create`.
 - Stop only lanes you started.
 
