@@ -25,3 +25,4 @@ Attribution: the rules, the lane recipe, and `references/api.md` are Vishesh Rah
 7. **Stop.** Adds stopping a server you started and the raw teardown when the server is down.
 8. **Style.** Em dashes and slash pairs rewritten per the `unslop` skill. Otherwise the wording stays upstream.
 9. **Install wiring.** `manifest.json` lists `simfleet` in `amillez` with group `mobile`. `scripts/install.sh` holds the matching `MOBILE_AMILLEZ_SKILLS` entry and skips it for `--groups core`.
+10. **agent-m1 limits.** A rule caps `agent-m1` at one Android emulator, checked with `simfleet emu list` before `emu boot`, and blocks a boot under 20 GB free, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits). simfleet has no emulator-count setting, so the check is the cap.
