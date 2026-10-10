@@ -1,6 +1,10 @@
-# Show me your work
+---
+name: show-me-your-work
+description: "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away."
+disable-model-invocation: true
+---
 
-**Trigger.** Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for autonomous or multi-phase runs, or work a human reviews after stepping away.
+# Show me your work
 
 Keep one canonical log.
 
@@ -8,7 +12,7 @@ Keep one canonical log.
 
 A single TSV file, one row per decision. Cells stay single-line. Evidence is a pointer, not prose.
 
-Copy [`decision-log-template.tsv`](decision-log-template.tsv) (the header row) to start a clean log. Columns:
+Copy [`references/decision-log-template.tsv`](references/decision-log-template.tsv) (the header row) to start a clean log. Columns:
 
 - **ts.** ISO8601 timestamp.
 - **phase.** The phase or workstream.
@@ -29,9 +33,9 @@ ts	phase	decision	why	evidence	result
 
 ## Logging a row
 
-Write each entry the way you'd tell a teammate what you did. Plain words, concrete actions, no AI speak or abstract jargon ([unslop](unslop.md) applies to log text too).
+Write each entry the way you'd tell a teammate what you did. Plain words, concrete actions, no AI speak or abstract jargon (the [`unslop`](../unslop/SKILL.md) skill applies to log text too).
 
-Use the helper [`scripts/decision-log.sh`](../scripts/decision-log.sh) `<logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, strips stray tabs/newlines, and prefixes any cell starting with `=`, `+`, `-`, or `@` with a single quote. A bare `printf` appending a row works too, but mind those same bytes if cells come from generated or user-supplied text.
+Use the helper [`scripts/log.sh`](scripts/log.sh) `<logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, strips stray tabs/newlines, and prefixes any cell starting with `=`, `+`, `-`, or `@` with a single quote. A bare `printf` appending a row works too, but mind those same bytes if cells come from generated or user-supplied text.
 
 Log decision points and checkpoints, not every action: a fork chosen, a unit completed with its verification result, a pivot or revert with its trigger, a blocker surfaced, a gate fixed. For loop runs, one row per iteration. Skip the trivial and self-evident.
 
@@ -46,7 +50,7 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 ## Rules
 
 - Append-only. A wrong call gets a new row that supersedes it. Never edit or delete history.
-- Prefer evidence produced by committed scripts over hand-made one-offs ([Encode Lessons in Structure](../principles/encode-lessons-in-structure.md)).
+- Prefer evidence produced by committed scripts over hand-made one-offs ([Encode Lessons in Structure](../amillez-mode/principles/encode-lessons-in-structure.md)).
 
 ## Audit the log against the session log
 
@@ -60,7 +64,13 @@ Correct the log, not the story. The audit never edits or removes a row, even an 
 
 ## Cross-model review of the trail
 
-Before handing back, spawn a subagent on a different model family from the one that did the work (a Codex lane for Claude Code work, a Claude Code lane for Codex work; see **Subagents and model lanes** in `SKILL.md`). Self-review is not a substitute. The subagent reads the audit trail and the run's session log, then flags what Agustín should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute. The subagent reads the audit trail and the run's session log, then flags what Agustín should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+
+- Claude Code work gets a Codex reviewer. Run `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only - < brief.md`. Always feed or close its stdin, since an open stdin hangs the run.
+- Codex work gets a Claude Code reviewer. Run `claude -p --model claude-opus-5-5 --effort high < brief.md`.
+- These lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, the policy wins.
+
+The reviewer looks for:
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the session log.
@@ -73,6 +83,6 @@ Every reply for a run that produced a trail ends with an "Attention" section. Le
 
 Read top to bottom, follow the evidence pointers, spot-check. GitHub renders a committed TSV as a table. `column -s$'\t' -t decisions.tsv` renders it in a terminal.
 
-## Composing this reference
+## Composing this skill
 
-Playbooks route their audit trail here instead of inventing one. Link this file and let it own the format. Don't restate the columns.
+Other skills and playbooks route their audit trail here instead of inventing one. Link this skill and let it own the format. Don't restate the columns.

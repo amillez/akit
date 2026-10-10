@@ -23,6 +23,6 @@ Attribution: the one-safety-fact method, the proof ladder, the steps, and the ha
 4. **Solid versus React.** → render versus effects, the JS thread versus native modules.
 5. **Proof.** Ladder step 5 names Argent on a simulator or emulator, or the project's `verify-*` skill. Step 5 of the procedure keeps the proof script in a scratch dir outside the worktree unless it earns a place as a regression test.
 6. **Arena.** "Run it as an `arena`" → the same prompt to an agent on a different model lane (Opus 5.5 on Claude Code, GPT 6.1 Sol on Codex), with the merged answers and agreement as high-signal. Adds the size gate. A change that needs several workers stops and is reported, and large work runs as an Orca Run through `orchestrate-agents`.
-7. **unslop.** "Write it through `unslop`" → a link to amillez-mode's `references/unslop.md`.
-8. **Sibling links.** Optional relative links to amillez-mode's Investigation playbook, Prove It Works principle, and unslop reference, and to the `orchestrate-agents` skill. amillez-mode is core and installs beside this skill, so the links resolve in the repo and after install. The skill never requires loading amillez-mode.
+7. **unslop.** "Write it through `unslop`" → a link to the sibling [`unslop`](../unslop/SKILL.md) skill.
+8. **Sibling links.** Optional relative links to amillez-mode's Investigation playbook and Prove It Works principle, and to the `orchestrate-agents` and `unslop` skills. amillez-mode is core and installs beside this skill, so the links resolve in the repo and after install. The skill never requires loading amillez-mode.
 9. **Skill text only.** `SKILL.md` names no host and carries no attribution. Attribution lives here.
