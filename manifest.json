@@ -101,11 +101,10 @@
         "kotlin",
         "swift",
         "react-native-mmkv",
-        "react-native-nitro-fetch",
         "react-native-vision-camera"
       ],
       "when": "Building Nitro / native modules",
-      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet."
+      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet. react-native-nitro-fetch was dropped when upstream stopped publishing it; bootstrap-empty-app step 4 inlines the global-replace snippet."
     }
   ],
   "amillez": [
