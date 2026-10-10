@@ -22,7 +22,7 @@ Groups:
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
-          simfleet skill
+          simfleet, amillez-react-native-mode, and bootstrap-empty-app skills
 
 Default: core,mobile
 --groups mobile still includes core (core is always added).
@@ -35,7 +35,7 @@ USAGE
 }
 
 # amillez skills under skills/ tagged "group": "mobile" in the manifest.json `amillez` list.
-MOBILE_AMILLEZ_SKILLS=(simfleet)
+MOBILE_AMILLEZ_SKILLS=(simfleet amillez-react-native-mode bootstrap-empty-app)
 
 GROUPS_ARG=""
 SKIP_UPSTREAM=0
@@ -135,32 +135,42 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
   echo "== Upstream packs (npx skills add) =="
 
+  # Explicit agents only, never --agent '*' (that writes into ~50 agent folders).
+  # claude-code installs to ~/.claude/skills. codex installs to $CODEX_HOME/skills,
+  # so point CODEX_HOME at ~/.agents for this call: Codex reads ~/.agents/skills
+  # (its current user location; ~/.codex/skills is deprecated) and nothing lands
+  # under ~/.codex. User root only (-g); there is no project install.
+  UPSTREAM_AGENTS=(claude-code codex)
+  skills_add() {
+    CODEX_HOME="$HOME/.agents" npx -y skills add "$@" --agent "${UPSTREAM_AGENTS[@]}" -g -y --copy
+  }
+
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
     # Argent: all skills, pinned to the ref in manifest.json
-    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*' --agent '*' -g -y --copy
+    skills_add "software-mansion/argent/packages/skills/skills#v0.25.0" --skill '*'
 
-    npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
+    skills_add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations
   fi
 
-  npx -y skills add mattpocock/skills --skill grill-me --skill grilling --agent '*' -g -y --copy
+  skills_add mattpocock/skills --skill grill-me --skill grilling
 
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
-    npx -y skills add expo/skills --skill expo-dev-client --skill expo-upgrade --agent '*' -g -y --copy
+    skills_add expo/skills --skill expo-dev-client --skill expo-upgrade
 
-    npx -y skills add software-mansion-labs/skills --skill react-native-best-practices --agent '*' -g -y --copy
+    skills_add software-mansion-labs/skills --skill react-native-best-practices
 
-    npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
+    skills_add uni-stack/uniwind --skill uniwind
 
-    npx -y skills add margelo/react-native-skills \
+    # react-native-nitro-fetch is gone upstream; bootstrap-empty-app step 4 carries
+    # the global-replace snippet instead.
+    skills_add margelo/react-native-skills \
       --skill api-design \
       --skill build-nitro-modules \
       --skill cpp \
       --skill kotlin \
       --skill swift \
       --skill react-native-mmkv \
-      --skill react-native-nitro-fetch \
-      --skill react-native-vision-camera \
-      --agent '*' -g -y --copy
+      --skill react-native-vision-camera
   fi
 fi
 

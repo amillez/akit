@@ -33,7 +33,7 @@ fi
 mkdir -p "$BASE/bin"
 cat > "$BASE/bin/npx" <<'NPX'
 #!/usr/bin/env bash
-echo "npx $*" >> "$HOME/npx.log"
+echo "npx CODEX_HOME=${CODEX_HOME:-} $*" >> "$HOME/npx.log"
 NPX
 chmod +x "$BASE/bin/npx"
 export PATH="$BASE/bin:$PATH"
@@ -57,6 +57,13 @@ for s in "${AMILLEZ_SKILLS[@]}"; do
 done
 check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.md" && -f "$HOME/.agents/rules/amillez-models.md" ]]'
 check "fresh HOME: stamp written" '[[ -f "$HOME/.amillez-plugin.json" && -f "$HOME/.agents/amillez-plugin.json" ]]'
+check "fresh HOME: ran upstream skills add" 'grep -q "skills add" "$HOME/npx.log"'
+check "fresh HOME: no --agent '"'"'*'"'"'" '! grep -qF -- "--agent *" "$HOME/npx.log"'
+check "fresh HOME: every skills add targets claude-code and codex at user root" '! grep "skills add" "$HOME/npx.log" | grep -vqF -- "--agent claude-code codex -g -y --copy"'
+check "fresh HOME: codex lands in ~/.agents, not ~/.codex" '! grep "skills add" "$HOME/npx.log" | grep -vqF "CODEX_HOME=$HOME/.agents "'
+check "fresh HOME: adds the Margelo pack" 'grep -q margelo/react-native-skills "$HOME/npx.log"'
+check "fresh HOME: no react-native-nitro-fetch (gone upstream)" '! grep -q react-native-nitro-fetch "$HOME/npx.log"'
+check "fresh HOME: nothing under ~/.codex" '[[ ! -e "$HOME/.codex" ]]'
 
 : > "$HOME/npx.log"
 check "installed HOME: ensure prints already present" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
@@ -91,6 +98,16 @@ for s in "${AMILLEZ_SKILLS[@]}"; do
   check "update-install --skip-upstream: $s installed" 'has_skill "$s"'
 done
 check "update-install --skip-upstream: stamp written" '[[ -f "$HOME/.amillez-plugin.json" ]]'
+
+# Machine install only: no project option, and nothing lands in the working directory.
+export HOME="$BASE/no-project"
+mkdir -p "$HOME" "$BASE/project"
+check "install.sh rejects --target (no project install)" '! "$REPO/scripts/install.sh" --target "$BASE/project" >/dev/null 2>&1'
+check "install.sh rejects --project (no project install)" '! "$REPO/scripts/install.sh" --project >/dev/null 2>&1'
+(cd "$BASE/project" && "$REPO/scripts/install.sh" >/dev/null 2>&1)
+check "install from a project dir: writes no project .claude or .agents" '[[ ! -e "$BASE/project/.claude" && ! -e "$BASE/project/.agents" ]]'
+check "install from a project dir: installs at user root" 'has_skill bootstrap-empty-app'
+check "manifest allowlists no react-native-nitro-fetch" 'python3 -c "import json,sys; sys.exit(any(\"react-native-nitro-fetch\" in e.get(\"skills\", []) for e in json.load(open(sys.argv[1]))[\"upstream\"]))" "$REPO/manifest.json"'
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures check(s) failed"
