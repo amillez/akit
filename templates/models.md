@@ -1,12 +1,13 @@
 # amillez model defaults (Claude Code / Codex)
 
-Session defaults for **bots and orchestrators**. CLI flags verified with Claude Code 2.1.282 and Codex CLI 0.157.0.
+Session defaults for **bots and orchestrators**. CLI flags verified with Claude Code 2.1.296 and Codex CLI 0.162.0 as of 2026-10-11.
 
 | Situation | Pick | CLI |
 | --- | --- | --- |
 | Very direct / super defined | **GPT 6 Luna** · **Max** | `codex exec -m gpt-6-luna -c model_reasoning_effort=max - < brief.md` |
 | General code / some reasoning | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **xHigh** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh - < brief.md` |
 | UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **High** | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high - < brief.md` |
+| Docs, knowledge, playbook, or policy PRs | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **GPT 6.1 Sol** · **xHigh**. Luna is not for docs. | `claude --model claude-opus-5-5 --effort high` · `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh - < brief.md` |
 | Large-work orchestration (Orca coordinator) | **Opus 5.5** · **xHigh** | `claude --model claude-opus-5-5 --effort xhigh` + Orca |
 | Large reasoning (non-orch) | **Fable 5.1** · **Medium** → High → xHigh | Claude Code |
 

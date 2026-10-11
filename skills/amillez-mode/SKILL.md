@@ -104,6 +104,7 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 | Very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
 | General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
 | UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
+| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh. Luna is not for docs. | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
 | Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
 
