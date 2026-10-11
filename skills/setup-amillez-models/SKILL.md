@@ -27,6 +27,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
      - Very direct / super defined → **GPT 6 Luna Max** (Codex `gpt-6-luna`).
      - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6.1 Sol xHigh** (Codex `gpt-6.1-sol`).
      - UI work → **Opus 5.5 High**; Claude Code usage > 70% → **GPT 6.1 Sol High**.
+     - Docs, knowledge, playbook, or policy PRs → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6.1 Sol xHigh** (Codex `gpt-6.1-sol`). Luna is not for docs.
      - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
      - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xHigh.
      - Never GPT 5.6 or Opus 5.
