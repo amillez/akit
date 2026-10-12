@@ -30,6 +30,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
      - Docs, knowledge, playbook, or policy PRs → **Opus 5.5 High** (Claude Code `claude-opus-5-5`); Claude Code usage > 70% → **GPT 6.1 Sol xHigh** (Codex `gpt-6.1-sol`). Luna is not for docs.
      - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
      - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xHigh.
+     - Review → the other model family, per the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). Claude Code work goes to **GPT 6.1 Sol High** on Codex. Codex work goes to **Opus 5.5 High** on Claude Code in plan mode, so the reviewer stays read-only.
      - Never GPT 5.6 or Opus 5.
    - **Claude Code usage > 70%.** Check `/usage` (or `/status`) in Claude Code for current-window plan usage. Above 70%, route general and UI work to Codex GPT 6.1 Sol. Escalate one knob at a time.
 
