@@ -64,8 +64,13 @@ CONTEXT      pointers to files and PRs; upstream reports pasted in full when thi
              about the current tree as unverified for the worker to check during recon.
              The reviewer's text wins over the brief. For a symptom reported before,
              list each prior attempt with its premise and outcome and tell the worker
-             to apply Attack the Premise before writing another fix.
-ACCEPTANCE   checkable criteria, one per line
+             to apply Attack the Premise before writing another fix. Label a prior
+             worker's follow-ups as suggestions or observations, never requirements.
+             Before a brief widens a shared interface for one variant, decide it
+             yourself or ask Agustín.
+ACCEPTANCE   checkable criteria, one per line. A review round's acceptance is "every
+             thread has a posted reply citing the commit or the sourced answer", per
+             amillez-mode's babysit playbook. Never "draft without posting".
 VERIFY       the package scripts CI runs, or the repo's verify skill, or the Argent
              path, plus known gotchas. Never run a linter file by file, because that
              skips the package's lint config. Pick the proof device and OS version
@@ -75,13 +80,11 @@ TIMEBOX      rough cap on runtime; on expiry, return partial findings and stop r
 FORBIDDEN    no merge, no auto-merge, no PR close, no rebase or force-push outside your own
              branch, no fixes outside scope, plus task-specific bans
 REPORT       status, branch, head SHA, PR link, verdict, what you actually ran, proof links,
-             teardown status, deviations, suggested follow-ups
+             teardown status, deviations, suggested follow-ups with a severity
 STANDING     <the run's standing orders, pasted verbatim>
 ```
 
-Standing orders are numbered lines, one constraint each (lanes, stack shape, verification bar, forbidden paths, escalation policy). Paste them verbatim into every spawn and every resume, since directives decay across resumes. When you catch yourself restating an instruction, append it to the standing orders before you act.
-
-Give each worker every credential, approval, or test account it could block on (an app PIN, a push go-ahead) in an Orca message at `worker-start`, never in a brief file. Never put "ask if missing" in the standing orders.
+Standing orders are numbered lines, one constraint each (lanes, stack shape, verification bar, forbidden paths, escalation policy). Paste them verbatim into every spawn and every resume, since directives decay across resumes. When you catch yourself restating an instruction, append it to the standing orders before you act. An order taken from memory or from one incident names the case it came from. Check it against what the run already did before you add it. It never overrides a brief or Agustín's explicit call, so never write "even when a brief says otherwise".
 
 Size the brief to the task. A one-command task gets the template collapsed to a paragraph that still names amillez-mode, the goal, the scope, the verify command, and the report shape. A dependency is a context relay, not just ordering. Undeclared upstream context makes the worker guess. Missing fields are a refuse-to-spawn condition. Never resume-chain a brief. Respawn fresh with consolidated scope.
 
@@ -140,12 +143,14 @@ A worker that returns late reconciles against the current branch and PR state be
 1. Confirm the size gate says large. If small, stop and dispatch one direct agent on its lane with a brief that names amillez-mode.
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed, amillez plugin installed).
 3. Scout only enough to decompose. Never implement product work in the coordinator session.
-4. At `run-create`, create `~/orca/runs/<run-id>/` for the standing orders, briefs, reports, and `decisions.tsv`. Never keep run state under `/tmp`. Write the standing orders, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Between integrate and prove, add a worker task that reviews the integrated diff against the repo's own practice docs so structure settles before proof rounds start. Before each `worker-start`, check that every path its spec cites exists.
-5. Assign `--agent`, `--model`, and `--effort` per task from **Model lanes**. Pass the full lanes-table id to `--model`.
-6. `worker-start` with the disk mode (sequential `current` vs `new-child`). Confirm the worker banner shows the expected model.
-7. `check --wait` (cap 590000 ms foreground) for `worker_done`, escalation, or question. Orca messages reach you only while that wait is pending, so keep one pending while any worker is live and never hand the turn back to the human without it. Ack deliveries. Use gates or `ask` for blocking decisions only. Apply **Retry by failure mode** to every failure.
-8. Prove before PR. Workers open PRs per amillez-mode's Opening a PR playbook, never merge, and tear down what they started.
-9. PR babysits belong to the dispatcher ([agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged)). The coordinator does not babysit, merge, or close.
+4. At `run-create`, create `~/orca/runs/<run-id>/` for the standing orders, briefs, reports, `decisions.tsv`, and `followups.tsv`. Never keep run state under `/tmp`. Write the standing orders, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Between integrate and prove, add a worker task that reviews the integrated diff against the repo's own practice docs so structure settles before proof rounds start. Before each `worker-start`, check that every path its spec cites exists.
+5. Clear blockers before the first `worker-start`. List every credential, approval, and product decision the DAG can block on, and ask Agustín for all of them in one message, above all when he says he'll be away. Each worker gets what it could block on (an app PIN, a push go-ahead) in an Orca message at `worker-start`, never in a brief file. Never put "ask if missing" or "ask the coordinator" in the standing orders. Diff the standing orders against the repo's `.claude/settings.json` allow, ask, and deny rules. For each order a rule blocks, ask Agustín once for the allow rule or rewrite the order to fit.
+6. Assign `--agent`, `--model`, and `--effort` per task from **Model lanes**. Pass the full lanes-table id to `--model`.
+7. `worker-start` with the disk mode (sequential `current` vs `new-child`). Confirm the worker banner shows the expected model.
+8. `check --wait` (cap 590000 ms foreground) for `worker_done`, escalation, or question. Orca messages reach you only while that wait is pending, so keep one pending while any worker is live and never hand the turn back to the human without it. Ack deliveries. Use gates or `ask` for blocking decisions only. Apply **Retry by failure mode** to every failure. A task gated on a human merge starts only after `gh pr view <n> --json state,mergedAt` reads `MERGED` and the integration branch is fetched. Agustín's "merged" message is a cue to check, not the evidence.
+9. Prove before PR. Workers open PRs per amillez-mode's Opening a PR playbook, never merge, and tear down what they started. Correctness bugs in the feature's own surface get fixed inside its PR. Every other follow-up goes in `followups.tsv` with a severity, and every summary to Agustín lists all open correctness items. Before you tell Agustín a PR is ready, run `gh pr checks <n> --watch` on its current head per [Opening a PR](../amillez-mode/playbooks/opening-a-pr.md) **Readiness**. Run it again after any head move, including a push you made. Report pending or red checks as pending or red.
+10. PR babysits belong to the dispatcher ([agent-dispatch-lifecycle, babysit](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-dispatch-lifecycle.md#babysit-until-merged)). The coordinator does not babysit, merge, or close.
+11. When a task's PR merges, remove its worktree (`orca worktree rm` for an Orca-made one) and its local branch per amillez-mode's [Worktree and simulator cleanup](../amillez-mode/playbooks/worktree-cleanup.md) gates.
 
 ## Output
 
