@@ -66,8 +66,7 @@ Correct the log, not the story. The audit never edits or removes a row, even an 
 
 Before handing back, spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute. The subagent reads the audit trail and the run's session log, then flags what Agustín should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
 
-- Claude Code work gets a Codex reviewer. Run `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md`. Always feed or close its stdin, since an open stdin hangs the run.
-- Codex work gets a Claude Code reviewer. Run `claude -p --model claude-opus-5-5 --effort high --permission-mode plan < brief.md`.
+- The reviewer is always Codex on GPT 6.1 Sol High, read-only, for Claude Code and Grok work alike. Run `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md`. Always feed or close its stdin, since an open stdin hangs the run.
 - These lanes follow the Review row of the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). When the policy changes a lane, the policy wins.
 
 The reviewer looks for:

@@ -14,10 +14,10 @@ When the task matches no playbook, design one. The deliverable before any code i
 
 | Role | Lane | Command |
 | --- | --- | --- |
-| Second opinion on a one-way-door design | The same prompt on the other model family. Claude Code work asks GPT 6.1 Sol, xHigh on Codex. Codex work asks Opus 5.5, High on Claude Code. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` or `claude -p --model claude-opus-5-5 --effort high` |
-| Delegated unit, very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
-| Delegated unit, general code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
-| Delegated unit, UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
+| Second opinion on a one-way-door design | The same prompt on the other model family, read-only. Claude Code work asks GPT 6.1 Sol, xHigh on Codex. Grok work asks Opus 5.5, High on Claude Code in plan mode, or Codex. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only - < brief.md` or `claude -p --model claude-opus-5-5 --effort high --permission-mode plan < brief.md` |
+| Delegated unit, very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `claude --model claude-haiku-5-5 --effort max` |
+| Delegated unit, general code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
+| Delegated unit, UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
 
 Check Claude Code usage with `/usage` or `/status` before a Claude Code launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5. Feed or close stdin on every `codex exec` (`codex exec … - < brief.md`). An open stdin hangs the run.
 
