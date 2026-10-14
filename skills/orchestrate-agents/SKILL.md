@@ -16,7 +16,7 @@ Every coding agent you invoke, a single direct agent or an Orca worker, loads an
 | Gate | Condition | Action |
 | --- | --- | --- |
 | **Small** | Single surface or package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch one agent directly on the matching lane (see **Model lanes**), with a brief that names amillez-mode. |
-| **Large** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xHigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude Code workers. A slice that hits the Claude Code usage > 70% rule runs as a direct headless Grok 4.7 xHigh session on the Cursor Agent CLI, outside Orca. The coordinator plans, dispatches, and waits. Workers own implement, integrate, and prove. |
+| **Large** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xHigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude Code workers. A slice that hits the Claude Code usage > 70% rule runs as a Grok 4.7 xHigh worker on the Cursor Agent CLI, also started with `worker-start` inside the Run. The coordinator plans, dispatches, and waits. Workers own implement, integrate, and prove. |
 
 One-line rule: needs parallel workers → Orca; one agent can own the whole loop but the work is long, cross-cutting, or reviewed after stepping away → dispatch one agent on the [`figure-it-out`](../figure-it-out/SKILL.md) skill, no Orca Run.
 
@@ -29,12 +29,12 @@ Pick `--agent`, `--model`, and `--effort` per task. These match the lanes in `am
 | Work | Lane | Orca worker flags |
 | --- | --- | --- |
 | Very direct, defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: direct `agent -p --force --model grok-4.7-xhigh`, outside Orca |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: direct `agent -p --force --model grok-4.7-xhigh`, outside Orca |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: `--agent cursor --model grok-4.7-xhigh` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: `--agent cursor --model grok-4.7-xhigh` |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
 | Orchestration (the coordinator only) | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 
-Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Orca workers are `--agent claude` only. Never `--agent codex`, since Codex runs review only. Never `--agent cursor`, which opens the interactive Cursor TUI. The Grok lane runs headless outside Orca. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `claude-haiku-5-5`, `grok-4.7-xhigh`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
+Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Orca workers are `--agent claude`, or `--agent cursor` for the Grok lane. Orca starts `cursor-agent` and handles its workspace trust prompt. Leave out `--effort` on the Grok lane, since the effort is part of the model id. Never `--agent codex`, since Codex runs review only. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `claude-haiku-5-5`, `grok-4.7-xhigh`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
 
 ## Prerequisites (large only)
 
@@ -160,7 +160,7 @@ For **large**: the Orca command sequence (run, task, worker, check), the standin
 - Orca without runtime, Experimental, or skills.
 - A mega agent outside Orca for large work.
 - Two workers on one checkout.
-- `--agent codex`, `--agent cursor`, or a Cursor cloud coding host.
+- `--agent codex`, `--agent cursor` with a model other than `grok-4.7-xhigh`, or a Cursor cloud coding host.
 - `orchestration run` instead of `run-create` + `worker-start`.
 - Opus 5.5 xHigh on every worker.
 - `--model` as an alias (`opus`) or an id from `~/.codex/models_cache.json` instead of the lanes-table id.
