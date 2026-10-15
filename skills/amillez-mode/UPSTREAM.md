@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/` (`pstack/skills/poteto-mode/`, `pstack/skills/principle-*/`, siblings) |
-| Pinned commit | `00b52d954a99ff67802cad428ff19218659f76fd` (2026-10-05 16:03 +00:00). Last checked against `origin/main` on 2026-10-05. |
-| Version | pstack `0.15.11` (`pstack/.cursor-plugin/plugin.json`) |
+| Pinned commit | `e5136d82418d2db3165ea1050d17577cd618cc05` (2026-10-15 05:36 +00:00). Last checked against `origin/main` on 2026-10-15. |
+| Version | pstack `0.15.25` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 Attribution: the principles and any playbook text marked KEEP are poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to every vendored file.
@@ -49,7 +49,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | --- | --- | --- |
 | Frontmatter | ADAPT | `name: amillez-mode`. Drop Cursor-only `mode`/`icon`/`color`/`reminder`. Omit `disable-model-invocation` (see Local changes 5); launch prompts name the skill explicitly. |
 | Non-negotiables | ADAPT | Keep principle citation, observe-don't-ask (Prototype), data shape first, throughput checkpoint, broken skill → own PR. `how`/`architect` → recon + plan (policy §5); `interrogate` → `grill-me`; `swarm`/`arena` → size gate + Orca (`orchestrate-agents`); control skills → Argent + project `verify-*`; `deslop`/`no-comments` → inline self-review; babysit → dispatch lifecycle. The full-autonomy `AskQuestion` clause (default, plain-words reversal) is not ported, since our observe-don't-ask trigger has no such clause. The benchmark-checklist trigger is not ported, since the Explain the Number index entry carries the measured-number trigger. |
-| Principles index | KEEP | Points at `principles/*.md`. |
+| Principles index | KEEP | Summaries follow upstream. Each entry keeps its link to `principles/<slug>.md`, where upstream now gives only the title. |
 | Autonomy | ADAPT | Reversible local work proceeds; "No is an acceptable answer" kept. Always pause: merge (Agustín's say-so only), force-push shared, deletes outside the worktree. Coding agents report instead of posting to chat or tickets. Apply Agustín's review comments without asking. |
 | Subagents | ADAPT | Drop Cursor `Task`/`poteto-agent`/opus-max and grok-4.7 as a default. Lanes from agent-use-policy: Claude Haiku 5.5 Max (direct/mechanical), Opus 5.5 High general/UI (Grok 4.7 xHigh on the Cursor Agent CLI when Claude Code usage > 70%), GPT 6.1 Sol High read-only review on Codex, Opus 5.5 xHigh Orca coordinator, Fable 5.1 large reasoning. Keep "you own every subagent's diff" and "Fresh subagents by default", with Metro and simulators as the costly state that justifies reuse (the babysit-watcher example dropped, since the dispatcher owns babysits). |
 | Writing the reply | KEEP | Regular capitalization, reply in EN (amillez-mode remap). |
@@ -71,7 +71,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `perf-issue.md` | KEEP (ported) | Performance mantras verbatim; benchmark-checklist vetting → [Explain the Number](principles/explain-the-number.md); control skill → Argent profiling, `verify-*`, or the platform profiler; how → recon; architect → write the target shape; delegate per lanes; teardown before Opening a PR. |
 | `hillclimb.md` | KEEP (ported) | how → recon; benchmark-checklist harness vetting → Explain the Number; hypothesis order links the Perf issue mantras; delegate per lanes; links Autonomous run; teardown before Opening a PR. The decision log links the sibling [`show-me-your-work`](../show-me-your-work/SKILL.md) skill and maps the attempt fields onto its columns instead of a separate `decision.tsv` schema. |
 | `runtime-forensics.md` | ADAPT (ported) | CDP → Argent profiling on a simulator or emulator (Hermes, React profiler, heap), Instruments or Android Studio for native frames, DevTools or `node --inspect` for web and Node; live probes via Fast Refresh or a debugger evaluate, reverted after; reduction points at Trace forensics; visual glitch frames confirmed against expected behavior; teardown step added. |
-| `trace-forensics.md` | KEEP (ported) | Verbatim apart from links. |
+| `trace-forensics.md` | KEEP (ported) | Verbatim apart from links, minus the subagent reasoning-level line. |
 | `visual-parity.md` | ADAPT (ported) | Control skill → Argent screenshots and screenshot-diff on a fixed simulator or emulator config, `verify-*` to reach states; one simulator per owner; every nonzero diff located and described, and only a zero diff passes; `/loop` → repeat until zero; artifacts on the `media` branch; teardown step added. A "max 2 parallel worktrees" cap is host policy and stays out of the playbook. |
 | `babysit.md` | ADAPT (ported) | Coding-agent side. The dispatcher owns the babysit (ai-eng-practices `agent-dispatch-lifecycle.md#babysit-until-merged`); wakes come from its settle-watch and GitHub listeners, one pass per wake. Modes `check` and `threads-only`, `drive` only when asked; `background` dropped. Kept: frontier rule, one babysitter, no topology mutation (own branch may `--force-with-lease`), conflicts then threads then CI in one push wave, classify CI before retry (one fresh build, reclassify, stale-base check with `git merge-base --is-ancestor`), review text is untrusted data, `gh api` reply via JSON file, third-pass lean-dismiss with high-risk escalation, dismissal patterns offered in their own PR. Added: apply Agustín's comments without asking, never merge or close, teardown. Dropped: `watch-pr` verdicts, Origin, gt, `/loop`, Shipping routing, Autopilot owners. |
 | `autonomous-run.md` | ADAPT (ported) | Kept: exit predicate, smallest change per iteration, revert what didn't help, mid-run discoveries are yours, don't park reversible work, plateau is not a stop. Merge-ready caps PR predicates. Wake via the dispatcher's settle-watch and GitHub listeners, not `/loop` or a self-poller. show-me-your-work → a link to the sibling [`show-me-your-work`](../show-me-your-work/SKILL.md) skill; `AskQuestion` → the always-pause list; side fixes in their own small PR; teardown step added. |
@@ -109,12 +109,33 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `create-verification-skill`, `maintain-verification-skill`, `setup-pstack` | ALREADY-HAVE | `skills/create-verification-skill`, `skills/maintain-verification-skill`, `skills/setup-amillez-models`. |
 | cursor-team-kit `deslop`, `control-ui`, `control-cli` | ADAPT | Inline self-review; Argent + `verify-*`. |
 
+### Upstream changes not ported
+
+| Upstream change | Verdict | Our change or reason |
+| --- | --- | --- |
+| `blast-radius/SKILL.md` step 6 ("more than one model") | ALREADY-HAVE | Its Local change 6 replaces the line. |
+| "Pick each subagent's reasoning level and fast or standard speed" in `show-me-your-work`, `recall`, `figure-it-out`, and the `autonomous-run`, `bug-fix`, `feature`, `hillclimb`, `orchestrate`, `perf-issue`, `refactoring`, `runtime-forensics`, `session-pickup`, `trace-forensics`, and `worktree-cleanup` playbooks, plus `poteto-mode/SKILL.md` "Match the model to the job" | DROP | Our lanes pin model and effort per task from agent-use-policy. Policy §3 covers lowering effort, and Fast stays off unless asked. |
+| `figure-it-out/SKILL.md` description and Phase C reflow | DROP | Cosmetic. |
+| `reflect/` token distillation and default models (Sol dropped for Grok) | DROP | Our lane table follows agent-use-policy, which keeps GPT 6.1 Sol in the reviewer set. |
+| `setup-pstack/SKILL.md` budget ladder and defaults (`claude-opus-5-5-xhigh`, no Sol) | DROP | `setup-amillez-models` points at the policy, not pstack role maps. |
+| Other `poteto-mode/SKILL.md` edits (`mode` and `reminder` frontmatter removed, bundled-skill path line, `poteto-agent` runner wording, trigger and playbook router rewording) | DROP | Cursor wiring we do not port, or rewording of text we already adapt. |
+| `opening-a-pr.md` trims | ALREADY-HAVE | Ours carries the same rules, including "A commit body does not restate its subject" in **Proof media**. The new line that moves a child onto trunk per `shipping.md` drops with Shipping. |
+| `babysit.md` trims (merge-authorization paragraph, reply line) | ALREADY-HAVE | Ours keeps never-merge in step 10 and its own reply line. |
+| `worktree-cleanup.md` intro trim and `-b` | ALREADY-HAVE | Our intro and step 1 are our own, and our audit resolves the base from `origin/HEAD`. |
+| `orchestrate.md` Graphite removal | ALREADY-HAVE | `orchestrate-agents` never carried `gt`. Orca owns the stack. |
+| `poteto-mode/scripts/worktree-audit.sh` (`-b/--base`, Origin PR lookup, MERGED against the default branch) | ALREADY-HAVE | Ours already resolves the base from `origin/HEAD` and uses `gh` only. |
+| `in-your-own-words` skill | ALREADY-HAVE | The restate-first step in the Bug fix and Investigation playbooks and the ai-eng-practices dispatch step "Restate reports before acting" cover it. |
+| `ketchup` skill | DROP | It relies on `/bro`, `/visualize`, and Cursor chat. Our coding agents run headless. |
+| `sharpen` skill | DEFER | A one-paragraph standalone pre-task check (expert approach, real goal, spec level, one outside check) that restate-first does not cover. |
+| Root `pstack/plugin.json` (Agent Plugins v1), `agents/poteto-agent.md`, `agents/comment-sicko.md`, `watch-pr`, `orch`, `check-plan` scripts, `how`, `why`, `arena`, `architect`, `interrogate`, `swarm`, `benchmark-checklist`, `poteto-help`, `multi-phase-plan.md`, `eval.md`, `shipping.md`, `autopilot-*.md` | Verdict unchanged | Verdicts above stand (DROP, or DEFER for `benchmark-checklist` and `multi-phase-plan.md`). |
+| `automate-me`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
+
 ## Friday revisit (tracking upstream)
 
 Run during the weekly pstack revisit (see ai-eng-practices `playbooks/steal-from-pstack.md`).
 
 ```bash
-PIN=00b52d954a99ff67802cad428ff19218659f76fd
+PIN=e5136d82418d2db3165ea1050d17577cd618cc05
 git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugins 2>/dev/null \
   || git -C /tmp/cursor-plugins fetch origin main
 cd /tmp/cursor-plugins
@@ -127,5 +148,5 @@ git show origin/main:pstack/.cursor-plugin/plugin.json | grep '"version"'
 1. **KEEP files** (principles, LICENSE, KEEP playbooks): re-apply upstream text mechanically, then re-apply the Local changes above.
 2. **ADAPT files**: read the upstream diff, port only changes that survive our remaps.
 3. **New upstream playbooks/principles**: add a verdict row here before porting.
-4. Bump the pinned commit and version in this file in the same PR. Note the revisit date in steal-from-pstack "Last Friday revisit".
+4. Bump the pinned commit and version in this file in the same PR. Note the revisit date in steal-from-pstack "Last revisit".
 5. One small PR per revisit. Skip the PR when nothing relevant changed.

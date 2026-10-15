@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/typescript-best-practices/` (`SKILL.md`, `references/patterns.md`) |
-| Pinned commit | `00b52d954a99ff67802cad428ff19218659f76fd` (2026-10-05 16:03 +00:00). Last checked against `origin/main` on 2026-10-05. |
-| Version | pstack `0.15.11` |
+| Pinned commit | `e5136d82418d2db3165ea1050d17577cd618cc05` (2026-10-15 05:36 +00:00). Last checked against `origin/main` on 2026-10-15. The directory is unchanged upstream since `23e4138daa01c42d4969f7a5465f82704e64f798` (2026-10-03). |
+| Version | pstack `0.15.25` |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The same pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit both together.

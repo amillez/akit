@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/show-me-your-work/` (`SKILL.md`, `references/decision-log-template.tsv`, `scripts/log.sh`) |
-| Compared against | `00b52d954a99ff67802cad428ff19218659f76fd` (pstack `0.15.11`). The directory last changed in `12d587dfb20741cafc376c42c696c5f6e2a64487` (2026-09-23) and is identical on `origin/main` at pstack `0.15.15` (`df581122cde17e6e27686b5a448bde23e4ad4318`). |
+| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). The directory last changed in `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14), which only adds a line to pick each subagent's reasoning level and speed per poteto-mode. Local change 5 already names the reviewer's model and effort. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
