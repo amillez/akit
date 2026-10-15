@@ -148,5 +148,5 @@ git show origin/main:pstack/.cursor-plugin/plugin.json | grep '"version"'
 1. **KEEP files** (principles, LICENSE, KEEP playbooks): re-apply upstream text mechanically, then re-apply the Local changes above.
 2. **ADAPT files**: read the upstream diff, port only changes that survive our remaps.
 3. **New upstream playbooks/principles**: add a verdict row here before porting.
-4. Bump the pinned commit and version in this file in the same PR. Note the revisit date in steal-from-pstack "Last Friday revisit".
+4. Bump the pinned commit and version in this file in the same PR. Note the revisit date in steal-from-pstack "Last revisit".
 5. One small PR per revisit. Skip the PR when nothing relevant changed.
