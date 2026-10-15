@@ -45,6 +45,7 @@ check() {
 }
 has_skill() { [[ -f "$HOME/.claude/skills/$1/SKILL.md" && -f "$HOME/.agents/skills/$1/SKILL.md" ]]; }
 ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -1; }
+settings() { python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1])), sort_keys=True))' "$HOME/.claude/settings.json"; }
 
 AMILLEZ_SKILLS=()
 for d in "$REPO"/skills/*/; do AMILLEZ_SKILLS+=("$(basename "$d")"); done
@@ -57,16 +58,37 @@ for s in "${AMILLEZ_SKILLS[@]}"; do
 done
 check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.md" && -f "$HOME/.agents/rules/amillez-models.md" ]]'
 check "fresh HOME: stamp written" '[[ -f "$HOME/.amillez-plugin.json" && -f "$HOME/.agents/amillez-plugin.json" ]]'
+check "fresh HOME: Claude settings allow Read on the proof dir only" '[[ "$(settings)" == '"'"'{"permissions": {"allow": ["Read(~/agent-work/proof/**)"]}}'"'"' ]] || { echo "  got: $(settings 2>&1)"; false; }'
 
 : > "$HOME/npx.log"
 check "installed HOME: ensure prints already present" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
 check "installed HOME: ensure runs no npx" '[[ ! -s "$HOME/npx.log" ]]'
+
+python3 -c 'import json,sys; p=sys.argv[1]; d=json.load(open(p)); d["permissions"]["allow"]=[]; json.dump(d, open(p, "w"))' "$HOME/.claude/settings.json"
+check "missing proof Read rule: ensure prints updated" '[[ "$(ensure)" == "amillez plugin: updated" ]]'
+check "missing proof Read rule: restored" '[[ "$(settings)" == '"'"'{"permissions": {"allow": ["Read(~/agent-work/proof/**)"]}}'"'"' ]]'
 
 for s in "${AMILLEZ_SKILLS[@]}"; do
   rm -rf "$HOME/.claude/skills/$s"
   check "missing $s: ensure prints updated" '[[ "$(ensure)" == "amillez plugin: updated" ]]'
   check "missing $s: reinstalled" 'has_skill "$s"'
 done
+
+export HOME="$BASE/existing-settings"
+mkdir -p "$HOME/.claude"
+cat > "$HOME/.claude/settings.json" <<'JSON'
+{
+  "theme": "dark",
+  "hooks": {"SessionStart": []},
+  "permissions": {"allow": ["mcp__argent"], "deny": ["Read(./.env)"]}
+}
+JSON
+"$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
+EXPECTED='{"hooks": {"SessionStart": []}, "permissions": {"allow": ["mcp__argent", "Read(~/agent-work/proof/**)"], "deny": ["Read(./.env)"]}, "theme": "dark"}'
+check "existing settings: proof Read rule appended, other keys kept" '[[ "$(settings)" == "$EXPECTED" ]] || { echo "  got: $(settings 2>&1)"; false; }'
+cp "$HOME/.claude/settings.json" "$HOME/settings.before"
+"$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
+check "existing settings: second install leaves settings.json byte-identical" 'cmp -s "$HOME/settings.before" "$HOME/.claude/settings.json"'
 
 export HOME="$BASE/core"
 mkdir -p "$HOME"
