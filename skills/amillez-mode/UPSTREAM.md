@@ -38,6 +38,7 @@ Applied to vendored files. Everything else is upstream text.
 18. **Correct.** `pstack/skills/correct/` becomes the separate core skill [`skills/correct/`](../correct/SKILL.md), which holds the whole procedure, with its own `UPSTREAM.md` and `LICENSE-pstack`. A Non-negotiables trigger for a repeated correction names the sibling skill.
 19. **Unslop.** `pstack/skills/unslop/` becomes the separate core skill [`skills/unslop/`](../unslop/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. The Non-negotiables trigger for any prose surface names the sibling skill, and so do `investigation.md`, `opening-a-pr.md`, `references/technical-writing.md`, and the sibling `show-me-your-work` and `blast-radius` skills.
 20. **Argent precedence.** A Non-negotiables trigger ranks amillez-mode and simfleet over Argent's installer rules on `agent-m1` for device claims, named `xcrun simctl` operations, named `adb -s <serial>` operations, and writing Argent results to project memory. The sibling [`simfleet`](../simfleet/SKILL.md) skill has a matching rule.
+21. **Sharpen.** `pstack/skills/sharpen/` becomes the separate core skill [`skills/sharpen/`](../sharpen/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. It holds the whole pre-task check (expert approach, real goal, specification level, one outside check), so it applies without loading amillez-mode.
 
 ## Per-file verdicts
 
@@ -92,6 +93,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `pstack/LICENSE` | KEEP | `LICENSE-pstack`, byte-for-byte. |
 | `poteto-mode/references/bugbot-triage.md` | ADAPT (ported) | → `references/review-triage.md`. Automated reviewers only; Agustín's comments are always applied. Rubric, pattern format, ask-by-default list, and every learned pattern kept. "Bugbot" → the reviewer, forge → `gh`, `ask` reports for Agustín. |
 | `unslop/SKILL.md` | KEEP (separate skill) | → [`skills/unslop/`](../unslop/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../unslop/UPSTREAM.md) and `LICENSE-pstack`. Byte-for-byte upstream, frontmatter included, so it keeps `disable-model-invocation: true`. The Non-negotiables trigger for any prose surface names the skill, and so do `investigation.md`, `opening-a-pr.md`, `references/technical-writing.md`, `show-me-your-work`, and `blast-radius`. |
+| `sharpen/SKILL.md` | KEEP (separate skill) | → [`skills/sharpen/`](../sharpen/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../sharpen/UPSTREAM.md) and `LICENSE-pstack`. Byte-for-byte upstream, frontmatter included, so it keeps `disable-model-invocation: true` and `/sharpen` loads it. |
 | `technical-writing`, `tdd` | KEEP | → `references/`, capitalization remap. |
 | `poteto-mode/scripts/{watch-pr,orch,check-plan.mjs,bootstrap.ts,package.json,bun.lock}` | DROP | Cursor/Origin/gt/bun tooling. |
 | `poteto-mode/scripts/worktree-audit.sh` | ADAPT (ported) | → `scripts/worktree-audit.sh`. Read-only: `--fetch` is opt-in, nothing is deleted, `GIT_OPTIONAL_LOCKS=0` keeps `git status` from rewriting the index. Scans given repos, the current repo, or `--root` (default `$AGENT_WORK_ROOT`, else `~/agent-work`). Transcript column → LAST_TOUCH (newer of index mtime and HEAD commit); buckets `hold-wip`, `hold-open-pr`, `verify-recent`, `safe`, `review`, `prunable`; portable GNU/BSD `stat` and `date`; RUNTIME section (Metro/Expo ports 8081, 8090, 19000, 19001, Expo CLI processes, booted simulators, adb devices). |
@@ -126,7 +128,6 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `poteto-mode/scripts/worktree-audit.sh` (`-b/--base`, Origin PR lookup, MERGED against the default branch) | ALREADY-HAVE | Ours already resolves the base from `origin/HEAD` and uses `gh` only. |
 | `in-your-own-words` skill | ALREADY-HAVE | The restate-first step in the Bug fix and Investigation playbooks and the ai-eng-practices dispatch step "Restate reports before acting" cover it. |
 | `ketchup` skill | DROP | It relies on `/bro`, `/visualize`, and Cursor chat. Our coding agents run headless. |
-| `sharpen` skill | DEFER | A one-paragraph standalone pre-task check (expert approach, real goal, spec level, one outside check) that restate-first does not cover. |
 | Root `pstack/plugin.json` (Agent Plugins v1), `agents/poteto-agent.md`, `agents/comment-sicko.md`, `watch-pr`, `orch`, `check-plan` scripts, `how`, `why`, `arena`, `architect`, `interrogate`, `swarm`, `benchmark-checklist`, `poteto-help`, `multi-phase-plan.md`, `eval.md`, `shipping.md`, `autopilot-*.md` | Verdict unchanged | Verdicts above stand (DROP, or DEFER for `benchmark-checklist` and `multi-phase-plan.md`). |
 | `automate-me`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
 
@@ -141,7 +142,7 @@ git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugi
 cd /tmp/cursor-plugins
 git log --oneline "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* pstack/LICENSE
 git diff --stat "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* \
-  pstack/skills/unslop pstack/skills/technical-writing pstack/skills/tdd pstack/LICENSE
+  pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd pstack/LICENSE
 git show origin/main:pstack/.cursor-plugin/plugin.json | grep '"version"'
 ```
 
