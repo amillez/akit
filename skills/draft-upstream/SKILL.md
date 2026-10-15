@@ -61,6 +61,8 @@ If it is missing or its parent differs, say so and stop. Do not fork, rename, or
 - **Issue.** `gh issue create --repo amillez/<repo>`. If the fork has issues disabled, say so and stop. Do not change its settings.
 - **Fix.** Push a topic branch to the fork and run `gh pr create --draft --repo amillez/<repo> --base <fork-branch> --head <topic>`. Always pass `--repo`, because `gh` defaults a fork's PR to the parent repo. Sync the base first with `gh repo sync amillez/<repo> --branch <fork-branch>`, and never pass `--force`.
 
+Every commit is a plain commit by Agustín's GitHub user (`amillez`). Remove any AI `Co-authored-by` trailer, and keep "Generated with" lines out of commit messages and the PR body. Before you push, run `git log --format='%an <%ae>%n%b' <fork-branch>..HEAD` and confirm every author is Agustín and no trailer is left.
+
 Check that the URL `gh` prints starts with `https://github.com/amillez/`. If it does not, stop and report it.
 
 ## 5. Report
