@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Ensure the amillez plugin pack is installed at user root before coding.
-# Installs or refreshes when the stamp or any amillez skill is missing. Never touches project trees.
+# Installs or refreshes when the stamp, any amillez skill, or a Claude settings allow rule is missing.
+# Never touches project trees.
 set -euo pipefail
 
 usage() {
@@ -9,13 +10,14 @@ Usage: ./scripts/ensure-install.sh [--force] [--skills-root /path/to/akit] [--gr
 
 Run before coding sessions. Ensures the user-root amillez plugin pack.
 
-Installed means both:
+Installed means all of:
   - the stamp exists: ~/.amillez-plugin.json or ~/.agents/amillez-plugin.json
   - every amillez skill the groups install (install.sh --list-skills) is in
     ~/.claude/skills and ~/.agents/skills
+  - every allow rule in templates/claude-settings.json is in ~/.claude/settings.json
 
-Stamp missing: runs update-install.sh (skills, user rules, stamp) and prints "installed".
-Stamp present but a amillez skill missing: refreshes and prints "updated".
+Stamp missing: runs update-install.sh (skills, user rules, settings, stamp) and prints "installed".
+Stamp present but a amillez skill or allow rule missing: refreshes and prints "updated".
 Otherwise prints "already present", unless --force refreshes anyway.
 
 Groups (same as install.sh; default core,mobile). core is always included.
@@ -120,6 +122,11 @@ amillez_skill_missing() {
   return 1
 }
 
+settings_rule_missing() {
+  local merge="$SKILLS_ROOT/scripts/claude-settings.sh"
+  [[ -x "$merge" ]] && ! "$merge" --check
+}
+
 run_install() {
   local update="$SKILLS_ROOT/scripts/update-install.sh"
   if [[ ! -x "$update" ]]; then
@@ -137,7 +144,7 @@ if plugin_present; then
   WAS_PRESENT=1
 fi
 
-if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! amillez_skill_missing; then
+if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! amillez_skill_missing && ! settings_rule_missing; then
   echo "amillez plugin: already present"
   exit 0
 fi

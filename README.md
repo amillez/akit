@@ -8,7 +8,7 @@ Policy on when to use what lives in [`amillez/ai-eng-practices`](https://github.
 
 | Pack | Where it lives | How |
 | --- | --- | --- |
-| **Amillez plugin** (amillez skills, model rules, allowlisted upstream packs) | **Device user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
+| **Amillez plugin** (amillez skills, model rules, allowlisted upstream packs) | **Device user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; proof Read allow rule → `~/.claude/settings.json`; stamp → `~/.amillez-plugin.json` |
 | **Project skills** (e.g. `verify-*`) | **The project repo** | `.claude/skills/<name>/` and `.agents/skills/<name>/`, committed with the project |
 
 The install scripts never write into project trees. A project may also commit copies of selected stack skills under `.claude/skills/` and `.agents/skills/` as a mirror for teammates.
@@ -33,7 +33,7 @@ cd ~/agent-work/akit
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
+`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, merges the allow rules in `templates/claude-settings.json` into `~/.claude/settings.json`, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). The only allow rule is `Read(~/agent-work/proof/**)`. It lets an auto-mode Claude Code session read proof screenshots without stopping on the first-read-outside-the-working-directories prompt. The merge adds missing entries and leaves every other key alone.
 
 **Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
@@ -69,15 +69,16 @@ cd ~/agent-work/akit
 ./scripts/ensure-install.sh
 ```
 
-- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`.
-- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
+- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`, and every allow rule in `templates/claude-settings.json` is in `~/.claude/settings.json`.
+- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill or an allow rule is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
 - `--force` refreshes even when the pack is present. `--groups` works as in `install.sh`.
 
 ### Scripts
 
 - **`ensure-install.sh`**. The required entry point before coding. It is idempotent. It detects the pack and installs or refreshes it at user root.
 - **`update-install.sh`**. Refreshes user-root skills, copies `templates/models.md` to `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md`, and rewrites the stamp. `--skip-upstream` skips the npx packs. `--skip-skills` refreshes only the rules and the stamp.
-- **`install.sh`**. Full install: upstream packs, amillez skills, user rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`install.sh`**. Full install: upstream packs, amillez skills, user rules, the Claude settings allow rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`claude-settings.sh`**. Merges `templates/claude-settings.json` allow rules into `~/.claude/settings.json`. `--check` exits 1 when one is missing.
 - **`test-install.sh`**. Runs the three install scripts against a temporary `HOME` with a stub `npx`. Run it after changing any install script.
 - **`check-links.sh`**. Checks relative Markdown links and their anchors.
 - **`update-upstream.sh`**. See [Keeping skills up to date](#keeping-skills-up-to-date).
@@ -147,10 +148,12 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx s
 amillez-plugin.json          # pack metadata
 skills/                      # amillez skills, one directory each
 templates/models.md          # Claude Code and Codex model rules → user rules dirs
+templates/claude-settings.json # Claude Code allow rules merged into ~/.claude/settings.json
 manifest.json                # allowlist, groups, and upstream pins
 scripts/install.sh           # user-root install: skills, user rules, stamp
 scripts/ensure-install.sh    # required before coding: detect, then install or refresh
 scripts/update-install.sh    # refresh user-root skills, rules, and stamp
+scripts/claude-settings.sh   # merge or --check the Claude settings allow rules
 scripts/test-install.sh      # sandboxed test of the three install scripts
 scripts/check-links.sh       # relative Markdown link and anchor check
 scripts/update-upstream.sh   # npx skills update for upstream packs
