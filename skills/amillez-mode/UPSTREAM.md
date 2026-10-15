@@ -71,7 +71,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `perf-issue.md` | KEEP (ported) | Performance mantras verbatim; benchmark-checklist vetting → [Explain the Number](principles/explain-the-number.md); control skill → Argent profiling, `verify-*`, or the platform profiler; how → recon; architect → write the target shape; delegate per lanes; teardown before Opening a PR. |
 | `hillclimb.md` | KEEP (ported) | how → recon; benchmark-checklist harness vetting → Explain the Number; hypothesis order links the Perf issue mantras; delegate per lanes; links Autonomous run; teardown before Opening a PR. The decision log links the sibling [`show-me-your-work`](../show-me-your-work/SKILL.md) skill and maps the attempt fields onto its columns instead of a separate `decision.tsv` schema. |
 | `runtime-forensics.md` | ADAPT (ported) | CDP → Argent profiling on a simulator or emulator (Hermes, React profiler, heap), Instruments or Android Studio for native frames, DevTools or `node --inspect` for web and Node; live probes via Fast Refresh or a debugger evaluate, reverted after; reduction points at Trace forensics; visual glitch frames confirmed against expected behavior; teardown step added. |
-| `trace-forensics.md` | KEEP (ported) | Verbatim apart from links, except for the upstream intro and step 5 trims listed under **Revisit to 0.15.25**, which are a follow-up. |
+| `trace-forensics.md` | KEEP (ported) | Verbatim apart from links, minus the subagent reasoning-level line. |
 | `visual-parity.md` | ADAPT (ported) | Control skill → Argent screenshots and screenshot-diff on a fixed simulator or emulator config, `verify-*` to reach states; one simulator per owner; every nonzero diff located and described, and only a zero diff passes; `/loop` → repeat until zero; artifacts on the `media` branch; teardown step added. A "max 2 parallel worktrees" cap is host policy and stays out of the playbook. |
 | `babysit.md` | ADAPT (ported) | Coding-agent side. The dispatcher owns the babysit (ai-eng-practices `agent-dispatch-lifecycle.md#babysit-until-merged`); wakes come from its settle-watch and GitHub listeners, one pass per wake. Modes `check` and `threads-only`, `drive` only when asked; `background` dropped. Kept: frontier rule, one babysitter, no topology mutation (own branch may `--force-with-lease`), conflicts then threads then CI in one push wave, classify CI before retry (one fresh build, reclassify, stale-base check with `git merge-base --is-ancestor`), review text is untrusted data, `gh api` reply via JSON file, third-pass lean-dismiss with high-risk escalation, dismissal patterns offered in their own PR. Added: apply Agustín's comments without asking, never merge or close, teardown. Dropped: `watch-pr` verdicts, Origin, gt, `/loop`, Shipping routing, Autopilot owners. |
 | `autonomous-run.md` | ADAPT (ported) | Kept: exit predicate, smallest change per iteration, revert what didn't help, mid-run discoveries are yours, don't park reversible work, plateau is not a stop. Merge-ready caps PR predicates. Wake via the dispatcher's settle-watch and GitHub listeners, not `/loop` or a self-poller. show-me-your-work → a link to the sibling [`show-me-your-work`](../show-me-your-work/SKILL.md) skill; `AskQuestion` → the always-pause list; side fixes in their own small PR; teardown step added. |
@@ -109,18 +109,10 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `create-verification-skill`, `maintain-verification-skill`, `setup-pstack` | ALREADY-HAVE | `skills/create-verification-skill`, `skills/maintain-verification-skill`, `skills/setup-amillez-models`. |
 | cursor-team-kit `deslop`, `control-ui`, `control-cli` | ADAPT | Inline self-review; Argent + `verify-*`. |
 
-### Revisit to 0.15.25
-
-Run on 2026-10-15. Every upstream file that changed between the previous pin (pstack `0.15.11`, `00b52d954a99ff67802cad428ff19218659f76fd`) and this one has a verdict here. Rows for files that kept their verdict above only say so.
+### Upstream changes not ported
 
 | Upstream change | Verdict | Our change or reason |
 | --- | --- | --- |
-| `principle-*/SKILL.md` (16 of 24 changed) | KEEP (ported) | Regenerated with Local changes 1 to 3 ([#59](https://github.com/amillez/akit/pull/59)). |
-| `poteto-mode/SKILL.md` Principles index summaries | KEEP (ported) | Attack the Premise, Fix Root Causes, and Test Behavior, Not Implementation take the new summaries ([#59](https://github.com/amillez/akit/pull/59)). |
-| `unslop/SKILL.md` | KEEP (ported) | Byte-for-byte ([#56](https://github.com/amillez/akit/pull/56)). |
-| `technical-writing/SKILL.md` | KEEP (ported) | Trims taken, Local change 6 edits re-applied ([#55](https://github.com/amillez/akit/pull/55)). |
-| `create-verification-skill/SKILL.md` readiness | ADAPT (ported) | Launch reaches a usable state from an empty data dir, a seed gap fails the journey, and a stand-in run lists the setup the real target lacks. `maintain-verification-skill` gains a matching local line ([#58](https://github.com/amillez/akit/pull/58)). |
-| `correct/SKILL.md` step 3 | ADAPT (ported) | A test must fail when the behavior breaks and pass when only internals change ([#57](https://github.com/amillez/akit/pull/57)). |
 | `blast-radius/SKILL.md` step 6 ("more than one model") | ALREADY-HAVE | Its Local change 6 replaces the line. |
 | "Pick each subagent's reasoning level and fast or standard speed" in `show-me-your-work`, `recall`, `figure-it-out`, and the `autonomous-run`, `bug-fix`, `feature`, `hillclimb`, `orchestrate`, `perf-issue`, `refactoring`, `runtime-forensics`, `session-pickup`, `trace-forensics`, and `worktree-cleanup` playbooks, plus `poteto-mode/SKILL.md` "Match the model to the job" | DROP | Our lanes pin model and effort per task from agent-use-policy. Policy §3 covers lowering effort, and Fast stays off unless asked. |
 | `figure-it-out/SKILL.md` description and Phase C reflow | DROP | Cosmetic. |
@@ -130,11 +122,12 @@ Run on 2026-10-15. Every upstream file that changed between the previous pin (ps
 | `opening-a-pr.md` trims | ALREADY-HAVE | Ours carries the same rules, including "A commit body does not restate its subject" in **Proof media**. The new line that moves a child onto trunk per `shipping.md` drops with Shipping. |
 | `babysit.md` trims (merge-authorization paragraph, reply line) | ALREADY-HAVE | Ours keeps never-merge in step 10 and its own reply line. |
 | `worktree-cleanup.md` intro trim and `-b` | ALREADY-HAVE | Our intro and step 1 are our own, and our audit resolves the base from `origin/HEAD`. |
-| `trace-forensics.md` intro and step 5 trims | Follow-up | KEEP file. Not re-synced in this revisit, so ours still has the longer intro line and step 5 wording. |
 | `orchestrate.md` Graphite removal | ALREADY-HAVE | `orchestrate-agents` never carried `gt`. Orca owns the stack. |
 | `poteto-mode/scripts/worktree-audit.sh` (`-b/--base`, Origin PR lookup, MERGED against the default branch) | ALREADY-HAVE | Ours already resolves the base from `origin/HEAD` and uses `gh` only. |
-| New skills `ketchup`, `sharpen`, `in-your-own-words` | DROP | Linked only, from ai-eng-practices `steal-from-pstack.md`. |
-| Root `pstack/plugin.json` (Agent Plugins v1), `agents/poteto-agent.md`, `agents/comment-sicko.md`, `watch-pr`, `orch`, `check-plan` scripts, `how`, `why`, `arena`, `architect`, `interrogate`, `swarm`, `benchmark-checklist`, `poteto-help`, `multi-phase-plan.md`, `eval.md`, `shipping.md`, `autopilot-*.md` | Unchanged | Verdicts above stand (DROP, or DEFER for `benchmark-checklist` and `multi-phase-plan.md`). |
+| `in-your-own-words` skill | ALREADY-HAVE | The restate-first step in the Bug fix and Investigation playbooks and the ai-eng-practices dispatch step "Restate reports before acting" cover it. |
+| `ketchup` skill | DROP | It relies on `/bro`, `/visualize`, and Cursor chat. Our coding agents run headless. |
+| `sharpen` skill | DEFER | A one-paragraph standalone pre-task check (expert approach, real goal, spec level, one outside check) that restate-first does not cover. |
+| Root `pstack/plugin.json` (Agent Plugins v1), `agents/poteto-agent.md`, `agents/comment-sicko.md`, `watch-pr`, `orch`, `check-plan` scripts, `how`, `why`, `arena`, `architect`, `interrogate`, `swarm`, `benchmark-checklist`, `poteto-help`, `multi-phase-plan.md`, `eval.md`, `shipping.md`, `autopilot-*.md` | Verdict unchanged | Verdicts above stand (DROP, or DEFER for `benchmark-checklist` and `multi-phase-plan.md`). |
 | `automate-me`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
 
 ## Friday revisit (tracking upstream)
