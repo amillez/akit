@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, and draft-upstream skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, and sharpen skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -193,6 +193,13 @@
       "path": "skills/draft-upstream",
       "when": "Draft an issue or PR for a third-party open-source repo. Search upstream for duplicates, build a scrubbed minimal public repro, unslop the text, and open the draft only in the amillez fork. Filing upstream stays a human action.",
       "note": "Omits disable-model-invocation so the model loads it whenever a task is about to touch a repo the user does not own. Links the unslop skill. Works without amillez-mode."
+    },
+    {
+      "id": "sharpen",
+      "group": "core",
+      "path": "skills/sharpen",
+      "when": "/sharpen: before starting a task, check how a top expert would approach it, what the user is really after, and whether it is over- or underspecified, keeping one outside check that the result is right; the check lives in the skill (ported from pstack, MIT, see skills/sharpen/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /sharpen loads it."
     },
     {
       "id": "simfleet",
