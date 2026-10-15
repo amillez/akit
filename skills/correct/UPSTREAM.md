@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/correct/SKILL.md` |
-| Compared against | `00b52d954a99ff67802cad428ff19218659f76fd` (pstack `0.15.11`). The file last changed in `9511e60321f7e533a187d62854a3d53a53752874` (2026-10-03) and is identical on `origin/main` at pstack `0.15.12`. |
+| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). The file last changed in that commit (2026-10-15), which rewrote step 3. Ours takes the new step 3 with the local change 8 link. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
