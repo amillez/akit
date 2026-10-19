@@ -15,7 +15,7 @@
       "id": "argent",
       "group": "mobile",
       "package": "software-mansion/argent/packages/skills/skills",
-      "ref": "v0.28.0",
+      "ref": "v0.29.0",
       "skills": [
         "*"
       ],
