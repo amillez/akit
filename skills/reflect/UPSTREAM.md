@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/reflect/` (`SKILL.md`, `references/{judgment,tooling,divergent}-reviewer.md`, `references/synthesizer.md`) |
-| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). The directory last changed in `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14). Upstream distilled the prose and changed the default models (`claude-opus-5-5-max` → `claude-opus-5-5-xhigh`, Tooling `gpt-5.6-sol-max` → `grok-4.7-xhigh-fast`). Local change 3 replaces the models, and the reviewer templates keep the earlier wording, since the distillation rewords them without changing the lenses. |
+| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). The directory last changed in `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14). Upstream distilled the prose and changed the default models (`claude-opus-5-5-max` → `claude-opus-5-5-xhigh`, Tooling `gpt-5.6-sol-max` → `grok-4.7-xhigh-fast`). Local change 3 replaces the models, and the reviewer templates keep the earlier wording, since the distillation rewords them without changing the lenses. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
