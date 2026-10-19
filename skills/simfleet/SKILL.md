@@ -20,7 +20,7 @@ Metro, or a device outside the fleet.
 
 ```bash
 brew install bun
-bun add -g simfleet            # or: bunx simfleet <command>
+bun add -g simfleet@0.1.1      # or: bunx simfleet@0.1.1 <command>
 simfleet version
 simfleet serve                 # dashboard + API on http://127.0.0.1:8790, menu-bar icon
 ```
