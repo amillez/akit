@@ -75,8 +75,8 @@ the HTTP/WebSocket contract.
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
 - **One Android emulator on `agent-m1`.** Check `simfleet emu list` before `emu boot` and reuse or wait
-  if one runs. Don't boot under 20 GB free (`df -h ~`). Policy source is
-  [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
+  if one runs. Don't boot an emulator or run `native ensure` under 20 GB free (`df -h ~`).
+  Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
@@ -125,6 +125,10 @@ simfleet sim shutdown <udid> | simfleet emu shutdown <avd>     # only devices yo
 
 Stop `simfleet serve` if you started it. With the server down, use `xcrun simctl shutdown <udid>` and
 `adb -s <serial> emu kill` for the devices you booted.
+
+After an Android lane or Android native build, run `./gradlew --stop` in the project's `android/`
+directory and kill any of the job's daemons that `pgrep -fl 'GradleDaemon|KotlinCompileDaemon'` still
+lists. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
 
 ## Report
 
