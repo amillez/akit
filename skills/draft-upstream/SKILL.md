@@ -120,3 +120,11 @@ End with:
 6. The repro repo URL, if you published one.
 
 Filing upstream is Agustín's action, not yours.
+
+## Replying to upstream reviews
+
+After Agustín files upstream, maintainer reviews and comments come back to you to draft.
+
+- Ask Agustín before you edit, push to, or reply on the upstream issue or PR. A push to the fork branch behind an upstream PR changes that PR, so it counts. Draft the reply and the fix, show them to him, and he posts the reply or approves it.
+- Keep the reply short and plain. Say what changed in words, with no commit hashes.
+- Run [`unslop`](../unslop/SKILL.md) on the reply before you show it.
