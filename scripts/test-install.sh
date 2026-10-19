@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run install.sh, update-install.sh, and ensure-install.sh against a throwaway HOME with a stub npx.
+# Run install.sh, update-install.sh, ensure-install.sh, and prune-skills.sh against a throwaway HOME with a stub npx.
 set -uo pipefail
 
 usage() {
@@ -119,6 +119,51 @@ for s in "${AMILLEZ_SKILLS[@]}"; do
   check "update-install --skip-upstream: $s installed" 'has_skill "$s"'
 done
 check "update-install --skip-upstream: stamp written" '[[ -f "$HOME/.amillez-plugin.json" ]]'
+
+check "fresh HOME: no prune backup dir when nothing is listed" '[[ ! -e "$BASE/fresh/.agent-work-skill-prune-backup" ]]'
+
+export HOME="$BASE/prune"
+mkdir -p "$HOME"
+"$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
+seed() { mkdir -p "$HOME/$1" && echo "---" > "$HOME/$1/SKILL.md"; }
+seed .claude/skills/expo-ui
+seed .agents/skills/expo-ui
+seed .agents/skills/expo-native-ui
+mkdir -p "$HOME/elsewhere/expo-native-ui" && ln -s "$HOME/elsewhere/expo-native-ui" "$HOME/.claude/skills/expo-native-ui"
+seed .codex/skills/react-native-nitro-fetch
+seed .claude/skills/my-own-skill
+seed .codex/skills/orchestrate-agents
+seed .codex/skills/api-design
+seed .codex/skills/my-codex-skill
+seed .codex/skills/.system/imagegen
+cat > "$HOME/.agents/.skill-lock.json" <<'JSON'
+{"version": 3, "skills": {"expo-ui": {"source": "expo/skills"}, "expo-native-ui": {"source": "expo/skills"}, "expo-dev-client": {"source": "expo/skills"}, "mine": {"source": "me/skills"}}}
+JSON
+BACKUP="$HOME/.agent-work-skill-prune-backup/$(date +%F)"
+check "prune: --pending lists the strays" '[[ "$("$REPO/scripts/prune-skills.sh" --pending | wc -l | tr -d " ")" == 9 ]]'
+check "prune: --pending moves nothing" '[[ -d "$HOME/.claude/skills/expo-ui" && ! -e "$BASE/prune/.agent-work-skill-prune-backup" ]]'
+check "prune: ensure prints updated when a prune is pending" '[[ "$(ensure)" == "amillez plugin: updated" ]]'
+for p in .claude/skills/expo-ui .agents/skills/expo-ui .agents/skills/expo-native-ui .claude/skills/expo-native-ui .codex/skills/react-native-nitro-fetch .codex/skills/orchestrate-agents .codex/skills/api-design; do
+  check "prune: $p moved out" '[[ ! -e "$HOME/$p" && ! -L "$HOME/$p" ]]'
+  check "prune: $p in the dated backup" '[[ -e "$BACKUP/$p" || -L "$BACKUP/$p" ]]'
+  check "prune: $p logged" 'grep -qF "$HOME/$p -> $BACKUP/$p" "$HOME/.agent-work-skill-prune-backup/prune.log"'
+done
+check "prune: symlinked stray moved as a link, target kept" '[[ -L "$BACKUP/.claude/skills/expo-native-ui" && -d "$HOME/elsewhere/expo-native-ui" ]]'
+for p in .claude/skills/my-own-skill .codex/skills/my-codex-skill .codex/skills/.system/imagegen; do
+  check "prune: unlisted $p left alone" '[[ -f "$HOME/$p/SKILL.md" ]]'
+done
+check "prune: current orchestrate-agents in ~/.claude and ~/.agents kept" 'has_skill orchestrate-agents'
+check "prune: lock drops expo-ui and expo-native-ui only" '[[ "$(python3 -c "import json,sys; print(\" \".join(sorted(json.load(open(sys.argv[1]))[\"skills\"])))" "$HOME/.agents/.skill-lock.json")" == "expo-dev-client mine" ]]'
+check "prune: lock backed up first" 'ls "$BACKUP"/skill-lock.*.json >/dev/null 2>&1 && grep -q expo-native-ui "$BACKUP"/skill-lock.*.json'
+check "prune: ensure prints already present once pruned" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
+seed .claude/skills/expo-ui
+"$REPO/scripts/prune-skills.sh" >/dev/null
+check "prune: a second prune the same day keeps the first backup" '[[ -f "$BACKUP/.claude/skills/expo-ui/SKILL.md" && "$(ls -d "$BACKUP"/.claude/skills/expo-ui-* | wc -l | tr -d " ")" == 1 ]]'
+
+python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); m["prune"]=[{"id":"t","names":["orchestrate-agents","expo-dev-client"],"roots":["~/.claude/skills"]}]; json.dump(m,open(sys.argv[2],"w"))' "$REPO/manifest.json" "$HOME/guard-manifest.json"
+seed .claude/skills/expo-dev-client
+"$REPO/scripts/prune-skills.sh" --manifest "$HOME/guard-manifest.json" >/dev/null 2>&1
+check "prune: a listed name akit still installs is kept" 'has_skill orchestrate-agents && [[ -f "$HOME/.claude/skills/expo-dev-client/SKILL.md" ]]'
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures check(s) failed"
