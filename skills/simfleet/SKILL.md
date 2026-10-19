@@ -75,8 +75,8 @@ the HTTP/WebSocket contract.
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
 - **One Android emulator on `agent-m1`.** Check `simfleet emu list` before `emu boot` and reuse or wait
-  if one runs. Don't boot an emulator or run `native ensure` under 20 GB free (`df -h ~`).
-  Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
+  if one runs. Don't boot an emulator or run `native ensure` under 20 GB free (`df -h ~`, Avail column).
+  Under 20 GB, ping Ben with the `df -h ~` output and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
