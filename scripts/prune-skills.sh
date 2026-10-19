@@ -30,7 +30,9 @@ To undo, move the folder back from the backup dir.
   --pending   Print the paths that would be moved, change nothing. Exits 0
               if any are pending, 1 if none.
 
-Exits 2 on any error (bad argument, missing python3, malformed manifest or lock).
+Exits 2 on any error (bad argument, missing python3, malformed manifest or
+lock, or a backup dir that resolves outside HOME or can't be created), in
+--pending too.
 USAGE
 }
 
@@ -122,6 +124,27 @@ for entry in manifest.get("prune", []):
 
 lock_keys = [n for src, n in lock_drops if lock_source(lock, n) == src]
 
+now = datetime.datetime.now()
+backup_root = os.path.join(home, ".agent-work-skill-prune-backup")
+day_dir = os.path.join(backup_root, now.strftime("%Y-%m-%d"))
+
+def backup_problem(d):
+    real = os.path.realpath(d)
+    if not inside(real, real_home):
+        return f"resolves to {real}, outside HOME"
+    while not os.path.lexists(real):
+        real = os.path.dirname(real)
+    if not os.path.isdir(real) or not os.access(real, os.W_OK | os.X_OK):
+        return f"can't be created: {real} is not a writable directory"
+
+# Checked before --pending answers, so it never reports work the real run can't do.
+if moves or lock_keys:
+    for d in dict.fromkeys([backup_root, day_dir] + [os.path.join(day_dir, os.path.relpath(expand(r), home)) for _, r, _ in moves]):
+        problem = backup_problem(d)
+        if problem:
+            print(f"error: backup dir {d} {problem}", file=sys.stderr)
+            sys.exit(2)
+
 if pending:
     for _, _, src in moves:
         print(src)
@@ -133,9 +156,6 @@ if not moves and not lock_keys:
     print("prune: nothing to move")
     sys.exit(0)
 
-now = datetime.datetime.now()
-backup_root = os.path.join(home, ".agent-work-skill-prune-backup")
-day_dir = os.path.join(backup_root, now.strftime("%Y-%m-%d"))
 os.makedirs(backup_root, exist_ok=True)
 log = open(os.path.join(backup_root, "prune.log"), "a", buffering=1)
 
@@ -153,9 +173,6 @@ def free_path(base, ext=""):
 for entry_id, r, src in moves:
     rel = os.path.relpath(expand(r), home)
     dest = free_path(os.path.join(day_dir, rel, os.path.basename(src)))
-    if not inside(os.path.realpath(os.path.dirname(dest)), real_home):
-        print(f"skip: backup path {dest} resolves outside HOME", file=sys.stderr)
-        continue
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     shutil.move(src, dest)
     record(f"pruned ({entry_id}): {src} -> {dest}")

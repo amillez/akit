@@ -206,6 +206,12 @@ mkdir -p "$BASE/outside/api-design" && ln -s "$BASE/outside" "$HOME/.codex/skill
 check "outside HOME: a root resolving outside HOME is not pending" '! "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1'
 "$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
 check "outside HOME: nothing moved" '[[ -d "$BASE/outside/api-design" ]]'
+rm "$HOME/.codex/skills" && seed .codex/skills/api-design
+mkdir -p "$BASE/outside-backup" && ln -s "$BASE/outside-backup" "$HOME/.agent-work-skill-prune-backup"
+rc=0; "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1 || rc=$?
+check "backup outside HOME: --pending exits 2" '[[ $rc == 2 ]]'
+check "backup outside HOME: ensure fails, not report updated or already present" '! "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" >"$HOME/ensure.out" 2>&1 && ! grep -q "amillez plugin:" "$HOME/ensure.out" && grep -q "outside HOME" "$HOME/ensure.out"'
+check "backup outside HOME: nothing moved" '[[ -f "$HOME/.codex/skills/api-design/SKILL.md" && -z "$(ls -A "$BASE/outside-backup")" ]]'
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures check(s) failed"
