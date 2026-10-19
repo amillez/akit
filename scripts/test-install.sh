@@ -154,16 +154,58 @@ for p in .claude/skills/my-own-skill .codex/skills/my-codex-skill .codex/skills/
 done
 check "prune: current orchestrate-agents in ~/.claude and ~/.agents kept" 'has_skill orchestrate-agents'
 check "prune: lock drops expo-ui and expo-native-ui only" '[[ "$(python3 -c "import json,sys; print(\" \".join(sorted(json.load(open(sys.argv[1]))[\"skills\"])))" "$HOME/.agents/.skill-lock.json")" == "expo-dev-client mine" ]]'
-check "prune: lock backed up first" 'ls "$BACKUP"/skill-lock.*.json >/dev/null 2>&1 && grep -q expo-native-ui "$BACKUP"/skill-lock.*.json'
+check "prune: lock backed up first" 'grep -q expo-native-ui "$BACKUP/skill-lock.json"'
 check "prune: ensure prints already present once pruned" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
-seed .claude/skills/expo-ui
+lock_expo_ui() { python3 -c 'import json,sys; p=sys.argv[1]; d=json.load(open(p)); d["skills"]["expo-ui"]={"source":"expo/skills"}; json.dump(d,open(p,"w"))' "$HOME/.agents/.skill-lock.json"; }
+seed .claude/skills/expo-ui && echo run2 > "$HOME/.claude/skills/expo-ui/SKILL.md" && lock_expo_ui
 "$REPO/scripts/prune-skills.sh" >/dev/null
-check "prune: a second prune the same day keeps the first backup" '[[ -f "$BACKUP/.claude/skills/expo-ui/SKILL.md" && "$(ls -d "$BACKUP"/.claude/skills/expo-ui-* | wc -l | tr -d " ")" == 1 ]]'
+ln -s "$HOME/gone" "$HOME/.claude/skills/expo-ui" && lock_expo_ui
+"$REPO/scripts/prune-skills.sh" >/dev/null
+check "prune: three prunes the same day keep every folder backup" '[[ "$(cat "$BACKUP/.claude/skills/expo-ui/SKILL.md")" == "---" && "$(cat "$BACKUP/.claude/skills/expo-ui-1/SKILL.md")" == run2 && -L "$BACKUP/.claude/skills/expo-ui-2" ]]'
+check "prune: three prunes the same day keep every lock backup" '[[ -f "$BACKUP/skill-lock.json" && -f "$BACKUP/skill-lock-1.json" && -f "$BACKUP/skill-lock-2.json" ]]'
+check "prune: lock rewrite leaves no temp file" '[[ -z "$(ls -A "$HOME/.agents" | grep prune)" ]]'
 
 python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); m["prune"]=[{"id":"t","names":["orchestrate-agents","expo-dev-client"],"roots":["~/.claude/skills"]}]; json.dump(m,open(sys.argv[2],"w"))' "$REPO/manifest.json" "$HOME/guard-manifest.json"
 seed .claude/skills/expo-dev-client
 "$REPO/scripts/prune-skills.sh" --manifest "$HOME/guard-manifest.json" >/dev/null 2>&1
 check "prune: a listed name akit still installs is kept" 'has_skill orchestrate-agents && [[ -f "$HOME/.claude/skills/expo-dev-client/SKILL.md" ]]'
+
+python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); m["prune"]=[{"id":"t","names":["synced",".system"],"roots":["~/.claude/skills","~/.codex/skills"]}]; json.dump(m,open(sys.argv[2],"w"))' "$REPO/manifest.json" "$HOME/protected-manifest.json"
+seed .claude/skills/synced
+"$REPO/scripts/prune-skills.sh" --manifest "$HOME/protected-manifest.json" >/dev/null 2>&1
+check "prune: synced/ and .system/ never moved" '[[ -f "$HOME/.claude/skills/synced/SKILL.md" && -f "$HOME/.codex/skills/.system/imagegen/SKILL.md" ]]'
+
+seed .claude/skills/expo-ui
+python3 -c 'import json,sys; p=sys.argv[1]; d=json.load(open(p)); d["skills"]["expo-ui"]={"source":"my/skills"}; json.dump(d,open(p,"w"))' "$HOME/.agents/.skill-lock.json"
+check "prune: a folder locked to another source is not pending" '! "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1'
+"$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
+check "prune: a folder locked to another source is kept with its lock entry" '[[ -f "$HOME/.claude/skills/expo-ui/SKILL.md" ]] && grep -q my/skills "$HOME/.agents/.skill-lock.json"'
+
+echo '{' > "$HOME/.agents/.skill-lock.json"
+seed .codex/skills/api-design
+rc=0; "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1 || rc=$?
+check "prune: malformed lock makes --pending exit 2" '[[ $rc == 2 ]]'
+check "prune: malformed lock makes ensure fail, not report already present" '! "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" >"$HOME/ensure.out" 2>&1 && ! grep -q "already present" "$HOME/ensure.out" && grep -q JSONDecodeError "$HOME/ensure.out"'
+check "prune: malformed lock moves nothing" '[[ -f "$HOME/.codex/skills/api-design/SKILL.md" ]]'
+mkdir -p "$BASE/nopy" && ln -sf "$(command -v bash)" "$(command -v dirname)" "$BASE/nopy/"
+rc=0; PATH="$BASE/nopy" "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1 || rc=$?
+check "prune: missing python3 makes --pending exit 2" '[[ $rc == 2 ]]'
+
+export HOME="$BASE/prune-alias"
+mkdir -p "$HOME/.codex"
+"$REPO/scripts/update-install.sh" --skip-upstream >/dev/null 2>&1
+seed .agents/skills/api-design
+ln -s "$HOME/.agents/skills" "$HOME/.codex/skills"
+check "alias: ~/.codex/skills -> ~/.agents/skills has nothing pending" '! "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1'
+check "alias: ensure prints already present" '[[ "$(ensure)" == "amillez plugin: already present" ]]'
+"$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
+check "alias: installed skills behind the alias kept" 'has_skill orchestrate-agents && [[ -f "$HOME/.agents/skills/api-design/SKILL.md" ]]'
+check "alias: no backup made" '[[ ! -e "$HOME/.agent-work-skill-prune-backup" ]]'
+rm "$HOME/.codex/skills"
+mkdir -p "$BASE/outside/api-design" && ln -s "$BASE/outside" "$HOME/.codex/skills"
+check "outside HOME: a root resolving outside HOME is not pending" '! "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1'
+"$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
+check "outside HOME: nothing moved" '[[ -d "$BASE/outside/api-design" ]]'
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures check(s) failed"

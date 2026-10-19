@@ -133,8 +133,16 @@ settings_rule_missing() {
 }
 
 prune_pending() {
-  local prune="$SKILLS_ROOT/scripts/prune-skills.sh"
-  [[ -x "$prune" ]] && "$prune" --pending >/dev/null 2>&1
+  local prune="$SKILLS_ROOT/scripts/prune-skills.sh" err status=0
+  [[ -x "$prune" ]] || return 1
+  err="$("$prune" --pending 2>&1 >/dev/null)" || status=$?
+  case "$status" in
+    0) return 0 ;;
+    1) return 1 ;;
+  esac
+  echo "$err" >&2
+  echo "error: $prune --pending failed (exit $status)" >&2
+  exit 1
 }
 
 run_install() {
