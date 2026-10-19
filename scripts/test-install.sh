@@ -108,8 +108,17 @@ check "installed --groups core: ensure --groups core prints already present" '[[
 export HOME="$BASE/mobile"
 mkdir -p "$HOME"
 "$REPO/scripts/install.sh" >/dev/null 2>&1
-ARGENT_PIN=$(python3 -c 'import json,sys; e=next(u for u in json.load(open(sys.argv[1]))["upstream"] if u["id"] == "argent"); print(e["package"] + "#" + e["ref"])' "$REPO/manifest.json")
-check "install: Argent uses the manifest ref ($ARGENT_PIN)" 'grep -qF "skills add $ARGENT_PIN " "$HOME/npx.log" || { echo "  install.sh ran: $(grep argent "$HOME/npx.log")"; false; }'
+PINS=$(python3 -c '
+import json, sys
+for u in json.load(open(sys.argv[1]))["upstream"]:
+    if "ref" not in u: continue
+    if not isinstance(u["ref"], str) or not u["ref"]: sys.exit("upstream %s: ref is not a nonempty string" % u["id"])
+    print(u["id"], u["package"] + "#" + u["ref"])
+' "$REPO/manifest.json") || { echo "FAIL install: read the manifest pin list"; failures=$((failures + 1)); }
+check "install: manifest pins argent and margelo-react-native-skills" 'grep -q "^argent " <<<"$PINS" && grep -q "^margelo-react-native-skills " <<<"$PINS"'
+while read -r id pin; do
+  check "install: $id uses the manifest ref ($pin)" 'grep -qF "skills add $pin " "$HOME/npx.log" || { echo "  install.sh ran: $(grep -F "${pin%%#*}" "$HOME/npx.log")"; false; }'
+done <<<"$PINS"
 
 export HOME="$BASE/skip-upstream"
 mkdir -p "$HOME"

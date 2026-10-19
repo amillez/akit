@@ -158,7 +158,8 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
     npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
-    npx -y skills add margelo/react-native-skills \
+    # Margelo: pinned to the commit in manifest.json
+    npx -y skills add "margelo/react-native-skills#1e9e17be6f41c838db472d6a4b943fc26355a3be" \
       --skill api-design \
       --skill build-nitro-modules \
       --skill cpp \
