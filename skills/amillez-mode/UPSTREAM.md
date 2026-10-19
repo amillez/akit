@@ -147,7 +147,13 @@ PIN=d457567332aa6989e753ea289f30ea2bfbc80bc0
 git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugins 2>/dev/null \
   || git -C /tmp/cursor-plugins fetch origin main
 cd /tmp/cursor-plugins
-git log --oneline "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* pstack/LICENSE
+git log --oneline "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* \
+  pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd \
+  pstack/skills/blast-radius pstack/skills/reflect pstack/skills/correct pstack/skills/figure-it-out \
+  pstack/skills/show-me-your-work pstack/skills/typescript-best-practices \
+  pstack/skills/create-verification-skill pstack/skills/maintain-verification-skill \
+  pstack/skills/create-formal-verification-skill pstack/skills/maintain-formal-verification-skill \
+  pstack/LICENSE
 git diff --stat "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* \
   pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd \
   pstack/skills/blast-radius pstack/skills/reflect pstack/skills/correct pstack/skills/figure-it-out \
