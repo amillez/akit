@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/create-verification-skill/` (`SKILL.md`, `references/feature-map-example/`) |
-| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). `SKILL.md` last changed in `c49b37a2c0e7bede60a71ad7322e3f12c337a3da` (2026-10-12), whose readiness rules are ported. `references/feature-map-example/` is byte-identical at that commit. |
+| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). `SKILL.md` last changed in `c49b37a2c0e7bede60a71ad7322e3f12c337a3da` (2026-10-12), whose readiness rules are ported. `references/feature-map-example/` is byte-identical at that commit. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
@@ -23,3 +23,4 @@ Attribution: the generator workflow, proof standards, and the feature map exampl
 4. **App CLI** (from poteto's "The Complete Guide to pstack Pt. 1", https://x.com/poteto/status/2094457600259842065). The generated skill ships one agent-friendly repo CLI for dev setup, seeding, test users and auth, reset, and opening a feature, with subcommands, JSON output, `--dry-run` on destructive commands, actionable errors, and rich `--help`. For Expo and React Native it covers only the app layer, since Argent drives the device. Step 4 proves `--help` and one `--dry-run`.
 5. **Maintenance cadence.** Step 5 proposes a weekly scheduled routine running `/maintain-verification-skill` instead of suggesting a cadence only on request.
 6. **Skill text only.** `SKILL.md` names no host and carries no attribution or long dashes. Attribution lives here.
+7. **agent-m1 limits.** The Launch section links [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) before a device boot or native build on `agent-m1`: one Android emulator, a 20 GB free-disk floor, and `./gradlew --stop` after an Android run. The policy text stays in the policy.

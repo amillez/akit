@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/` (`pstack/skills/poteto-mode/`, `pstack/skills/principle-*/`, siblings) |
-| Pinned commit | `e5136d82418d2db3165ea1050d17577cd618cc05` (2026-10-15 05:36 +00:00). Last checked against `origin/main` on 2026-10-15. |
-| Version | pstack `0.15.25` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
+| Pinned commit | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (2026-10-19 05:35 +00:00). Last checked against `origin/main` on 2026-10-19. |
+| Version | pstack `0.15.28` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 Attribution: the principles and any playbook text marked KEEP are poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to every vendored file.
@@ -18,7 +18,7 @@ Attribution: the principles and any playbook text marked KEEP are poteto's (Laur
 
 Applied to vendored files. Everything else is upstream text.
 
-1. **Principles are leaves, not skills.** `pstack/skills/principle-<slug>/SKILL.md` (24 of them) → `principles/<slug>.md`. YAML frontmatter (`name`, `description`, `disable-model-invocation`) is replaced with the upstream H1 title plus a `**Trigger.**` line holding the upstream `description` verbatim. They are not installed as standalone skills (each skill description rides the prompt prefix; see ai-eng-practices agent-use-policy §7).
+1. **Principles are leaves, not skills.** `pstack/skills/principle-<slug>/SKILL.md` (24 of them) → `principles/<slug>.md`. YAML frontmatter (`name`, `description`, `disable-model-invocation`) is replaced with the upstream H1 title plus a `**Trigger.**` line holding the upstream `description` verbatim. They are not installed as standalone skills (each skill description rides the prompt prefix; see ai-eng-practices agent-use-policy §7). `type-system-discipline.md` and `migrate-callers-then-delete-legacy-apis.md` stay at their `e5136d8` text (see Upstream changes not ported).
 2. **Cross-links rewritten.** `(../principle-<slug>/SKILL.md)` → `(<slug>.md)` so links resolve inside `principles/`. No other body edits.
 3. **Unported references left as-is.** Bodies still name pstack skills we do not ship as skills. Read them as the idea, not an installed skill. A link to an unported skill becomes its bold name, as with **benchmark-checklist** in `explain-the-number.md`. `show-me-your-work` in `prove-it-works.md` is a link to the sibling [`show-me-your-work`](../show-me-your-work/SKILL.md) skill.
 4. **`SKILL.md` is an adaptation, not a copy.** Kept close to upstream: the principle-citation rule, observe-before-asking, data shape first, throughput checkpoint, the Principles index (links point at `principles/`), Autonomy's "No is an acceptable answer", Writing the reply, and Comments. Rewritten: Subagents (amillez model lanes, never GPT 5.6 or Opus 5), Autonomy (agents never merge; coding agents report messages instead of sending them), control and slop skills (Argent, project `verify-*`, self-review). Not ported: fan-out skills, Cursor frontmatter keys, `poteto-agent`. Added: the remap table and the playbook router.
@@ -39,6 +39,7 @@ Applied to vendored files. Everything else is upstream text.
 19. **Unslop.** `pstack/skills/unslop/` becomes the separate core skill [`skills/unslop/`](../unslop/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. The Non-negotiables trigger for any prose surface names the sibling skill, and so do `investigation.md`, `opening-a-pr.md`, `references/technical-writing.md`, and the sibling `show-me-your-work` and `blast-radius` skills.
 20. **Argent precedence.** A Non-negotiables trigger ranks amillez-mode and simfleet over Argent's installer rules on `agent-m1` for device claims, named `xcrun simctl` operations, named `adb -s <serial>` operations, and writing Argent results to project memory. The sibling [`simfleet`](../simfleet/SKILL.md) skill has a matching rule.
 21. **Sharpen.** `pstack/skills/sharpen/` becomes the separate core skill [`skills/sharpen/`](../sharpen/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. It holds the whole pre-task check (expert approach, real goal, specification level, one outside check), so it applies without loading amillez-mode.
+22. **Formal verification.** `pstack/skills/create-formal-verification-skill/` and `pstack/skills/maintain-formal-verification-skill/` become the separate core skills [`skills/create-formal-verification-skill/`](../create-formal-verification-skill/SKILL.md) and [`skills/maintain-formal-verification-skill/`](../maintain-formal-verification-skill/SKILL.md), each with its own `UPSTREAM.md` and `LICENSE-pstack`. They are standalone, and no amillez-mode trigger names them.
 
 ## Per-file verdicts
 
@@ -108,6 +109,8 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `typescript-best-practices/` (`SKILL.md`, `references/patterns.md`) | ADAPT (ported, separate skill) | → [`skills/typescript-best-practices/`](../typescript-best-practices/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../typescript-best-practices/UPSTREAM.md) and `LICENSE-pstack`. Principle mentions → relative cross-skill links into `principles/`. Keeps `paths`, drops `disable-model-invocation`, and the description carries the `.ts`/`.tsx` trigger. Drops the Real tests and Structured telemetry rows. Defers React Native library usage to `react-native-best-practices`. |
 | `reflect/` (`SKILL.md`, `references/{judgment,tooling,divergent}-reviewer.md`, `references/synthesizer.md`) | ADAPT (ported, separate skill) | → [`skills/reflect/`](../reflect/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../reflect/UPSTREAM.md) and `LICENSE-pstack`, which lists its remaps. Self-contained, like upstream, with its own lane table and launch commands following the policy. Keeps `disable-model-invocation: true` and the upstream template names. Links into `principles/` and `playbooks/` are optional relative cross-skill links. The Non-negotiables trigger for "reflect" names the skill, and so do the lanes table and the remap table's fan-out row. |
 | `correct/SKILL.md` | ADAPT (ported, separate skill) | → [`skills/correct/`](../correct/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../correct/UPSTREAM.md) and `LICENSE-pstack`, which lists its remaps. Self-contained, like upstream. Keeps `disable-model-invocation: true`. Links into `principles/` and `playbooks/` are optional relative cross-skill links. The Non-negotiables trigger for a repeated correction names the skill. |
+| `create-formal-verification-skill/SKILL.md` | ADAPT (ported, separate skill) | → [`skills/create-formal-verification-skill/`](../create-formal-verification-skill/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../create-formal-verification-skill/UPSTREAM.md) and `LICENSE-pstack`, which lists its remaps. Self-contained, like upstream. Keeps `disable-model-invocation: true`, so `/create-formal-verification-skill` loads it. Its hand-off names `maintain-formal-verification-skill`. |
+| `maintain-formal-verification-skill/SKILL.md` | KEEP (separate skill) | → [`skills/maintain-formal-verification-skill/`](../maintain-formal-verification-skill/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../maintain-formal-verification-skill/UPSTREAM.md) and `LICENSE-pstack`. Byte-for-byte upstream, frontmatter included, so it keeps `disable-model-invocation: true` and `/maintain-formal-verification-skill` loads it. |
 | `create-verification-skill`, `maintain-verification-skill`, `setup-pstack` | ALREADY-HAVE | `skills/create-verification-skill`, `skills/maintain-verification-skill`, `skills/setup-amillez-models`. |
 | cursor-team-kit `deslop`, `control-ui`, `control-cli` | ADAPT | Inline self-review; Argent + `verify-*`. |
 
@@ -128,21 +131,36 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `poteto-mode/scripts/worktree-audit.sh` (`-b/--base`, Origin PR lookup, MERGED against the default branch) | ALREADY-HAVE | Ours already resolves the base from `origin/HEAD` and uses `gh` only. |
 | `in-your-own-words` skill | ALREADY-HAVE | The restate-first step in the Bug fix and Investigation playbooks and the ai-eng-practices dispatch step "Restate reports before acting" cover it. |
 | `ketchup` skill | DROP | It relies on `/bro`, `/visualize`, and Cursor chat. Our coding agents run headless. |
+| `principle-type-system-discipline` and `principle-migrate-callers-then-delete-legacy-apis` cuts (`99743e9`), with the matching `description` and README summary that drop "refuse to lie to the compiler" | DROP | The cuts remove the rules the two principles carry. migrate-callers keeps only its tests bullet, with no rule above it. type-system drops make-illegal-states-unrepresentable, constructions, don't-lie, exhaustive matching, and strengthen-where-partiality-appears, while its own description still names illegal states and exhaustive variants. Our [`typescript-best-practices`](../typescript-best-practices/SKILL.md) applies type-system-discipline first. Ours keep the `e5136d8` text. |
+| `poteto-mode/SKILL.md` `name: poteto-mode` (`a968159`) | ALREADY-HAVE | Ours is `name: amillez-mode`, and every akit skill's `name` matches its folder. |
+| Claude Code plugin (`docs/harness/claude-code.md`, the generated `harness/pstack/claude-code/` tree, `.claude-plugin/marketplace.json`, and the README install lines) from `182f2ce` and `1b80080` | DROP | We don't install pstack on `agent-m1` (ai-eng-practices `steal-from-pstack`). amillez-mode and our ported skills already run in Claude Code and Codex with our own remaps. The adapter maps roles to pstack defaults (`opus`, or the session model for non-Claude slugs) and writes `~/.claude/rules/pstack-models.md` instead of using our lanes. Upstream dropped its Codex harness in `182f2ce`. |
+| `setup-pstack/SKILL.md` step 8, the formal verification offer (`f9be7aa`) | DEFER | `setup-amillez-models` offers only `/create-verification-skill`. Revisit once the formal skills have been used. |
 | Root `pstack/plugin.json` (Agent Plugins v1), `agents/poteto-agent.md`, `agents/comment-sicko.md`, `watch-pr`, `orch`, `check-plan` scripts, `how`, `why`, `arena`, `architect`, `interrogate`, `swarm`, `benchmark-checklist`, `poteto-help`, `multi-phase-plan.md`, `eval.md`, `shipping.md`, `autopilot-*.md` | Verdict unchanged | Verdicts above stand (DROP, or DEFER for `benchmark-checklist` and `multi-phase-plan.md`). |
-| `automate-me`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
+| `automate-me`, `make-bot-ui`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
 
 ## Friday revisit (tracking upstream)
 
 Run during the weekly pstack revisit (see ai-eng-practices `playbooks/steal-from-pstack.md`).
 
 ```bash
-PIN=e5136d82418d2db3165ea1050d17577cd618cc05
+PIN=d457567332aa6989e753ea289f30ea2bfbc80bc0
 git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugins 2>/dev/null \
   || git -C /tmp/cursor-plugins fetch origin main
 cd /tmp/cursor-plugins
-git log --oneline "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* pstack/LICENSE
+git log --oneline "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* \
+  pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd \
+  pstack/skills/blast-radius pstack/skills/reflect pstack/skills/correct pstack/skills/figure-it-out \
+  pstack/skills/show-me-your-work pstack/skills/typescript-best-practices \
+  pstack/skills/create-verification-skill pstack/skills/maintain-verification-skill \
+  pstack/skills/create-formal-verification-skill pstack/skills/maintain-formal-verification-skill \
+  pstack/LICENSE
 git diff --stat "$PIN"..origin/main -- pstack/skills/poteto-mode pstack/skills/principle-\* \
-  pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd pstack/LICENSE
+  pstack/skills/unslop pstack/skills/sharpen pstack/skills/technical-writing pstack/skills/tdd \
+  pstack/skills/blast-radius pstack/skills/reflect pstack/skills/correct pstack/skills/figure-it-out \
+  pstack/skills/show-me-your-work pstack/skills/typescript-best-practices \
+  pstack/skills/create-verification-skill pstack/skills/maintain-verification-skill \
+  pstack/skills/create-formal-verification-skill pstack/skills/maintain-formal-verification-skill \
+  pstack/LICENSE
 git show origin/main:pstack/.cursor-plugin/plugin.json | grep '"version"'
 ```
 

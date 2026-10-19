@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/sharpen/` (`SKILL.md`) |
-| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). The directory last changed in `79afd75d5bd51383fbb526b72f36db03180b8301` (2026-10-13). Ours is byte-for-byte that text. |
+| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). The directory last changed in `75fabace38ce507ee044546eaca64167c8c1e21b` (2026-10-18), which dropped the closing "Don't hand back a rewritten prompt." sentence. Ours is byte-for-byte that text. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.

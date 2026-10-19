@@ -116,7 +116,7 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `sharpen` | core | **amillez** (pstack port, MIT; see `skills/sharpen/UPSTREAM.md`) | `/sharpen`, a standalone skill that holds the whole pre-task check: how a top expert would approach the task, what the user is really after, whether it is over- or underspecified, and one outside check that the result is right. Byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. |
 | `create-formal-verification-skill` | core | **amillez** (pstack port, MIT; see `skills/create-formal-verification-skill/UPSTREAM.md`) | `/create-formal-verification-skill`, a standalone skill that picks the code where a bug costs the most and tests reach the least, formally verifies one property of it with whichever tool fits, and leaves a project-local verify skill that records what it covers and the commit it was last confirmed at. Sets `disable-model-invocation: true`, so the model never invokes it on its own. Its hand-off names `maintain-formal-verification-skill`. |
 | `maintain-formal-verification-skill` | core | **amillez** (pstack port, MIT; see `skills/maintain-formal-verification-skill/UPSTREAM.md`) | `/maintain-formal-verification-skill`, a standalone skill that brings a formal verify skill back in line after code changes that skipped it, and reports each check as in sync, updated, bug, or blocked. Byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. |
-| Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` | Building native or Nitro modules |
+| Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` (pinned commit in `manifest.json`) | Building native or Nitro modules |
 | `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
 | `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. Its `bootstrap-empty-app` slug names the standalone skill. |
 | `bootstrap-empty-app` | mobile | **amillez** | A standalone skill that holds the whole procedure for starting a brand-new Expo or React Native app from the `amillez/rn-bedrock` stack, with age-gated dependency versions and proof on both platforms. Needs neither `amillez-mode` nor `amillez-react-native-mode`. |
@@ -143,7 +143,11 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx s
 
    Or: `./scripts/update-upstream.sh`
 
+   Packs installed at a pinned ref (Argent, Margelo) stay at that ref.
+
 2. **Argent version bumps.** Pin the CLI and the skills tag together. Update the ref in `manifest.json` (`upstream[argent].ref`) and in `scripts/install.sh`, upgrade `@swmansion/argent`, then re-run `./scripts/install.sh`.
+
+   **Margelo bumps.** `margelo/react-native-skills` has no tags, so `manifest.json` pins a commit (`upstream[margelo-react-native-skills].ref`). Use the full 40-character SHA, since the `skills` CLI rejects a short one. Update the ref there and in `scripts/install.sh`, then re-run `./scripts/install.sh`.
 
 3. **Amillez** (every directory under `skills/`). Edit under `skills/` and commit. On each device, `git pull` and run `./scripts/update-install.sh --skip-upstream`. `ensure-install.sh` only adds missing skills, so it does not pick up edits to installed ones.
 

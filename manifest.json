@@ -94,6 +94,7 @@
       "id": "margelo-react-native-skills",
       "group": "mobile",
       "package": "margelo/react-native-skills",
+      "ref": "1e9e17be6f41c838db472d6a4b943fc26355a3be",
       "skills": [
         "api-design",
         "build-nitro-modules",
@@ -105,7 +106,7 @@
         "react-native-vision-camera"
       ],
       "when": "Building Nitro / native modules",
-      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet. nitro-fetch lives in the upstream folder skills/react-native-nitro-fetch, but its SKILL.md names it nitro-fetch, and --skill matches that name."
+      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet. Upstream has no tags, so ref is the full 40-character commit SHA (the skills CLI rejects a short one). Bump this ref and the one in scripts/install.sh together. nitro-fetch lives in the upstream folder skills/react-native-nitro-fetch, but its SKILL.md names it nitro-fetch, and --skill matches that name."
     }
   ],
   "amillez": [

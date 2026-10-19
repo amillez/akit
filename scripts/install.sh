@@ -168,8 +168,9 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
     skills_add uni-stack/uniwind --skill uniwind
 
+    # Margelo: pinned to the commit in manifest.json.
     # nitro-fetch is the skill name; its upstream folder is react-native-nitro-fetch.
-    skills_add margelo/react-native-skills \
+    skills_add "margelo/react-native-skills#1e9e17be6f41c838db472d6a4b943fc26355a3be" \
       --skill api-design \
       --skill build-nitro-modules \
       --skill cpp \
