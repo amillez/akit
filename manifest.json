@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, and sharpen skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, sharpen, create-formal-verification-skill, and maintain-formal-verification-skill skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet, amillez-react-native-mode, bootstrap-empty-app). Not installed with --groups core alone."
@@ -15,7 +15,7 @@
       "id": "argent",
       "group": "mobile",
       "package": "software-mansion/argent/packages/skills/skills",
-      "ref": "v0.28.0",
+      "ref": "v0.29.0",
       "skills": [
         "*"
       ],
@@ -202,6 +202,20 @@
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /sharpen loads it."
     },
     {
+      "id": "create-formal-verification-skill",
+      "group": "core",
+      "path": "skills/create-formal-verification-skill",
+      "when": "/create-formal-verification-skill: pick the code where a bug costs the most and tests reach the least, formally verify one property of it with whichever tool fits, and leave a project-local verify skill that records what it covers and its sync commit (ported from pstack, MIT, see skills/create-formal-verification-skill/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /create-formal-verification-skill loads it. Its hand-off names maintain-formal-verification-skill."
+    },
+    {
+      "id": "maintain-formal-verification-skill",
+      "group": "core",
+      "path": "skills/maintain-formal-verification-skill",
+      "when": "/maintain-formal-verification-skill: after code changes that skipped the verify skill, read the commits that touched verified code, update the model, harness, or properties from the code, rerun, and report each check as in sync, updated, bug, or blocked (ported from pstack, MIT, see skills/maintain-formal-verification-skill/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /maintain-formal-verification-skill loads it. Points at create-formal-verification-skill when no verify skill exists."
+    },
+    {
       "id": "simfleet",
       "group": "mobile",
       "path": "skills/simfleet",
@@ -229,6 +243,51 @@
     "orca-*",
     "orchestration",
     "planning extras",
+    "expo-ui",
     "expo-native-ui"
+  ],
+  "prune": [
+    {
+      "id": "expo-ui",
+      "names": [
+        "expo-ui",
+        "expo-native-ui"
+      ],
+      "roots": [
+        "~/.claude/skills",
+        "~/.agents/skills"
+      ],
+      "lockSource": "expo/skills",
+      "reason": "Installed from expo/skills by akit 7f5244f (2026-09-14) and dropped from the allowlist on 2026-09-18. expo-ui defaults sheets to @expo/ui and suggests FlashList for long lists. rn-bedrock AGENTS.md makes every sheet a formSheet screen and uses @legendapp/list."
+    },
+    {
+      "id": "nitro-fetch-old-name",
+      "names": [
+        "react-native-nitro-fetch"
+      ],
+      "roots": [
+        "~/.claude/skills",
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "reason": "Old akit vendor copy under the upstream folder name (akit 7cf0fb4 to 7ff6257). npx skills installs this skill as nitro-fetch."
+    },
+    {
+      "id": "codex-vendor",
+      "names": [
+        "api-design",
+        "build-nitro-modules",
+        "cpp",
+        "kotlin",
+        "swift",
+        "react-native-mmkv",
+        "react-native-vision-camera",
+        "orchestrate-agents"
+      ],
+      "roots": [
+        "~/.codex/skills"
+      ],
+      "reason": "Copies from the first akit install (7cf0fb4, 2026-09-14). akit stopped writing ~/.codex/skills in a2e1a3c (2026-09-20), and Codex now reads ~/.agents/skills, so these frozen copies shadow or duplicate the current ones."
+    }
   ]
 }

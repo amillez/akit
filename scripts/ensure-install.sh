@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Ensure the amillez plugin pack is installed at user root before coding.
-# Installs or refreshes when the stamp, any amillez skill, or a Claude settings allow rule is missing.
+# Installs or refreshes when the stamp, any amillez skill, or a Claude settings allow rule is missing,
+# or when a skill on the manifest prune list is still in a user skill dir.
 # Never touches project trees.
 set -euo pipefail
 
@@ -15,9 +16,13 @@ Installed means all of:
   - every amillez skill the groups install (install.sh --list-skills) is in
     ~/.claude/skills and ~/.agents/skills
   - every allow rule in templates/claude-settings.json is in ~/.claude/settings.json
+  - no skill on the manifest.json prune list is left in ~/.claude/skills,
+    ~/.agents/skills, or ~/.codex/skills (scripts/prune-skills.sh --pending)
 
 Stamp missing: runs update-install.sh (skills, user rules, settings, stamp) and prints "installed".
-Stamp present but a amillez skill or allow rule missing: refreshes and prints "updated".
+Stamp present but a amillez skill or allow rule missing, or a prune pending:
+refreshes and prints "updated". The refresh moves pruned skills to
+~/.agent-work-skill-prune-backup/<date>/.
 Otherwise prints "already present", unless --force refreshes anyway.
 
 Groups (same as install.sh; default core,mobile). core is always included.
@@ -127,6 +132,19 @@ settings_rule_missing() {
   [[ -x "$merge" ]] && ! "$merge" --check
 }
 
+prune_pending() {
+  local prune="$SKILLS_ROOT/scripts/prune-skills.sh" err status=0
+  [[ -x "$prune" ]] || return 1
+  err="$("$prune" --pending 2>&1 >/dev/null)" || status=$?
+  case "$status" in
+    0) return 0 ;;
+    1) return 1 ;;
+  esac
+  echo "$err" >&2
+  echo "error: $prune --pending failed (exit $status)" >&2
+  exit 1
+}
+
 run_install() {
   local update="$SKILLS_ROOT/scripts/update-install.sh"
   if [[ ! -x "$update" ]]; then
@@ -144,7 +162,7 @@ if plugin_present; then
   WAS_PRESENT=1
 fi
 
-if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! amillez_skill_missing && ! settings_rule_missing; then
+if [[ "$WAS_PRESENT" -eq 1 && "$FORCE" -eq 0 ]] && ! amillez_skill_missing && ! settings_rule_missing && ! prune_pending; then
   echo "amillez plugin: already present"
   exit 0
 fi

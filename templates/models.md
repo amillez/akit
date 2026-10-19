@@ -10,7 +10,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 | Docs, knowledge, playbook, or policy PRs | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **Grok 4.7** · **xHigh** (Cursor Agent CLI). Haiku is not for docs. | `claude --model claude-opus-5-5 --effort high` · `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
 | Large-work orchestration (Orca coordinator) | **Opus 5.5** · **xHigh** | `claude --model claude-opus-5-5 --effort xhigh` + Orca |
 | Large reasoning (non-orch) | **Fable 5.1** · **Medium** → High → xHigh | Claude Code |
-| Review (PR review, cross-model review of a diff, the review step in babysit or proof) | **GPT 6.1 Sol** · **High** on Codex, read-only, for Claude Code and Grok work alike, per the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md` or `codex exec review -m gpt-6.1-sol -c model_reasoning_effort=high --base main < /dev/null` |
+| Review (PR review, cross-model review of a diff, the review step in babysit or proof) | **GPT 6.1 Sol** · **High** on Codex, read-only, for Claude Code and Grok work alike, when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md` or `codex exec review -m gpt-6.1-sol -c model_reasoning_effort=high --base main < /dev/null` |
 
 **Claude Code usage > 70%.** Before a Claude Code general-code, UI, or docs launch, check `/usage` (or `/status`) in Claude Code. It shows plan usage for the current window. Above 70% → run that task on the Cursor Agent CLI with **Grok 4.7 xHigh** (`grok-4.7-xhigh`). At or below 70% → Opus 5.5 High.
 
@@ -19,7 +19,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 ## Hard notes
 
 - Leave **Fast** off unless the human explicitly asks.
-- Coding agents are **Claude Code** and the **Cursor Agent CLI** (Grok only). **Codex** runs review only and never codes.
+- Coding agents are **Claude Code** and the **Cursor Agent CLI** (Grok only). **Codex** runs review only, with one exception. Codex may write raster image edits, such as icons or screenshots, that need its image tooling. Scripted edits with ImageMagick or Python stay in the general-code lane (Opus 5.5 High). Source is the [Codex raster image exception](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception).
 - Never use GPT 5.6 or Opus 5.
 - Close or feed stdin on every `codex exec` (`- < brief.md`, or `-- "$(cat brief.md)" < /dev/null` with `-i` images). An open stdin hangs at "Reading additional input from stdin…".
 - Run Grok headless as `agent -p --force`. `--force` allows commands and trusts the workspace. Without it, a new directory stops at a trust prompt.
@@ -33,9 +33,9 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 | Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator) | Claude Code. General code, UI, plans, orchestration |
 | Grok | `grok-4.7-xhigh` | Cursor Agent CLI. Coding fallback when Claude Code usage > 70% |
 | Fable | Fable 5.1 (Medium → High/xHigh) | Claude Code. Large reasoning, non-orch |
-| Review | `gpt-6.1-sol` (High), read-only | Codex. Reviews Claude Code and Grok work. Never codes |
+| Review | `gpt-6.1-sol` (High), read-only | Codex. Reviews Claude Code and Grok work when the Review row requires one. Writes only under the raster image exception in Hard notes |
 
-Claude Code (Opus 5.5) is the default. The Cursor Agent CLI runs Grok 4.7 xHigh when Claude Code usage is above 70%. Codex runs review only.
+Claude Code (Opus 5.5) is the default. The Cursor Agent CLI runs Grok 4.7 xHigh when Claude Code usage is above 70%. Codex runs review only, apart from the raster image exception in Hard notes.
 
 ## Install paths
 
