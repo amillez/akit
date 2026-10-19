@@ -229,6 +229,51 @@
     "orca-*",
     "orchestration",
     "planning extras",
+    "expo-ui",
     "expo-native-ui"
+  ],
+  "prune": [
+    {
+      "id": "expo-ui",
+      "names": [
+        "expo-ui",
+        "expo-native-ui"
+      ],
+      "roots": [
+        "~/.claude/skills",
+        "~/.agents/skills"
+      ],
+      "lockSource": "expo/skills",
+      "reason": "Installed from expo/skills by akit 7f5244f (2026-09-14) and dropped from the allowlist on 2026-09-18. expo-ui defaults sheets to @expo/ui and suggests FlashList for long lists. rn-bedrock AGENTS.md makes every sheet a formSheet screen and uses @legendapp/list."
+    },
+    {
+      "id": "nitro-fetch-old-name",
+      "names": [
+        "react-native-nitro-fetch"
+      ],
+      "roots": [
+        "~/.claude/skills",
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "reason": "Old akit vendor copy under the upstream folder name (akit 7cf0fb4 to 7ff6257). npx skills installs this skill as nitro-fetch."
+    },
+    {
+      "id": "codex-vendor",
+      "names": [
+        "api-design",
+        "build-nitro-modules",
+        "cpp",
+        "kotlin",
+        "swift",
+        "react-native-mmkv",
+        "react-native-vision-camera",
+        "orchestrate-agents"
+      ],
+      "roots": [
+        "~/.codex/skills"
+      ],
+      "reason": "Copies from the first akit install (7cf0fb4, 2026-09-14). akit stopped writing ~/.codex/skills in a2e1a3c (2026-09-20), and Codex now reads ~/.agents/skills, so these frozen copies shadow or duplicate the current ones."
+    }
   ]
 }

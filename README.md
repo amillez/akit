@@ -69,15 +69,16 @@ cd ~/agent-work/akit
 ./scripts/ensure-install.sh
 ```
 
-- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`, and every allow rule in `templates/claude-settings.json` is in `~/.claude/settings.json`.
-- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill or an allow rule is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
+- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`, every allow rule in `templates/claude-settings.json` is in `~/.claude/settings.json`, and no skill on the `manifest.json` `prune` list is left in `~/.claude/skills`, `~/.agents/skills`, or `~/.codex/skills`.
+- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill or an allow rule is missing, or a prune is pending, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
 - `--force` refreshes even when the pack is present. `--groups` works as in `install.sh`.
 
 ### Scripts
 
 - **`ensure-install.sh`**. The required entry point before coding. It is idempotent. It detects the pack and installs or refreshes it at user root.
 - **`update-install.sh`**. Refreshes user-root skills, copies `templates/models.md` to `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md`, and rewrites the stamp. `--skip-upstream` skips the npx packs. `--skip-skills` refreshes only the rules and the stamp.
-- **`install.sh`**. Full install: upstream packs, amillez skills, user rules, the Claude settings allow rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`install.sh`**. Full install: upstream packs, amillez skills, the prune, user rules, the Claude settings allow rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`prune-skills.sh`**. Moves each skill on the `manifest.json` `prune` list (excluded or renamed skills an older akit or its upstream packs installed) from the dirs that entry names to `~/.agent-work-skill-prune-backup/<date>/`, and logs each move there in `prune.log`. Entries with `lockSource` also leave `~/.agents/.skill-lock.json`, so `npx skills update -g` does not restore them. Only listed names move, so your own skills stay. A name akit still installs is never pruned. To undo, move the folder back. `--pending` lists what would move. `install.sh` runs it.
 - **`claude-settings.sh`**. Merges `templates/claude-settings.json` allow rules into `~/.claude/settings.json`. `--check` exits 1 when one is missing.
 - **`test-install.sh`**. Runs the three install scripts against a temporary `HOME` with a stub `npx`. Run it after changing any install script.
 - **`check-links.sh`**. Checks relative Markdown links and their anchors.
@@ -158,6 +159,7 @@ scripts/install.sh           # user-root install: skills, user rules, stamp
 scripts/ensure-install.sh    # required before coding: detect, then install or refresh
 scripts/update-install.sh    # refresh user-root skills, rules, and stamp
 scripts/claude-settings.sh   # merge or --check the Claude settings allow rules
+scripts/prune-skills.sh      # move manifest-listed excluded or renamed skills to a backup dir
 scripts/test-install.sh      # sandboxed test of the three install scripts
 scripts/check-links.sh       # relative Markdown link and anchor check
 scripts/update-upstream.sh   # npx skills update for upstream packs

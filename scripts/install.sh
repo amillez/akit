@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install allowlisted skills, user rules, the Claude settings allow rules, and the stamp at user root.
+# Install allowlisted skills, user rules, the Claude settings allow rules, and the stamp at user root; prune skills the manifest lists.
 # Never writes into project trees.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,6 +13,10 @@ Install allowlisted skills into ~/.claude/skills and ~/.agents/skills, the
 model rules into ~/.claude/rules and ~/.agents/rules, the allow rules in
 templates/claude-settings.json into ~/.claude/settings.json, and the stamp
 ~/.amillez-plugin.json. Never writes into project trees.
+
+Then moves the skills in the manifest.json `prune` list (excluded or renamed
+skills an older akit installed) to ~/.agent-work-skill-prune-backup/<date>/.
+See scripts/prune-skills.sh.
 
 Groups:
   core    Always installed: grill-me, grilling, and every amillez skill under skills/
@@ -174,6 +178,9 @@ while read -r s; do
   cp -R "$ROOT/skills/$s" "$HOME/.agents/skills/$s"
   cp -R "$ROOT/skills/$s" "$HOME/.claude/skills/$s"
 done < <(amillez_skills)
+
+echo "== Prune excluded or renamed skills (manifest.json prune) =="
+"$ROOT/scripts/prune-skills.sh"
 
 echo "== User-level Claude/Codex rules templates =="
 TEMPLATE="$ROOT/templates/models.md"
