@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, and sharpen skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, sharpen, create-formal-verification-skill, and maintain-formal-verification-skill skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -15,7 +15,7 @@
       "id": "argent",
       "group": "mobile",
       "package": "software-mansion/argent/packages/skills/skills",
-      "ref": "v0.28.0",
+      "ref": "v0.29.0",
       "skills": [
         "*"
       ],
@@ -200,6 +200,20 @@
       "path": "skills/sharpen",
       "when": "/sharpen: before starting a task, check how a top expert would approach it, what the user is really after, and whether it is over- or underspecified, keeping one outside check that the result is right; the check lives in the skill (ported from pstack, MIT, see skills/sharpen/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /sharpen loads it."
+    },
+    {
+      "id": "create-formal-verification-skill",
+      "group": "core",
+      "path": "skills/create-formal-verification-skill",
+      "when": "/create-formal-verification-skill: pick the code where a bug costs the most and tests reach the least, formally verify one property of it with whichever tool fits, and leave a project-local verify skill that records what it covers and its sync commit (ported from pstack, MIT, see skills/create-formal-verification-skill/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /create-formal-verification-skill loads it. Its hand-off names maintain-formal-verification-skill."
+    },
+    {
+      "id": "maintain-formal-verification-skill",
+      "group": "core",
+      "path": "skills/maintain-formal-verification-skill",
+      "when": "/maintain-formal-verification-skill: after code changes that skipped the verify skill, read the commits that touched verified code, update the model, harness, or properties from the code, rerun, and report each check as in sync, updated, bug, or blocked (ported from pstack, MIT, see skills/maintain-formal-verification-skill/UPSTREAM.md)",
+      "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /maintain-formal-verification-skill loads it. Points at create-formal-verification-skill when no verify skill exists."
     },
     {
       "id": "simfleet",

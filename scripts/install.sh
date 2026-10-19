@@ -20,7 +20,8 @@ Groups:
           create-verification-skill, maintain-verification-skill,
           setup-amillez-models, typescript-best-practices, correct,
           blast-radius, reflect, show-me-your-work, figure-it-out, unslop,
-          draft-upstream, sharpen)
+          draft-upstream, sharpen, create-formal-verification-skill,
+          maintain-formal-verification-skill)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
@@ -139,7 +140,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
     # Argent: all skills, pinned to the ref in manifest.json
-    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.28.0" --skill '*' --agent '*' -g -y --copy
+    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.29.0" --skill '*' --agent '*' -g -y --copy
 
     npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
   fi
