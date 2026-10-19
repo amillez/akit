@@ -108,7 +108,7 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 | Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI. Haiku is not for docs. | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
 | Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
-| Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only. Codex reviews and never codes. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md` |
+| Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only, when the policy's Review row requires one. Codex reviews and never codes. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md` |
 
 Rules for the lanes:
 

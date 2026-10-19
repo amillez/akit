@@ -30,7 +30,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
      - Docs, knowledge, playbook, or policy PRs → **Opus 5.5 High** (Claude Code `claude-opus-5-5`). Claude Code usage > 70% → **Grok 4.7 xHigh** (Cursor Agent CLI `grok-4.7-xhigh`). Haiku is not for docs.
      - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
      - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xHigh.
-     - Review → **GPT 6.1 Sol High** on Codex, read-only, for Claude Code and Grok work alike, per the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing).
+     - Review → **GPT 6.1 Sol High** on Codex, read-only, for Claude Code and Grok work alike, when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one.
      - Never GPT 5.6 or Opus 5.
    - **Claude Code usage > 70%.** Check `/usage` (or `/status`) in Claude Code for current-window plan usage. Above 70%, route general, UI, and docs work to Grok 4.7 xHigh on the Cursor Agent CLI. Escalate one knob at a time.
 
