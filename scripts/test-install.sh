@@ -63,7 +63,8 @@ check "fresh HOME: no --agent '"'"'*'"'"'" '! grep -qF -- "--agent *" "$HOME/npx
 check "fresh HOME: every skills add targets claude-code and codex at user root" '! grep "skills add" "$HOME/npx.log" | grep -vqF -- "--agent claude-code codex -g -y --copy"'
 check "fresh HOME: codex lands in ~/.agents, not ~/.codex" '! grep "skills add" "$HOME/npx.log" | grep -vqF "CODEX_HOME=$HOME/.agents "'
 check "fresh HOME: adds the Margelo pack" 'grep -q margelo/react-native-skills "$HOME/npx.log"'
-check "fresh HOME: no react-native-nitro-fetch (gone upstream)" '! grep -q react-native-nitro-fetch "$HOME/npx.log"'
+check "fresh HOME: Margelo add passes --skill nitro-fetch" 'grep margelo/react-native-skills "$HOME/npx.log" | grep -qE -- "--skill nitro-fetch( |$)"'
+check "fresh HOME: no --skill react-native-nitro-fetch (folder name, not the skill name)" '! grep -qF -- "--skill react-native-nitro-fetch" "$HOME/npx.log"'
 check "fresh HOME: nothing under ~/.codex" '[[ ! -e "$HOME/.codex" ]]'
 check "fresh HOME: Claude settings allow Read on the proof dir only" '[[ "$(settings)" == '"'"'{"permissions": {"allow": ["Read(~/agent-work/proof/**)"]}}'"'"' ]] || { echo "  got: $(settings 2>&1)"; false; }'
 
@@ -135,6 +136,7 @@ check "install.sh rejects --project (no project install)" '! "$REPO/scripts/inst
 (cd "$BASE/project" && "$REPO/scripts/install.sh" >/dev/null 2>&1)
 check "install from a project dir: writes no project .claude or .agents" '[[ ! -e "$BASE/project/.claude" && ! -e "$BASE/project/.agents" ]]'
 check "install from a project dir: installs at user root" 'has_skill bootstrap-empty-app'
+check "manifest allowlists nitro-fetch in the Margelo entry" 'python3 -c "import json,sys; sys.exit(not any(e.get(\"package\") == \"margelo/react-native-skills\" and \"nitro-fetch\" in e.get(\"skills\", []) for e in json.load(open(sys.argv[1]))[\"upstream\"]))" "$REPO/manifest.json"'
 check "manifest allowlists no react-native-nitro-fetch" 'python3 -c "import json,sys; sys.exit(any(\"react-native-nitro-fetch\" in e.get(\"skills\", []) for e in json.load(open(sys.argv[1]))[\"upstream\"]))" "$REPO/manifest.json"'
 
 if [[ "$failures" -gt 0 ]]; then
