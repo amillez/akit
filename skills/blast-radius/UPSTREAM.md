@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/blast-radius/SKILL.md` |
-| Compared against | `e5136d82418d2db3165ea1050d17577cd618cc05` (pstack `0.15.25`). The file last changed in `df581122cde17e6e27686b5a448bde23e4ad4318` (2026-10-05), where step 6 became "Ask more than one model". Local change 6 replaces that line. |
+| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). The file last changed in `df581122cde17e6e27686b5a448bde23e4ad4318` (2026-10-05), where step 6 became "Ask more than one model". Local change 6 replaces that line. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
