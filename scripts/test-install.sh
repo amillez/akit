@@ -34,6 +34,7 @@ mkdir -p "$BASE/bin"
 cat > "$BASE/bin/npx" <<'NPX'
 #!/usr/bin/env bash
 echo "npx CODEX_HOME=${CODEX_HOME:-} $*" >> "$HOME/npx.log"
+(IFS=$'\t'; echo "$*") >> "$HOME/npx.argv"
 NPX
 chmod +x "$BASE/bin/npx"
 export PATH="$BASE/bin:$PATH"
@@ -45,6 +46,23 @@ check() {
 }
 has_skill() { [[ -f "$HOME/.claude/skills/$1/SKILL.md" && -f "$HOME/.agents/skills/$1/SKILL.md" ]]; }
 ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -1; }
+# Prints each skills add call's --agent values, sorted, one call per line.
+add_agents() {
+  python3 -c '
+import sys
+for line in open(sys.argv[1]):
+    args = line.rstrip("\n").split("\t")
+    if "add" not in args or args[args.index("add") - 1] != "skills":
+        continue
+    agents, take = [], False
+    for a in args:
+        if a.startswith("-"):
+            take = a == "--agent"
+        elif take:
+            agents.append(a)
+    print(" ".join(sorted(agents)))
+' "$HOME/npx.argv"
+}
 settings() { python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1])), sort_keys=True))' "$HOME/.claude/settings.json"; }
 
 AMILLEZ_SKILLS=()
@@ -60,7 +78,8 @@ check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.m
 check "fresh HOME: stamp written" '[[ -f "$HOME/.amillez-plugin.json" && -f "$HOME/.agents/amillez-plugin.json" ]]'
 check "fresh HOME: ran upstream skills add" 'grep -q "skills add" "$HOME/npx.log"'
 check "fresh HOME: no --agent '"'"'*'"'"'" '! grep -qF -- "--agent *" "$HOME/npx.log"'
-check "fresh HOME: every skills add targets claude-code and codex at user root" '! grep "skills add" "$HOME/npx.log" | grep -vqF -- "--agent claude-code codex -g -y --copy"'
+check "fresh HOME: every skills add targets exactly claude-code and codex" '[[ "$(add_agents | sort -u)" == "claude-code codex" ]] || { echo "  got: $(add_agents | sort -u | paste -sd "|" -)"; false; }'
+check "fresh HOME: every skills add installs at user root" '! grep "skills add" "$HOME/npx.log" | grep -vqF -- " -g -y --copy"'
 check "fresh HOME: codex lands in ~/.agents, not ~/.codex" '! grep "skills add" "$HOME/npx.log" | grep -vqF "CODEX_HOME=$HOME/.agents "'
 check "fresh HOME: adds the Margelo pack" 'grep -q margelo/react-native-skills "$HOME/npx.log"'
 check "fresh HOME: Margelo add passes --skill nitro-fetch" 'grep margelo/react-native-skills "$HOME/npx.log" | grep -qE -- "--skill nitro-fetch( |$)"'
