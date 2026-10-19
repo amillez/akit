@@ -19,7 +19,7 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 ## Hard notes
 
 - Leave **Fast** off unless the human explicitly asks.
-- Coding agents are **Claude Code** and the **Cursor Agent CLI** (Grok only). **Codex** runs review only and never codes.
+- Coding agents are **Claude Code** and the **Cursor Agent CLI** (Grok only). **Codex** runs review only, with one exception. Codex may write raster image edits, such as icons or screenshots, that need its image tooling. Scripted edits with ImageMagick or Python stay in the general-code lane (Opus 5.5 High). Source is the [Codex raster image exception](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception).
 - Never use GPT 5.6 or Opus 5.
 - Close or feed stdin on every `codex exec` (`- < brief.md`, or `-- "$(cat brief.md)" < /dev/null` with `-i` images). An open stdin hangs at "Reading additional input from stdin…".
 - Run Grok headless as `agent -p --force`. `--force` allows commands and trusts the workspace. Without it, a new directory stops at a trust prompt.
@@ -33,9 +33,9 @@ Session defaults for **bots and orchestrators**. CLI flags verified with Claude 
 | Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator) | Claude Code. General code, UI, plans, orchestration |
 | Grok | `grok-4.7-xhigh` | Cursor Agent CLI. Coding fallback when Claude Code usage > 70% |
 | Fable | Fable 5.1 (Medium → High/xHigh) | Claude Code. Large reasoning, non-orch |
-| Review | `gpt-6.1-sol` (High), read-only | Codex. Reviews Claude Code and Grok work. Never codes |
+| Review | `gpt-6.1-sol` (High), read-only | Codex. Reviews Claude Code and Grok work. Writes only under the raster image exception in Hard notes |
 
-Claude Code (Opus 5.5) is the default. The Cursor Agent CLI runs Grok 4.7 xHigh when Claude Code usage is above 70%. Codex runs review only.
+Claude Code (Opus 5.5) is the default. The Cursor Agent CLI runs Grok 4.7 xHigh when Claude Code usage is above 70%. Codex runs review only, apart from the raster image exception in Hard notes.
 
 ## Install paths
 
