@@ -163,8 +163,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
     skills_add uni-stack/uniwind --skill uniwind
 
-    # react-native-nitro-fetch is gone upstream; bootstrap-empty-app step 4 carries
-    # the global-replace snippet instead.
+    # nitro-fetch is the skill name; its upstream folder is react-native-nitro-fetch.
     skills_add margelo/react-native-skills \
       --skill api-design \
       --skill build-nitro-modules \
@@ -172,6 +171,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
       --skill kotlin \
       --skill swift \
       --skill react-native-mmkv \
+      --skill nitro-fetch \
       --skill react-native-vision-camera
   fi
 fi
