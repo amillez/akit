@@ -22,7 +22,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
    It is idempotent and prints `amillez plugin: installed`, `already present`, or `updated`. Bots and agents run it before coding per policy. The pack installs at user root, never into project trees. Then continue with model setup below.
 
 1. **Open the chooser.** Point the user (and yourself) at [`amillez/ai-eng-practices` → `policies/agent-use-policy.md`](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md):
-   - Coding agents are Claude Code and the Cursor Agent CLI (Grok only). Codex runs review only.
+   - Coding agents are Claude Code and the Cursor Agent CLI (Grok only). Codex runs review only, apart from [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception) that need its image tooling.
    - Default picks (roles → harness):
      - Very direct / super defined → **Claude Haiku 5.5 Max** (Claude Code `claude-haiku-5-5`).
      - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`). Claude Code usage > 70% → **Grok 4.7 xHigh** (Cursor Agent CLI `grok-4.7-xhigh`).
