@@ -14,7 +14,7 @@ Remaining triggers:
 - Nontrivial change, architecture decision, or "are we sure?" → read-only recon of the affected code first (files, callers, tests, `git log`), then a short plan with files, approach, risks, and success criteria before you build.
 - About to ask a "which approach", "how should I", or "what should this do" question → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf), it is not the human's to answer. Build a throwaway sketch in a scratch dir outside the worktree and let the result decide. If the task is a read-only investigation whose deliverable is a cited answer, stay in it and answer from the evidence. Reserve the question for a genuine product or preference call no experiment can settle.
 - Any code → name the data shape first, and choose its organizing structure per [Model the Domain](principles/model-the-domain.md).
-- Open question in a design or plan → if it's empirical (behavior, timing, layout, perf, whether an approach works), settle it with the [Prototype](playbooks/prototype.md) playbook first. Keep the `grill-me` skill for contested product or preference calls a prototype can't settle. Don't run an adversarial review over an abstract plan.
+- Open question in a design or plan → if it's empirical (behavior, timing, layout, perf, whether an approach works), settle it with the [Prototype](playbooks/prototype.md) playbook first. Keep the `grill-me` skill for contested product or preference calls a prototype can't settle. Don't run an adversarial review over an abstract plan. When a plan chains external operations that aren't atomic, put three questions on the grilling frontier: what happens when each step fails, what state a resume starts from, and what the user sees meanwhile.
 - Large or cross-cutting work (multi-surface, multi-package, parallelizable, multi-PR, or more than one focused session) → stop and report it for the size gate. Large work runs as an Orca Run with an Opus 5.5 xHigh coordinator (the `orchestrate-agents` skill). Do not fan out ad hoc and do not become a mega agent. The one-line rule: needs parallel workers → Orca; one agent can own the whole loop but the work is long, cross-cutting, or reviewed after stepping away → the sibling [`figure-it-out`](../figure-it-out/SKILL.md) skill.
 - Nontrivial multi-step → write the throughput checkpoint as four todo items. Blocking first steps. Independent workstreams. Shared mutable state. Smallest safe decomposition. A dimension that does not apply keeps its item with `n/a: <reason>`.
 - Any prose surface → the sibling [`unslop`](../unslop/SKILL.md) skill. Open the file instead of calling the Skill tool, since `disable-model-invocation: true` keeps it off the Skill tool's list. Your reply is a prose surface. Write it per **Writing the reply**.
@@ -45,7 +45,7 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 - **Laziness Protocol** ([principles/laziness-protocol.md](principles/laziness-protocol.md)). Refactoring, sizing a diff, or tempted to add abstractions, layers, or signal threading. Bias to deletion and the smallest change that solves the problem.
 - **Foundational Thinking** ([principles/foundational-thinking.md](principles/foundational-thinking.md)). Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
 - **Redesign from First Principles** ([principles/redesign-from-first-principles.md](principles/redesign-from-first-principles.md)). Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
-- **Attack the Premise** ([principles/attack-the-premise.md](principles/attack-the-premise.md)). Two or more fixes that share one premise have failed the same gate. Take a census of which actors hold the imbalance before the next fix, then question the premise instead of writing another fix that assumes it.
+- **Attack the Premise** ([principles/attack-the-premise.md](principles/attack-the-premise.md)). Two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it.
 - **Subtract Before You Add** ([principles/subtract-before-you-add.md](principles/subtract-before-you-add.md)). Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
 - **Minimize Reader Load** ([principles/minimize-reader-load.md](principles/minimize-reader-load.md)). Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
 - **Outcome-Oriented Execution** ([principles/outcome-oriented-execution.md](principles/outcome-oriented-execution.md)). Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
@@ -65,9 +65,9 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 **Verification**
 
 - **Prove It Works** ([principles/prove-it-works.md](principles/prove-it-works.md)). After a task, before declaring done. Verify against the real artifact, not a proxy or "it compiles".
-- **Fix Root Causes** ([principles/fix-root-causes.md](principles/fix-root-causes.md)). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
+- **Fix Root Causes** ([principles/fix-root-causes.md](principles/fix-root-causes.md)). Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
 - **Sequence Work into Verifiable Units** ([principles/sequence-verifiable-units.md](principles/sequence-verifiable-units.md)). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
-- **Test Behavior, Not Implementation** ([principles/test-behavior-not-implementation.md](principles/test-behavior-not-implementation.md)). Writing, changing, or keeping a test. Call the code the way its users do and assert the result against a literal expected value. If the test would still pass when every imported function returns `undefined`, rewrite the assertion or delete the test.
+- **Test Behavior, Not Implementation** ([principles/test-behavior-not-implementation.md](principles/test-behavior-not-implementation.md)). Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
 - **Explain the Number** ([principles/explain-the-number.md](principles/explain-the-number.md)). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
 
 **Delegation**
@@ -88,7 +88,7 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 - Merging any PR, or arming auto-merge. Only Agustín's explicit say-so merges. Agents never merge.
 - Force-push to a shared branch, deploys, data deletion, deleting anything outside your worktree.
 - Messages to people, chat posts, and ticket updates. Report what you would send instead.
-- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`).
+- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`). The Grok lane on the Cursor Agent CLI is not one.
 
 **Session overrides.** "Don't stop", "run until done", or "be fully autonomous" in the launch prompt → keep going on reversible work. The always-pause list still holds.
 
@@ -102,16 +102,18 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 
 | Task | Lane | Command |
 | --- | --- | --- |
-| Very direct, super defined, mechanical (files and success criteria already clear) | GPT 6 Luna, Max | `codex exec -m gpt-6-luna -c model_reasoning_effort=max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, High | `claude --model claude-opus-5-5 --effort high` or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high` |
+| Very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `claude --model claude-haiku-5-5 --effort max` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
+| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI. Haiku is not for docs. | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
 | Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
+| Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only. Codex reviews and never codes. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md` |
 
 Rules for the lanes:
 
-- Check Claude Code usage with `/usage` (or `/status`) before a Claude Code general-code or UI launch. Above 70% → the Sol lane.
-- Never use GPT 5.6 or Opus 5. Never use Cursor lanes (Composer, Grok via Cursor).
+- Check Claude Code usage with `/usage` (or `/status`) before a Claude Code general-code, UI, or docs launch. Above 70% → the Grok lane.
+- Never use GPT 5.6 or Opus 5. The only Cursor lane is Grok 4.7 xHigh on the Cursor Agent CLI. Never Composer or another Cursor model.
 - Escalate one knob at a time (model, effort, context) and say why. De-escalate once the hard part is done.
 - The Orca coordinator plans, dispatches, and waits. It does not implement, integrate, or validate. Workers do.
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
@@ -171,7 +173,7 @@ When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on h
 
 | Upstream / Cursor default | amillez-mode | Source |
 | --- | --- | --- |
-| Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor coding path. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
+| Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor cloud coding path. The Cursor Agent CLI runs only the Grok fallback lane. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
 | Cursor `Task` subagents, `poteto-agent`, grok and opus-max defaults | Override. Lanes in **Subagents and model lanes**. Large work goes to Orca. | [agent-use-policy §2](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#2-default-model-posture) |
 | Fan-out skills (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `reflect`) | Not part of amillez-mode. Recon and plan, `grill-me`, and Orca instead. The exception is `reflect`, ported as the sibling [`reflect`](../reflect/SKILL.md) skill, with its three reviewers on our lanes and its output as one PR for review or a garden hand-off. | [UPSTREAM.md](UPSTREAM.md) |
 | Done means green CI or files changed | Override. Proof loop with flexible evidence, media on the `media` branch, each asset inspected against the success criteria. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |

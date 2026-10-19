@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install allowlisted skills, user rules, and the stamp at user root for Claude Code and Codex.
+# Install allowlisted skills, user rules, the Claude settings allow rules, and the stamp at user root.
 # Never writes into project trees.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -10,7 +10,8 @@ usage() {
 Usage: ./scripts/install.sh [--groups core|mobile|core,mobile] [--skip-upstream] [--list-skills]
 
 Install allowlisted skills into ~/.claude/skills and ~/.agents/skills, the
-model rules into ~/.claude/rules and ~/.agents/rules, and the stamp
+model rules into ~/.claude/rules and ~/.agents/rules, the allow rules in
+templates/claude-settings.json into ~/.claude/settings.json, and the stamp
 ~/.amillez-plugin.json. Never writes into project trees.
 
 Groups:
@@ -18,7 +19,8 @@ Groups:
           except the mobile ones (amillez-mode, orchestrate-agents,
           create-verification-skill, maintain-verification-skill,
           setup-amillez-models, typescript-best-practices, correct,
-          blast-radius, reflect, show-me-your-work, figure-it-out, unslop)
+          blast-radius, reflect, show-me-your-work, figure-it-out, unslop,
+          draft-upstream, sharpen)
   mobile  RN/Expo/native: Argent, animate-expo, apple-design, review-animations,
           expo-dev-client, expo-upgrade, react-native-best-practices, uniwind,
           Margelo Nitro modules (margelo/react-native-skills), and the amillez
@@ -193,6 +195,9 @@ if [[ -f "$TEMPLATE" ]]; then
 else
   echo "warning: templates/models.md missing; skip rules" >&2
 fi
+
+echo "== Claude settings (proof Read allow) =="
+"$ROOT/scripts/claude-settings.sh"
 
 echo "== Stamp =="
 PLUGIN_JSON="$ROOT/amillez-plugin.json"

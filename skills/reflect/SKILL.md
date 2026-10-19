@@ -21,11 +21,11 @@ The one PR in step 5 is the only thing this skill publishes. Never post or file 
 
 | Role | Lane | Command |
 | --- | --- | --- |
-| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → GPT 6.1 Sol, xHigh. | `claude -p --model claude-opus-5-5 --effort high`, or `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only` |
+| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI, read-only. | `claude -p --model claude-opus-5-5 --effort high`, or `agent -p --trust --mode plan --model grok-4.7-xhigh "$(cat brief.md)" < /dev/null` |
 | Tooling reviewer | GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only` |
-| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use GPT 6.1 Sol, xHigh. | `claude -p --model claude-opus-5-5 --effort xhigh` |
+| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Cursor Agent CLI. | `claude -p --model claude-opus-5-5 --effort xhigh` |
 
-Check Claude Code usage with `/usage` or `/status` before the launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5.
+Check Claude Code usage with `/usage` or `/status` before the launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#agent-chooser-examples). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5.
 
 Reviewers and the synthesizer need MCP access for context the log references (issues, PRs, chat threads, error traces), so launch them with your normal user config. Close or feed stdin on every `codex exec` (`codex exec … - < brief.md`, or `codex exec … -- "$(cat brief.md)" < /dev/null` when images are attached with `-i`). An open stdin hangs at "Reading additional input from stdin…".
 
@@ -50,7 +50,7 @@ Each reviewer is a fresh headless session on its lane with its own lens. Pass ea
 | Tooling | [references/tooling-reviewer.md](references/tooling-reviewer.md) |
 | Divergent | [references/divergent-reviewer.md](references/divergent-reviewer.md) |
 
-Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once, write each output next to its brief, and wait for all three. When usage moved the Judgment and Divergent lane, swap in its Codex command.
+Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once, write each output next to its brief, and wait for all three. When usage moved the Judgment and Divergent lane, swap in its Cursor Agent CLI command.
 
 ```bash
 out=$(mktemp -d)

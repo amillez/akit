@@ -8,7 +8,7 @@ Policy on when to use what lives in [`amillez/ai-eng-practices`](https://github.
 
 | Pack | Where it lives | How |
 | --- | --- | --- |
-| **Amillez plugin** (amillez skills, model rules, allowlisted upstream packs) | **Device user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; stamp → `~/.amillez-plugin.json` |
+| **Amillez plugin** (amillez skills, model rules, allowlisted upstream packs) | **Device user root** | `./scripts/install.sh` → `~/.claude/skills`, `~/.agents/skills`; rules → `~/.claude/rules/amillez-models.md`, `~/.agents/rules/amillez-models.md`; proof Read allow rule → `~/.claude/settings.json`; stamp → `~/.amillez-plugin.json` |
 | **Project skills** (e.g. `verify-*`) | **The project repo** | `.claude/skills/<name>/` and `.agents/skills/<name>/`, committed with the project |
 
 The install scripts never write into project trees. A project may also commit copies of selected stack skills under `.claude/skills/` and `.agents/skills/` as a mirror for teammates.
@@ -33,13 +33,13 @@ cd ~/agent-work/akit
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-`install.sh` adds the allowlisted upstream packs with `npx skills add` for two agents only, `claude-code` (`~/.claude/skills`) and `codex` (pointed at `~/.agents/skills`, Codex's current user location, so nothing lands under `~/.codex`), never `--agent '*'`. It then copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`).
+`install.sh` adds the allowlisted upstream packs with `npx skills add` for two agents only, `claude-code` (`~/.claude/skills`) and `codex` (pointed at `~/.agents/skills`, Codex's current user location, so nothing lands under `~/.codex`), never `--agent '*'`. It then copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, merges the allow rules in `templates/claude-settings.json` into `~/.claude/settings.json`, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). The only allow rule is `Read(~/agent-work/proof/**)`. It lets an auto-mode Claude Code session read proof screenshots without stopping on the first-read-outside-the-working-directories prompt. The merge adds missing entries and leaves every other key alone.
 
 **Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
 | Group | Always? | Contents |
 | --- | --- | --- |
-| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius`, `reflect`, `show-me-your-work`, `figure-it-out`, `unslop` |
+| `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius`, `reflect`, `show-me-your-work`, `figure-it-out`, `unslop`, `draft-upstream`, `sharpen` |
 | `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet`, `amillez-react-native-mode`, `bootstrap-empty-app` |
 
 Default is **core+mobile**. `--groups core` skips mobile.
@@ -69,15 +69,16 @@ cd ~/agent-work/akit
 ./scripts/ensure-install.sh
 ```
 
-- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`.
-- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
+- The pack counts as installed when the stamp exists and every amillez skill the chosen groups install (`install.sh --list-skills`) is in both `~/.claude/skills` and `~/.agents/skills`, and every allow rule in `templates/claude-settings.json` is in `~/.claude/settings.json`.
+- If the stamp is missing, it runs `update-install.sh` and prints `amillez plugin: installed`. If a amillez skill or an allow rule is missing, it refreshes and prints `amillez plugin: updated`. Otherwise it prints `amillez plugin: already present`.
 - `--force` refreshes even when the pack is present. `--groups` works as in `install.sh`.
 
 ### Scripts
 
 - **`ensure-install.sh`**. The required entry point before coding. It is idempotent. It detects the pack and installs or refreshes it at user root.
 - **`update-install.sh`**. Refreshes user-root skills, copies `templates/models.md` to `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md`, and rewrites the stamp. `--skip-upstream` skips the npx packs. `--skip-skills` refreshes only the rules and the stamp.
-- **`install.sh`**. Full install: upstream packs, amillez skills, user rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`install.sh`**. Full install: upstream packs, amillez skills, user rules, the Claude settings allow rules, and the stamp. `--skip-upstream` skips the npx packs.
+- **`claude-settings.sh`**. Merges `templates/claude-settings.json` allow rules into `~/.claude/settings.json`. `--check` exits 1 when one is missing.
 - **`test-install.sh`**. Runs the three install scripts against a temporary `HOME` with a stub `npx`. Run it after changing any install script.
 - **`check-links.sh`**. Checks relative Markdown links and their anchors.
 - **`update-upstream.sh`**. See [Keeping skills up to date](#keeping-skills-up-to-date).
@@ -110,6 +111,8 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `show-me-your-work` | core | **amillez** (pstack port, MIT; see `skills/show-me-your-work/UPSTREAM.md`) | `/show-me-your-work`, a standalone skill that holds the whole format for a reviewable TSV decision trail on long, autonomous, or multi-phase work, its audit against the run's own Claude Code or Codex session log, and a cross-model review before handing back. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's long-work trigger and its playbooks name it. |
 | `figure-it-out` | core | **amillez** (pstack port, MIT; see `skills/figure-it-out/UPSTREAM.md`) | `/figure-it-out`, a standalone skill that holds the whole procedure for designing and running a bespoke, auditable workflow when no narrower playbook fits or one agent owns a long migration, an ambitious multi-part change, or work reviewed after stepping away. It frames a falsifiable done predicate, scales rigor to the task, runs a hypothesis loop, and keeps a decision trail via `show-me-your-work`. Work that needs parallel workers goes to Orca instead. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's no-fitting-playbook and size-gate triggers name it. |
 | `unslop` | core | **amillez** (pstack port, MIT; see `skills/unslop/UPSTREAM.md`) | `/unslop`, a standalone skill that holds the whole slop-pattern catalog for cutting AI tells from any writing, byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. amillez-mode's prose trigger, its playbooks and technical-writing reference, and the `show-me-your-work` and `blast-radius` skills link it. |
+| `draft-upstream` | core | **amillez** | Draft an issue or PR for a third-party open-source repo. It searches upstream for duplicates first, builds a minimal public repro with a scrub checklist, runs `unslop` on the text, and opens the draft only in the `amillez/<repo>` fork. It never writes to the upstream repo and ends with the fork draft URL and the exact text for Agustín to file. Omits `disable-model-invocation`, so the model loads it whenever a task is about to file upstream. Works without amillez-mode. |
+| `sharpen` | core | **amillez** (pstack port, MIT; see `skills/sharpen/UPSTREAM.md`) | `/sharpen`, a standalone skill that holds the whole pre-task check: how a top expert would approach the task, what the user is really after, whether it is over- or underspecified, and one outside check that the result is right. Byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. |
 | Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` | Building native or Nitro modules |
 | `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
 | `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. Its `bootstrap-empty-app` slug names the standalone skill. |
@@ -123,7 +126,7 @@ Not in the pack: `autoreview`, the Superset pack, other design and planning skil
 | --- | --- |
 | `templates/models.md` | `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` (user level) |
 
-Defaults: super defined → **GPT 6 Luna Max** (Codex); general code and UI → **Opus 5.5 High** (Claude Code), or **GPT 6.1 Sol** (xHigh general, High UI, Codex) when Claude Code usage is above 70%; Orca coordinator → **Opus 5.5 xHigh**; large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
+Defaults: super defined → **Claude Haiku 5.5 Max** (Claude Code). General code, UI, and docs → **Opus 5.5 High** (Claude Code), or **Grok 4.7 xHigh** (Cursor Agent CLI) when Claude Code usage is above 70%. Review → **GPT 6.1 Sol High** (Codex, read-only), and Codex never codes. Orca coordinator → **Opus 5.5 xHigh**. Large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
 
 ## Keeping skills up to date
 
@@ -149,10 +152,12 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx s
 amillez-plugin.json          # pack metadata
 skills/                      # amillez skills, one directory each
 templates/models.md          # Claude Code and Codex model rules → user rules dirs
+templates/claude-settings.json # Claude Code allow rules merged into ~/.claude/settings.json
 manifest.json                # allowlist, groups, and upstream pins
 scripts/install.sh           # user-root install: skills, user rules, stamp
 scripts/ensure-install.sh    # required before coding: detect, then install or refresh
 scripts/update-install.sh    # refresh user-root skills, rules, and stamp
+scripts/claude-settings.sh   # merge or --check the Claude settings allow rules
 scripts/test-install.sh      # sandboxed test of the three install scripts
 scripts/check-links.sh       # relative Markdown link and anchor check
 scripts/update-upstream.sh   # npx skills update for upstream packs
