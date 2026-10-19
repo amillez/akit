@@ -221,6 +221,13 @@ check "backup outside HOME: --pending exits 2" '[[ $rc == 2 ]]'
 check "backup outside HOME: ensure fails, not report updated or already present" '! "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" >"$HOME/ensure.out" 2>&1 && ! grep -q "amillez plugin:" "$HOME/ensure.out" && grep -q "outside HOME" "$HOME/ensure.out"'
 check "backup outside HOME: nothing moved" '[[ -f "$HOME/.codex/skills/api-design/SKILL.md" && -z "$(ls -A "$BASE/outside-backup")" ]]'
 
+export HOME="$BASE/prune-nitro"
+mkdir -p "$HOME"
+for d in .claude/skills .agents/skills; do seed "$d/react-native-nitro-fetch"; seed "$d/nitro-fetch"; done
+"$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
+check "prune: old react-native-nitro-fetch folder moved out of ~/.claude and ~/.agents" '[[ ! -e "$HOME/.claude/skills/react-native-nitro-fetch" && ! -e "$HOME/.agents/skills/react-native-nitro-fetch" ]]'
+check "prune: installed nitro-fetch kept" 'has_skill nitro-fetch'
+
 # Machine install only: no project option, and nothing lands in the working directory.
 export HOME="$BASE/no-project"
 mkdir -p "$HOME" "$BASE/project"
