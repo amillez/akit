@@ -47,7 +47,7 @@ Default is **core+mobile**. `--groups core` skips mobile.
 Mobile work also needs the **Argent CLI** on the device (skills alone are not enough):
 
 ```bash
-npm install -g @swmansion/argent@0.28.0
+npm install -g @swmansion/argent@0.29.0
 argent init -y --no-telemetry --global
 ```
 
