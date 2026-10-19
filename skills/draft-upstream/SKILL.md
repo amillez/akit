@@ -62,7 +62,7 @@ Before the first push, run the scrub checklist on every file, commit message, an
 git log --all --format='%an %ae%n%B' -p | grep -inE 'agent-m1|favvy|kaikulabs|<bot>|<private-repo>|disk[0-9]|token|secret|@[a-z0-9.-]+\.[a-z]{2,}'
 ```
 
-The grep prints every author line, since each one holds an email. Check every email it prints by hand. Only Agustín's public GitHub email may stay, and every other line it prints is a leak to remove before the push.
+The grep prints every author line, since each one holds an email. Check every email it prints by hand. Only Agustín's public GitHub email may stay. Check every other printed line too. Harmless matches like `token` in code are fine.
 
 Publish only after the scrub passes:
 
