@@ -37,6 +37,7 @@ Scrub the repro, title, body, logs, and screenshots. Each line must hold:
 - [ ] No company, client, product, or codename.
 - [ ] No internal URLs, hostnames, machine names, IPs, or staging domains.
 - [ ] No bot or agent names, including the `<bot>` part of `agent/<bot>/<slug>` branch names.
+- [ ] No fleet names (`agent-m1`, `favvy`, `KaikuLabs`, or any bot name). No private emails, including commit author emails other than Agustín's public GitHub one.
 - [ ] No disk or volume identifiers, such as `/dev/disk4s2` or a private volume name.
 - [ ] No tokens, keys, cookies, or env values. Check stack traces and config dumps too.
 - [ ] No customer or user data, emails, IDs, or real names other than public maintainers.
@@ -55,11 +56,13 @@ Use a public repro repo when a snippet cannot show the problem, such as a UI bug
 - `with-fix` branches from `main` and adds only the fix. Its README gives the expected result.
 - Commit each screenshot under `screenshots/` on the branch it shows. Link it from the draft as `https://github.com/amillez/<repo>-<slug>-repro/blob/<branch>/screenshots/<file>?raw=true`.
 
-Before the first push, run the scrub checklist on every file, commit message, and author line on both branches. Open each screenshot and check its status bar, window title, device name, and notifications. Then grep the full history for the private names you know. The grep must print nothing:
+Before the first push, run the scrub checklist on every file, commit message, and author line on both branches. Open each screenshot and check its status bar, window title, device name, and notifications. Then grep the full history, author lines and commit messages included, for the private names you know and for every email address:
 
 ```bash
-git log --all -p | grep -inE '<host>|<bot>|<private-repo>|disk[0-9]|token|secret'
+git log --all --format='%an %ae%n%B' -p | grep -inE 'agent-m1|favvy|kaikulabs|<bot>|<private-repo>|disk[0-9]|token|secret|@[a-z0-9.-]+\.[a-z]{2,}'
 ```
+
+The grep prints every author line, since each one holds an email. Check every email it prints by hand. Only Agustín's public GitHub email may stay, and every other line it prints is a leak to remove before the push.
 
 Publish only after the scrub passes:
 
