@@ -24,6 +24,8 @@ Put each section under a `##` heading, not a bold lead-in, so the sections stand
 
 **Size and stacks.** Prefer five narrow PRs to one large PR. Use `gh` for every PR operation. A stack is a base-branch chain. The root PR targets `main`. Each child branch starts on its parent's exact tip and its PR targets the parent branch (`gh pr create --base <parent-branch>`, retarget with `gh pr edit <pr> --base <parent-branch>`). Branch from `main` only for independent work. Rebase on `main` before substantial stack work. While a stack is under review, land fixes as new commits and restack a child by merging its parent into it. Save any rebase for one pass after approval. Force-push only your own branch, with `--force-with-lease`. A PR that replaces other PRs lists each unresolved thread from them in its body as an open question, with a link.
 
+**Ports.** A version branch often already holds part of a feature branch under new SHAs, so merging the feature branch there turns that shared work into add/add conflicts. Before a port, find what already landed from the destination's history and `git merge-tree --write-tree --name-only <destination> <feature>`. `git cherry` misses work that was squashed again. Then branch from the destination and cherry-pick only the missing squash commits.
+
 **Readiness.** Open every PR ready, never as a draft. With `gh`, omit `--draft`. If a PR still opens as a draft, run `gh pr ready <number>`. Run `gh pr view <number>` before you refer to PR status. Do not report a PR ready for review, yours or a worker's, until `gh pr checks <number> --watch` exits 0.
 
 **Never merge.** Do not run `gh pr merge`, arm auto-merge, or close the PR. Only Agustín's explicit say-so merges.

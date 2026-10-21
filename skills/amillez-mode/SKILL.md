@@ -134,7 +134,7 @@ Write the reply clean as you draft it. A cleanup pass after drafting does not re
 - **Terse is not an excuse to drop content.** Short sentences, but every section the task needs stays: details, tradeoffs, choices, open decisions.
 - **Frame impact for the consumer and the maintainer.** Name who the work is for and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits.
 - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. Never hand the human a check you could run.
+- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. Never hand the human a check you could run. A step you triggered from a debugger, a CLI, or a runtime patch is reported as driven by you, never as the app's own behavior.
 - No company framing unless Agustín brings it up.
 
 End every task with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`, proof links, and teardown status.
