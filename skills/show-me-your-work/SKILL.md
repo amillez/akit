@@ -66,7 +66,7 @@ Correct the log, not the story. The audit never edits or removes a row, even an 
 
 Before handing back, spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute. The subagent reads the audit trail and the run's session log, then flags what Agustín should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
 
-- The reviewer is always Codex on GPT 6.1 Sol High, read-only, for Claude Code and Grok work alike. Run `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md`. Always feed or close its stdin, since an open stdin hangs the run.
+- The reviewer is always Codex on GPT 6.1 Sol High, read-only, for Claude Code and Grok work alike. Launch it inside your own Orca worktree session (`orca agent launch --worktree path:<your worktree>`), never in a new child worktree, with `--agent codex --model gpt-6.1-sol --effort high` per [Orca launches](../amillez-mode/references/orca-launch.md#run-a-review-in-the-same-worktree). The brief states that the reviewer is read-only, since Orca tabs run without a sandbox.
 - These lanes follow the Review row of the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). When the policy changes a lane, the policy wins.
 
 The reviewer looks for:

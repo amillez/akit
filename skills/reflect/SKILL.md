@@ -19,15 +19,15 @@ The one PR in step 5 is the only thing this skill publishes. Never post or file 
 
 ## Lanes
 
-| Role | Lane | Command |
+| Role | Lane | `orca agent launch` flags |
 | --- | --- | --- |
-| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI, read-only. | `claude -p --model claude-opus-5-5 --effort high`, or `agent -p --trust --mode plan --model grok-4.7-xhigh "$(cat brief.md)" < /dev/null` |
-| Tooling reviewer | GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only` |
-| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Cursor Agent CLI. | `claude -p --model claude-opus-5-5 --effort xhigh` |
+| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI, read-only. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| Tooling reviewer | GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | `--agent codex --model gpt-6.1-sol --effort xhigh` |
+| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Cursor Agent CLI. | `--agent claude --model claude-opus-5-5 --effort xhigh` |
 
 Check Claude Code usage with `/usage` or `/status` before the launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#agent-chooser-examples). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5.
 
-Reviewers and the synthesizer need MCP access for context the log references (issues, PRs, chat threads, error traces), so launch them with your normal user config. Close or feed stdin on every `codex exec` (`codex exec … - < brief.md`, or `codex exec … -- "$(cat brief.md)" < /dev/null` when images are attached with `-i`). An open stdin hangs at "Reading additional input from stdin…".
+Reviewers and the synthesizer need MCP access for context the log references (issues, PRs, chat threads, error traces). Launch each one as a tab in your Orca worktree per [Orca launches](../amillez-mode/references/orca-launch.md), which runs the CLI under your user config.
 
 ## 1. Locate the finished session log
 
@@ -42,7 +42,7 @@ Read only the session you were asked about, never unrelated projects. For each c
 
 ## 2. Run three reviewers in parallel
 
-Each reviewer is a fresh headless session on its lane with its own lens. Pass each template verbatim, substituting the log path or digest where marked. Reviewers read and look up context only. They never write code or edit skills.
+Each reviewer is a fresh Orca tab on its lane with its own lens. Pass each template verbatim, substituting the log path or digest where marked. Reviewers read and look up context only. They never write code or edit skills.
 
 | Lens | Template |
 | --- | --- |
@@ -50,20 +50,32 @@ Each reviewer is a fresh headless session on its lane with its own lens. Pass ea
 | Tooling | [references/tooling-reviewer.md](references/tooling-reviewer.md) |
 | Divergent | [references/divergent-reviewer.md](references/divergent-reviewer.md) |
 
-Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once, write each output next to its brief, and wait for all three. When usage moved the Judgment and Divergent lane, swap in its Cursor Agent CLI command.
+Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once inside your own Orca worktree session with `--worktree path:<your worktree>`, never in a new child worktree. Each reviewer writes its output next to its brief. Wait for all three, then close their tabs, and check they are gone per [Orca launches](../amillez-mode/references/orca-launch.md#run-a-review-in-the-same-worktree). When usage moved the Judgment and Divergent lane, swap in its Cursor Agent CLI flags.
 
 ```bash
 out=$(mktemp -d)
 # write the three filled templates to $out here
-claude -p --model claude-opus-5-5 --effort high < "$out/judgment.md" > "$out/judgment.out" &
-codex exec -m gpt-6.1-sol -c model_reasoning_effort=xhigh --sandbox read-only - < "$out/tooling.md" > "$out/tooling.out" &
-claude -p --model claude-opus-5-5 --effort high < "$out/divergent.md" > "$out/divergent.out" &
-wait
+launch() {
+  local lens=$1; shift
+  orca agent launch "$@" --worktree "path:$(git rev-parse --show-toplevel)" --surface terminal --json --prompt "$(cat "$out/$lens.md")
+
+You are read-only. Do not edit, commit, or push anything. Write your full output to $out/$lens.out and nothing else." \
+    | jq -r .result.outcome.handle > "$out/$lens.handle"
+}
+launch judgment --agent claude --model claude-opus-5-5 --effort high
+launch tooling --agent codex --model gpt-6.1-sol --effort xhigh
+launch divergent --agent claude --model claude-opus-5-5 --effort high
+for lens in judgment tooling divergent; do
+  h=$(cat "$out/$lens.handle")
+  until [[ -s "$out/$lens.out" ]]; do sleep 10; done
+  orca terminal wait --terminal "$h" --for tui-idle --timeout-ms 590000 --json > /dev/null
+  orca terminal close --terminal "$h" --tab --json > /dev/null
+done
 ```
 
 ## 3. Synthesize
 
-Run one fresh headless session on the synthesizer lane. Pass [references/synthesizer.md](references/synthesizer.md) verbatim with each reviewer's full output inlined where marked. It returns an Accepted, Rejected, and Backlog list.
+Launch one fresh Orca tab on the synthesizer lane the same way (`launch synthesizer --agent claude --model claude-opus-5-5 --effort xhigh`), with `$out/synthesizer.md` holding [references/synthesizer.md](references/synthesizer.md) verbatim and each reviewer's full output inlined where marked. Wait for `$out/synthesizer.out`, then close the tab. It returns an Accepted, Rejected, and Backlog list.
 
 ## 4. Structural enforcement check
 

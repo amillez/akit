@@ -4,7 +4,7 @@ Use this reference when the Review row in [agent-use-policy §1](https://github.
 
 ## One reviewer from the other family
 
-One reviewer reviews the change, read-only. Codex GPT 6.1 Sol High reviews Claude Code and Grok work. Opus 5.5 High reviews Codex work. Do not fan out to more reviewers.
+One reviewer reviews the change, read-only, inside the same Orca worktree session as the main agent (`orca agent launch --worktree path:<main worktree>`). Never in a new child worktree. Codex GPT 6.1 Sol High reviews Claude Code and Grok work. Opus 5.5 High reviews Codex work. Do not fan out to more reviewers.
 
 ## Send the brief
 
@@ -13,8 +13,9 @@ Write `brief.md` in this order:
 1. The intent paragraph.
 2. The sections of this file from **Reviewer prompt** through **Blocking**, verbatim.
 3. The diff, or the command that prints it (`git diff origin/main...HEAD`), and the files the reviewer needs for context.
+4. The path outside the worktree where the reviewer writes its findings, such as `<scratch>/review.md`.
 
-Run the review command for your lane from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes), which matches [`templates/models.md`](../../../templates/models.md), with `brief.md` on stdin.
+Launch the reviewer with `--prompt "$(cat brief.md)"` and the flags for your lane from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes), which matches [`templates/models.md`](../../../templates/models.md). Wait for it, read the findings file, and close the tab, per [Run a review in the same worktree](orca-launch.md#run-a-review-in-the-same-worktree).
 
 ## Write the intent
 
@@ -23,6 +24,8 @@ Write one paragraph from the PR body, the commit messages, and the code. Say wha
 ## Reviewer prompt
 
 You are an adversarial code reviewer. Find real problems in this change: bugs, design flaws, security issues, and maintainability risks. Stress-test the change. Do not encourage the author.
+
+You are read-only. Do not edit, commit, or push anything in the repo. Write your findings only to the file the brief names.
 
 Assume the intent at the top of the brief is correct. Review whether the code achieves it.
 
