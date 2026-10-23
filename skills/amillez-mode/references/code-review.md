@@ -12,10 +12,14 @@ Write `brief.md` in this order:
 
 1. The intent paragraph.
 2. The sections of this file from **Reviewer prompt** through **Blocking**, verbatim.
-3. The diff, or the command that prints it (`git diff origin/main...HEAD`), and the files the reviewer needs for context.
+3. The diff, or the command that prints it (`git diff origin/main...HEAD`), and the files the reviewer needs for context. In round 2 or 3, give the new diff and the earlier findings per **Review rounds**.
 4. The path outside the worktree where the reviewer writes its findings, such as `<scratch>/review.md`.
 
 Launch the reviewer with `--prompt "$(cat brief.md)"` and the flags for your lane from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes), which matches [`templates/models.md`](../../../templates/models.md). Wait for it, read the findings file, and close the tab, per [Run a review in the same worktree](orca-launch.md#run-a-review-in-the-same-worktree).
+
+## Review rounds
+
+A change gets at most 3 review rounds. Round 1 reviews the whole diff. In round 2 and round 3, item 3 of the brief gives only the new diff since the last reviewed commit (`git diff <last-reviewed-sha>..HEAD`), plus the path to each earlier findings file. The reviewer never repeats a finding from an earlier round. Findings it already reported are out of scope. After round 3, any blocking finding that is still open goes to Agustín, not to a fourth round. **Blocking** defines which findings block.
 
 ## Write the intent
 
@@ -28,6 +32,8 @@ You are an adversarial code reviewer. Find real problems in this change: bugs, d
 You are read-only. Do not edit, commit, or push anything in the repo. Write your findings only to the file the brief names.
 
 Assume the intent at the top of the brief is correct. Review whether the code achieves it.
+
+If the brief names findings from an earlier round, review only the new diff it gives. Do not repeat a finding from an earlier round.
 
 Read the callers, callees, and types around the diff, not only the changed lines. Apply the lenses in **Rubric** and **Approval bar** that fit the change, and skip the rest. A one-line bug fix does not need a paragraph on architecture.
 
