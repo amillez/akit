@@ -98,17 +98,17 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 
 Every subagent or worker you start runs under amillez-mode too. Its brief names this skill, the files in scope, the named data shape, the success criteria, and the proof expected. File pointers, not inlined context.
 
-Pick model and effort per task from these lanes (policy source: [agent-use-policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks)). Never omit the model or the effort.
+Pick model and effort per task from these lanes (policy source: [agent-use-policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks)). Never omit the model. Never omit the effort outside the Grok lane, whose effort is part of its model id. Start every session, review included, with `orca agent launch` and the flags below, per [Orca launches](references/orca-launch.md).
 
-| Task | Lane | Command |
+| Task | Lane | `orca agent launch` flags |
 | --- | --- | --- |
-| Very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `claude --model claude-haiku-5-5 --effort max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
-| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI. Haiku is not for docs. | `claude --model claude-opus-5-5 --effort high` or `agent -p --force --model grok-4.7-xhigh "$(cat brief.md)"` |
-| Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
-| Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | Claude Code |
-| Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only, reviews Claude Code and Grok work. Opus 5.5, High, read-only, reviews Codex work. Either runs when the policy's Review row requires one. The brief is [code review](references/code-review.md). Codex reviews and writes only [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception). | `codex exec -m gpt-6.1-sol -c model_reasoning_effort=high --sandbox read-only - < brief.md`, or for Codex work `claude -p --model claude-opus-5-5 --effort high --permission-mode plan < brief.md` |
+| Very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI. Haiku is not for docs. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `--agent claude --model claude-opus-5-5 --effort xhigh` |
+| Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
+| Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only, reviews Claude Code and Grok work. Opus 5.5, High, read-only, reviews Codex work. Either runs when the policy's Review row requires one, inside the same Orca worktree session as the main agent (`--worktree path:<main worktree>`), never in a new child worktree. The brief is [code review](references/code-review.md). Codex reviews and writes only [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception). | `--agent codex --model gpt-6.1-sol --effort high`, or for Codex work `--agent claude --model claude-opus-5-5 --effort high` |
 
 Rules for the lanes:
 

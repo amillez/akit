@@ -1,6 +1,6 @@
 ---
 name: orchestrate-agents
-description: Size-gate then either skip orchestration (small → one direct Claude Code or Cursor Agent CLI agent) or run as the Opus 5.5 xHigh coordinator inside Orca (run-create → task-create → worker-start → check --wait). Every invoked coding agent loads amillez-mode. Use when deciding whether to fan out, writing worker briefs, or driving multi-agent DAG work. Triggers like "generate prompts for other agents", "fan this out", "split this across agents", "parallelize this work", "orchestrate", "orca run".
+description: Size-gate then either skip orchestration (small → one Claude Code or Cursor Agent CLI agent started with orca agent launch) or run as the Opus 5.5 xHigh coordinator inside Orca (run-create → task-create → worker-start → check --wait). Every invoked coding agent loads amillez-mode. Use when deciding whether to fan out, writing worker briefs, or driving multi-agent DAG work. Triggers like "generate prompts for other agents", "fan this out", "split this across agents", "parallelize this work", "orchestrate", "orca run".
 ---
 
 # Orchestrate agents
@@ -9,13 +9,13 @@ Docs: [Orca CLI overview](https://www.onorca.dev/docs/cli/overview), [Orca Orche
 
 ## Every coding agent runs amillez-mode
 
-Every coding agent you invoke, a single direct agent or an Orca worker, loads and follows the `amillez-mode` skill ([`../amillez-mode/SKILL.md`](../amillez-mode/SKILL.md)). The brief names it explicitly in its MODE field. A brief that does not name amillez-mode is not ready to send. This holds for integrate and prove workers too, and for every respawn.
+Every coding agent you invoke, a single agent or an Orca worker, loads and follows the `amillez-mode` skill ([`../amillez-mode/SKILL.md`](../amillez-mode/SKILL.md)). The brief names it explicitly in its MODE field. A brief that does not name amillez-mode is not ready to send. This holds for integrate and prove workers too, and for every respawn.
 
 ## Size gate (do this first)
 
 | Gate | Condition | Action |
 | --- | --- | --- |
-| **Small** | Single surface or package, one PR, clear blast radius, one focused session | **Skip Orca.** Dispatch one agent directly on the matching lane (see **Model lanes**), with a brief that names amillez-mode. |
+| **Small** | Single surface or package, one PR, clear blast radius, one focused session | **Skip the Orca Run.** Start one agent with `orca agent launch` on the matching lane (see **Model lanes** and [Orca launches](../amillez-mode/references/orca-launch.md)), with a brief that names amillez-mode. |
 | **Large** | Multi-surface, multi-package, parallelizable, multi-PR, multi-session, unclear blast radius, or more than one focused session | You are the **Opus 5.5 xHigh** coordinator **inside Orca**. Decompose into tasks and `worker-start` Claude Code workers. A slice that hits the Claude Code usage > 70% rule runs as a Grok 4.7 xHigh worker on the Cursor Agent CLI, also started with `worker-start` inside the Run. The coordinator plans, dispatches, and waits. Workers own implement, integrate, and prove. |
 
 One-line rule: needs parallel workers → Orca; one agent can own the whole loop but the work is long, cross-cutting, or reviewed after stepping away → dispatch one agent on the [`figure-it-out`](../figure-it-out/SKILL.md) skill, no Orca Run.
@@ -26,15 +26,15 @@ Do not collapse big work into one mega agent. Do not over-orchestrate a rename.
 
 Pick `--agent`, `--model`, and `--effort` per task. These match the lanes in `amillez-mode` ([Subagents and model lanes](../amillez-mode/SKILL.md#subagents-and-model-lanes)).
 
-| Work | Lane | Orca worker flags |
+| Work | Lane | Orca flags (`worker-start` or `agent launch`) |
 | --- | --- | --- |
 | Very direct, defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
 | General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: `--agent cursor --model grok-4.7-xhigh` |
 | UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh | `--agent claude --model claude-opus-5-5 --effort high`. Above 70%: `--agent cursor --model grok-4.7-xhigh` |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
-| Orchestration (the coordinator only) | Opus 5.5, xHigh | `claude --model claude-opus-5-5 --effort xhigh` driving Orca |
+| Orchestration (the coordinator only) | Opus 5.5, xHigh | `--agent claude --model claude-opus-5-5 --effort xhigh`, started with `orca agent launch` |
 
-Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Orca workers are `--agent claude`, or `--agent cursor` for the Grok lane. Orca starts `cursor-agent` and handles its workspace trust prompt. Leave out `--effort` on the Grok lane, since the effort is part of the model id. Never `--agent codex`, since Codex is not a coding lane. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `claude-haiku-5-5`, `grok-4.7-xhigh`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
+Check Claude Code usage with `/usage` (or `/status`) before assigning Claude Code lanes. Never use GPT 5.6 or Opus 5. Never stamp Opus 5.5 xHigh on workers. Orca workers are `--agent claude`, or `--agent cursor` for the Grok lane. Orca starts `cursor-agent` and handles its workspace trust prompt. Leave out `--effort` on the Grok lane, since the effort is part of the model id. Never `--agent codex` on a worker, since Codex is not a coding lane. Codex runs only as a review tab inside the reviewed worker's own worktree (`orca agent launch --worktree path:<that worktree>`) per [code review](../amillez-mode/references/code-review.md). A review never gets its own `worker-start --worktree new-child` or `orca worktree create`. `--model` takes the full id from the lanes table above (`claude-opus-5-5`, `claude-haiku-5-5`, `grok-4.7-xhigh`, …). Never an alias such as `opus`, and never an id pulled from `~/.codex/models_cache.json`. After each `worker-start`, check the worker banner for the expected model before accepting the launch.
 
 ## Prerequisites (large only)
 
@@ -140,7 +140,7 @@ A worker that returns late reconciles against the current branch and PR state be
 
 ## Procedure (large)
 
-1. Confirm the size gate says large. If small, stop and dispatch one direct agent on its lane with a brief that names amillez-mode.
+1. Confirm the size gate says large. If small, stop and start one agent with `orca agent launch` on its lane, per [Orca launches](../amillez-mode/references/orca-launch.md), with a brief that names amillez-mode.
 2. Verify prerequisites (`orca status --json`, Experimental on, skills installed, amillez plugin installed).
 3. Scout only enough to decompose. Never implement product work in the coordinator session.
 4. At `run-create`, create `~/orca/runs/<run-id>/` for the standing orders, briefs, reports, `decisions.tsv`, and `followups.tsv`. Never keep run state under `/tmp`. Write the standing orders, then cut isolated `task-create` items (P1 vs P2), each with a full brief. Include **integrate** and **prove** as their own worker tasks when needed. Between integrate and prove, add a worker task that reviews the integrated diff against the repo's own practice docs so structure settles before proof rounds start. Before each `worker-start`, check that every path its spec cites exists.
@@ -154,7 +154,7 @@ A worker that returns late reconciles against the current branch and PR state be
 
 ## Output
 
-For **small**: one line. `size gate: small → direct <lane> on <Claude Code|Cursor Agent CLI> under amillez-mode; no Orca Run.`
+For **small**: one line. `size gate: small → orca agent launch <lane> on <Claude Code|Cursor Agent CLI> under amillez-mode; no Orca Run.`
 
 For **large**: the Orca command sequence (run, task, worker, check), the standing orders, and N task briefs in the template above, each with agent, model, effort, and worktree mode.
 
@@ -165,7 +165,8 @@ For **large**: the Orca command sequence (run, task, worker, check), the standin
 - Orca without runtime, Experimental, or skills.
 - A mega agent outside Orca for large work.
 - Two workers on one checkout.
-- `--agent codex`, `--agent cursor` with a model other than `grok-4.7-xhigh`, or a Cursor cloud coding host.
+- A direct `claude`, `claude -p`, `codex exec`, or `agent -p` session outside Orca.
+- `--agent codex` on a worker, `--agent cursor` with a model other than `grok-4.7-xhigh`, or a Cursor cloud coding host.
 - `orchestration run` instead of `run-create` + `worker-start`.
 - Opus 5.5 xHigh on every worker.
 - `--model` as an alias (`opus`) or an id from `~/.codex/models_cache.json` instead of the lanes-table id.
