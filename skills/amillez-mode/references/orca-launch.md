@@ -25,7 +25,7 @@ orca agent launch --agent claude --worktree path:$HOME/agent-work/<repo>-<slug> 
 
 ## Run a review in the same worktree
 
-The reviewer runs inside the same Orca worktree session as the main agent. Launch it with `orca agent launch --worktree path:<main worktree>`, which opens a second agent tab in that worktree. Never give a review its own child worktree, so never use `orca worktree create` or `orca orchestration worker-start --worktree new-child` for a review. Pick the reviewer's lane from [code review](code-review.md). A read-only reviewer is not a second writer, so it does not break one writer per checkout.
+The reviewer runs inside the same Orca worktree session as the main agent. Launch it with `orca agent launch --worktree path:<main worktree>`, which opens a second agent tab in that worktree. Never give a review its own child worktree, so never use `orca worktree create` or `orca orchestration worker-start --worktree new-child` for a review. Pick the reviewer's lane from [code review](code-review.md), which also caps a change at 3 [review rounds](code-review.md#review-rounds). A read-only reviewer is not a second writer, so it does not break one writer per checkout.
 
 ```bash
 h=$(orca agent launch --agent codex --worktree path:$HOME/agent-work/<repo>-<slug> \
