@@ -59,7 +59,7 @@ orca terminal close --terminal "$h" --tab --json
 
 For Codex-authored work, swap in `--agent claude --model claude-opus-5-5 --effort high`.
 
-- The tabs run without a sandbox. On `agent-m1`, Claude Code starts in bypass permissions mode, Codex in YOLO mode, and the Cursor Agent CLI with `--yolo`. `orca agent launch` has no flag for `--sandbox read-only` or `--permission-mode plan`, so the brief states that the role is read-only.
+- Permissions bypass on `agent-m1`, and on the M4 for Orca-launched bot sessions only. On `agent-m1`, Orca's per-agent default arguments start Claude Code with `--dangerously-skip-permissions`, Codex with `--dangerously-bypass-approvals-and-sandbox`, and the Cursor Agent CLI with `--yolo`. On the M4, a bot session passes the flag per launch, per [Run on the M4](#run-on-the-m4). The tabs run without a sandbox. `orca agent launch` has no flag for `--sandbox read-only` or `--permission-mode plan`, so the brief states that the role is read-only.
 - `tui-idle` can fire before the agent starts on the prompt. Read the screen after each wait, and wait again until the reply is there.
 - `--screen` returns only the visible frame. For output longer than one screen, the prompt tells the agent to write its full output to a named file outside the worktree, and you read that file. Plain `orca terminal read` returns accumulated output, where TUI repaints come back as stacked fragments.
 - Close the tab with `--tab` once the agent is idle, so wait for `tui-idle` after the result is in. A tab closed mid-turn can stay listed with a stale handle while its agent keeps running. A plain `orca terminal close` kills only the PTY, and Orca can reattach the tab under a new handle with the agent session resumed. The tab is closed when `orca terminal list --worktree path:<worktree> --json` no longer lists its `tabId`.
@@ -119,10 +119,24 @@ Agustín picks the host for his own sessions. The routing above is for bots. Bef
 
 ### Run on the M4
 
-Add `--environment m4` to every `orca` call, including `terminal read`, `wait`, and `close`, since terminal handles belong to the server that issued them. The `--worktree path:` must exist on the M4. To create the checkout and its agent there in one step, run `orca worktree create --environment m4 --repo <selector> --name <slug> --agent claude --model claude-opus-5-5 --effort high --surface terminal --prompt "Use amillez-mode first. <brief>" --json`.
+Add `--environment m4` to every `orca` call, including `terminal read`, `wait`, and `close`, since terminal handles belong to the server that issued them. The `--worktree path:` must exist on the M4.
+
+Never change global settings on the M4. That covers Orca's per-agent default arguments, `~/.claude/settings.json`, and the Codex and Cursor configs, which all belong to Agustín. `orca agent launch` passes no extra CLI flags, so a bot session on the M4 starts its CLI with the skip-permissions flag in an Orca terminal, then gets its brief.
+
+```bash
+h=$(orca terminal create --environment m4 --worktree path:$W --title agent \
+  --command "claude --dangerously-skip-permissions --model claude-opus-5-5 --effort high" --json | jq -r .result.terminal.handle)
+orca terminal wait --environment m4 --terminal "$h" --for tui-idle --timeout-ms 60000 --json
+orca terminal read --environment m4 --terminal "$h" --screen --json
+orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode first. <brief>" --enter --json
+```
+
+- Before you send the brief, check that the banner shows the expected model and `bypass permissions on`.
+- Start Codex with `--dangerously-bypass-approvals-and-sandbox` and the Cursor Agent CLI with `--yolo`, the flags Orca adds on `agent-m1`, plus the lane's model flags.
+- Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
 
 Select the M4 by its name, `m4`, not by id. Each machine keeps its own pairing store, so an environment id copied from another machine does not resolve here. `orca host list --json` prints the selector for each host this machine can reach.
 
 To close a session on the M4, run the [Close a session](#close-a-session) `orca` calls with `--environment m4`. The `git -C ~/agent-work/<repo>` checks there read `agent-m1`'s clone, so confirm the removal with `orca worktree list --environment m4 --json` instead.
 
-The `--environment m4` commands in this section match `orca <command> --help` for Orca 1.4.237. They have not run against the M4, whose Orca server did not answer on 2026-10-24.
+The `--environment m4` commands in this section match `orca <command> --help` for Orca 1.4.237. They have not run against the M4, whose Orca server did not answer on 2026-10-24. The terminal launch above ran on `agent-m1`, without `--environment`, on the same day.
