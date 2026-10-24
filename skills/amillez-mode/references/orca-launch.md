@@ -66,58 +66,56 @@ For Codex-authored work, swap in `--agent claude --model claude-opus-5-5 --effor
 
 ## Pick a host
 
-Fleet sessions run on two Orca hosts. Every number the host rules use lives in this table, so change a limit here and nowhere else.
+Fleet sessions run on two Orca hosts. The limits the host rules use live in this table, so change a limit here and in Ben's script, nowhere else.
 
-| Host | Orca selector | Owner | Role | Blocked below free disk (hard) | Busy above 5-minute load (soft) | Simulator cap |
+| Host | Orca selector | Owner | Role | Health check | Disk floor (hard stop) | Simulator cap |
 | --- | --- | --- | --- | --- | --- | --- |
-| `agent-m1` | this machine (no flag) | The bots | Default for bot sessions | 30 GB | 8, the core count | 1 Android emulator, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) |
-| The M4 | `--environment m4` | Agustín, his day-job laptop | Overflow for bots, any time | 30 GB | Its core count, `sysctl -n hw.ncpu` | 2 iOS simulators and 1 Android emulator in total, Agustín's and the bots' together |
+| `agent-m1` | this machine (no flag) | The bots | Default for bot sessions | `bash ~/agent-work/bin/host-health.sh` | 30 GB free | 1 Android emulator, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) |
+| The M4 | `--environment m4` | Agustín, his day-job laptop | Overflow for bots, any time | `bash ~/orca/host-health.sh` | 30 GB free | 2 iOS simulators and 1 Android emulator in total, Agustín's and the bots' together |
 
-When a host is blocked, recheck every 5 minutes for up to 2 hours.
+A host is busy (soft) when its load per core is 1.0 or more, its free memory is under 15%, or it uses more than 6 GB of swap. When a host is blocked, recheck every 5 minutes for up to 2 hours.
 
-Ben owns the host health checks on both hosts. Until Ben ships a check script, use this line. It prints free disk in GB, the 5-minute load, the core count, and the simulators and emulators running on the host, whoever started them.
+Ben owns the health check script on both hosts. It prints one JSON line with `host`, `disk_free_gb`, `load_per_core`, `mem_free_pct`, `swap_used_gb`, `ios_booted`, `android_running`, `caps`, `ios_slots_free`, `android_slots_free`, `status` (`ok`, `busy`, or `blocked`), and `reasons`. It exits 0 for `ok` or `busy`, 1 for `blocked`, and 2 on a script error. Add `--human` for a readable summary. The device counts include every simulator and emulator on the host, whoever started it.
 
-```bash
-CHECK='echo free_gb $(df -g ~ | awk "NR==2{print \$4}") load $(sysctl -n vm.loadavg | awk "{print \$3}") cores $(sysctl -n hw.ncpu) ios_booted $(xcrun simctl list devices booted | grep -c Booted) android_running $(pgrep -f "[q]emu-system" | wc -l | tr -d " ")'
-bash -c "$CHECK"
-```
-
-On the M4, run the same line in a terminal inside the session's worktree there. Create the worktree first, run the check, and remove the worktree with `orca worktree rm --environment m4` if the M4 is blocked.
+On the M4, run the check in a terminal inside the session's worktree there. Create the worktree first, run the check, and remove the worktree with `orca worktree rm --environment m4` if the M4 is blocked. The M4 refused ssh from `agent-m1` on 2026-10-24, so use the Orca terminal.
 
 ```bash
 W=$(orca worktree create --environment m4 --repo name:<repo> --name <slug> --no-parent --json | jq -r .result.worktree.path)
-h=$(orca terminal create --environment m4 --worktree path:$W --title host-check --command "$CHECK" --json | jq -r .result.terminal.handle)
-orca terminal read --environment m4 --terminal "$h" --json | jq -r '.result.terminal.tail[]' | grep '^free_gb'
+h=$(orca terminal create --environment m4 --worktree path:$W --title host-health --command "bash ~/orca/host-health.sh" --json | jq -r .result.terminal.handle)
+orca terminal read --environment m4 --terminal "$h" --json | jq -r '.result.terminal.tail[]' | grep '^{"host"'
 orca terminal close --environment m4 --terminal "$h" --tab --json
 ```
 
-- The check line types into the terminal's shell, so the read can come back before the line prints. Read again until the `free_gb` line shows.
-- Don't add `; exit` to the check. A terminal that exits returns no output to `orca terminal read`.
+- The command types into the terminal's shell, so the read can come back before the JSON line prints. Read again until it shows.
+- The exit code does not reach `orca terminal read`, so read `status` from the JSON line.
+- Don't add `; exit` to the command. A terminal that exits returns no output to `orca terminal read`.
+
+Android work is the likeliest to hit the disk stop. One Android build worktree takes about 9 GB, and on 2026-10-24 `agent-m1` had about 34 GB free and the M4 about 40 GB. One Android build can take either host below its floor. Before an Android task, run the [worktree cleanup](../playbooks/worktree-cleanup.md) for finished worktrees first.
 
 ### Route a bot session
 
-1. Run the check on `agent-m1`. If it is under the table's limits, launch there.
-2. If `agent-m1` is blocked, run the [worktree cleanup](../playbooks/worktree-cleanup.md) on it for finished worktrees, then check again.
-3. If it is still blocked, check the M4 and launch there with `--environment m4`.
-4. If both hosts are blocked, wait and recheck at the interval in the table, from a background shell loop. A recheck runs the check line only, never a model.
-5. When the wait limit in the table runs out, message Agustín once with the last check line from each host. A coding agent reports the message to its dispatcher instead of sending it.
+1. Run the check on `agent-m1`. If `status` is `ok`, launch there.
+2. If `agent-m1` is `blocked`, run the [worktree cleanup](../playbooks/worktree-cleanup.md) on it for finished worktrees, then check again.
+3. If `agent-m1` is still not `ok`, check the M4. If the M4 is `ok`, launch there with `--environment m4`.
+4. If neither host is `ok`, wait and recheck at the interval above, from a background shell loop. A recheck runs the health check only, never a model.
+5. When the wait limit runs out, message Agustín once with the last JSON line from each host. A coding agent reports the message to its dispatcher instead of sending it.
 
-Disk is a hard stop. Never start a session on a host below its disk limit. Load is soft. A short, urgent fix may still run on a host above its load limit.
+Disk is a hard stop. Never start a session on a `blocked` host. `busy` is soft. A short, urgent fix may still run on a `busy` host.
 
 ### Respect the simulator cap
 
-Before you boot a simulator or emulator on the M4, run the check. Boot an iOS simulator only while `ios_booted` is under the table's iOS cap, and an Android emulator only while `android_running` is under the Android cap. The counts include Agustín's devices. When the M4 is full, run the simulator task on `agent-m1` or wait. Shut down only the devices your session booted.
+Before you boot a simulator or emulator on the M4, run the check. Boot an iOS simulator only while `ios_slots_free` is above 0, and an Android emulator only while `android_slots_free` is above 0. The counts include Agustín's devices. When the M4 is full, run the simulator task on `agent-m1` or wait. Shut down only the devices your session booted.
 
 ### Use the M4 as a guest
 
-Bots may use the M4 at any time, whether or not Agustín is using it. Only the disk and load limits stop them.
+Bots may use the M4 at any time, whether or not Agustín is using it. Only its health check stops them.
 
 - Touch only the Orca worktree folder. Never touch Agustín's own repos, checkouts, or credentials. Worktree cleanup on the M4 removes only bot worktrees on `agent/<bot>/` branches.
 - Copy no fleet secrets to the M4. Sessions there use the `git`, `gh`, and agent CLI logins already on it.
 
 ### Warn on Agustín's sessions
 
-Agustín picks the host for his own sessions. The routing above is for bots. Before you launch a session for him, run the check on the host he picked and show him the check line as a warning. Launch anyway.
+Agustín picks the host for his own sessions. The routing above is for bots. Before you launch a session for him, run the check with `--human` on the host he picked and show him the summary as a warning. Launch anyway.
 
 ### Run on the M4
 
