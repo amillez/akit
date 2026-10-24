@@ -144,7 +144,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
   if [[ "$WANT_MOBILE" -eq 1 ]]; then
     # Argent: all skills, pinned to the ref in manifest.json
-    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.29.0" --skill '*' --agent '*' -g -y --copy
+    npx -y skills add "software-mansion/argent/packages/skills/skills#v0.30.1" --skill '*' --agent '*' -g -y --copy
 
     npx -y skills add emilkowalski/skills --skill animate-expo --skill apple-design --skill review-animations --agent '*' -g -y --copy
   fi
