@@ -1,6 +1,6 @@
 # amillez model defaults (Claude Code / Cursor Agent CLI / Codex)
 
-Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on `agent-m1` or with `--environment m4` on the M4. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23.
+Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on the host picked per [Pick a host](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md#pick-a-host). Bots default to `agent-m1` and move to the M4 with `--environment m4` when `agent-m1` is blocked. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23.
 
 | Situation | Pick | `orca agent launch` flags |
 | --- | --- | --- |

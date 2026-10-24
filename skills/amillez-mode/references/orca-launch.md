@@ -6,7 +6,7 @@ Commands verified with Orca 1.4.237 on `agent-m1` on 2026-10-24. Check `orca age
 
 ## Start a session in a worktree
 
-Orca holds one project per repo, registered once by its main clone. Each session is a worktree under that project. `akit`, `ai-eng-practices`, `rn-bedrock`, and `favvy-app` are already registered. Register a new repo once with `orca repo add --path ~/agent-work/<repo> --json`. Never `orca repo add` a worktree path. That adds a second entry to the repo's project and can rename the project after the worktree. Orca has no `orca repo rm`, so an entry added by mistake stays until `orca project setup-delete --setup <repo id> --force --json` removes it.
+Pick the host first per [Pick a host](#pick-a-host). Orca holds one project per repo, registered once by its main clone. Each session is a worktree under that project. `akit`, `ai-eng-practices`, `rn-bedrock`, and `favvy-app` are already registered. Register a new repo once with `orca repo add --path ~/agent-work/<repo> --json`. Never `orca repo add` a worktree path. That adds a second entry to the repo's project and can rename the project after the worktree. Orca has no `orca repo rm`, so an entry added by mistake stays until `orca project setup-delete --setup <repo id> --force --json` removes it.
 
 ```bash
 W=$(orca worktree create --repo name:<repo> --name <slug> --no-parent --json | jq -r .result.worktree.path)
@@ -64,6 +64,67 @@ For Codex-authored work, swap in `--agent claude --model claude-opus-5-5 --effor
 - `--screen` returns only the visible frame. For output longer than one screen, the prompt tells the agent to write its full output to a named file outside the worktree, and you read that file. Plain `orca terminal read` returns accumulated output, where TUI repaints come back as stacked fragments.
 - Close the tab with `--tab` once the agent is idle, so wait for `tui-idle` after the result is in. A tab closed mid-turn can stay listed with a stale handle while its agent keeps running. A plain `orca terminal close` kills only the PTY, and Orca can reattach the tab under a new handle with the agent session resumed. The tab is closed when `orca terminal list --worktree path:<worktree> --json` no longer lists its `tabId`.
 
-## Run on the M4
+## Pick a host
+
+Fleet sessions run on two Orca hosts. Every number the host rules use lives in this table, so change a limit here and nowhere else.
+
+| Host | Orca selector | Owner | Role | Blocked below free disk (hard) | Busy above 5-minute load (soft) | Simulator cap |
+| --- | --- | --- | --- | --- | --- | --- |
+| `agent-m1` | this machine (no flag) | The bots | Default for bot sessions | 30 GB | 8, the core count | 1 Android emulator, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) |
+| The M4 | `--environment m4` | Agustín, his day-job laptop | Overflow for bots, any time | 30 GB | Its core count, `sysctl -n hw.ncpu` | 2 iOS simulators and 1 Android emulator in total, Agustín's and the bots' together |
+
+When a host is blocked, recheck every 5 minutes for up to 2 hours.
+
+Ben owns the host health checks on both hosts. Until Ben ships a check script, use this line. It prints free disk in GB, the 5-minute load, the core count, and the simulators and emulators running on the host, whoever started them.
+
+```bash
+CHECK='echo free_gb $(df -g ~ | awk "NR==2{print \$4}") load $(sysctl -n vm.loadavg | awk "{print \$3}") cores $(sysctl -n hw.ncpu) ios_booted $(xcrun simctl list devices booted | grep -c Booted) android_running $(pgrep -f "[q]emu-system" | wc -l | tr -d " ")'
+bash -c "$CHECK"
+```
+
+On the M4, run the same line in a terminal inside the session's worktree there. Create the worktree first, run the check, and remove the worktree with `orca worktree rm --environment m4` if the M4 is blocked.
+
+```bash
+W=$(orca worktree create --environment m4 --repo name:<repo> --name <slug> --no-parent --json | jq -r .result.worktree.path)
+h=$(orca terminal create --environment m4 --worktree path:$W --title host-check --command "$CHECK" --json | jq -r .result.terminal.handle)
+orca terminal read --environment m4 --terminal "$h" --json | jq -r '.result.terminal.tail[]' | grep '^free_gb'
+orca terminal close --environment m4 --terminal "$h" --tab --json
+```
+
+- The check line types into the terminal's shell, so the read can come back before the line prints. Read again until the `free_gb` line shows.
+- Don't add `; exit` to the check. A terminal that exits returns no output to `orca terminal read`.
+
+### Route a bot session
+
+1. Run the check on `agent-m1`. If it is under the table's limits, launch there.
+2. If `agent-m1` is blocked, run the [worktree cleanup](../playbooks/worktree-cleanup.md) on it for finished worktrees, then check again.
+3. If it is still blocked, check the M4 and launch there with `--environment m4`.
+4. If both hosts are blocked, wait and recheck at the interval in the table, from a background shell loop. A recheck runs the check line only, never a model.
+5. When the wait limit in the table runs out, message Agustín once with the last check line from each host. A coding agent reports the message to its dispatcher instead of sending it.
+
+Disk is a hard stop. Never start a session on a host below its disk limit. Load is soft. A short, urgent fix may still run on a host above its load limit.
+
+### Respect the simulator cap
+
+Before you boot a simulator or emulator on the M4, run the check. Boot an iOS simulator only while `ios_booted` is under the table's iOS cap, and an Android emulator only while `android_running` is under the Android cap. The counts include Agustín's devices. When the M4 is full, run the simulator task on `agent-m1` or wait. Shut down only the devices your session booted.
+
+### Use the M4 as a guest
+
+Bots may use the M4 at any time, whether or not Agustín is using it. Only the disk and load limits stop them.
+
+- Touch only the Orca worktree folder. Never touch Agustín's own repos, checkouts, or credentials. Worktree cleanup on the M4 removes only bot worktrees on `agent/<bot>/` branches.
+- Copy no fleet secrets to the M4. Sessions there use the `git`, `gh`, and agent CLI logins already on it.
+
+### Warn on Agustín's sessions
+
+Agustín picks the host for his own sessions. The routing above is for bots. Before you launch a session for him, run the check on the host he picked and show him the check line as a warning. Launch anyway.
+
+### Run on the M4
 
 Add `--environment m4` to every `orca` call, including `terminal read`, `wait`, and `close`, since terminal handles belong to the server that issued them. The `--worktree path:` must exist on the M4. To create the checkout and its agent there in one step, run `orca worktree create --environment m4 --repo <selector> --name <slug> --agent claude --model claude-opus-5-5 --effort high --surface terminal --prompt "Use amillez-mode first. <brief>" --json`.
+
+Select the M4 by its name, `m4`, not by id. Each machine keeps its own pairing store, so an environment id copied from another machine does not resolve here. `orca host list --json` prints the selector for each host this machine can reach.
+
+To close a session on the M4, run the [Close a session](#close-a-session) `orca` calls with `--environment m4`. The `git -C ~/agent-work/<repo>` checks there read `agent-m1`'s clone, so confirm the removal with `orca worktree list --environment m4 --json` instead.
+
+The `--environment m4` commands in this section match `orca <command> --help` for Orca 1.4.237. They have not run against the M4, whose Orca server did not answer on 2026-10-24.
