@@ -47,7 +47,7 @@ Default is **core+mobile**. `--groups core` skips mobile.
 Mobile work also needs the **Argent CLI** on the device (skills alone are not enough):
 
 ```bash
-npm install -g @swmansion/argent@0.29.0
+npm install -g @swmansion/argent@0.30.1
 argent init -y --no-telemetry --global
 ```
 
@@ -129,7 +129,7 @@ Not in the pack: `autoreview`, the Superset pack, other design and planning skil
 | --- | --- |
 | `templates/models.md` | `~/.claude/rules/amillez-models.md` and `~/.agents/rules/amillez-models.md` (user level) |
 
-Defaults: super defined → **Claude Haiku 5.5 Max** (Claude Code). General code, UI, and docs → **Opus 5.5 High** (Claude Code), or **Grok 4.7 xHigh** (Cursor Agent CLI) when Claude Code usage is above 70%. Review → **GPT 6.1 Sol High** (Codex, read-only) when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one. Codex writes only raster image edits that need its image tooling, per [`templates/models.md`](templates/models.md). Orca coordinator → **Opus 5.5 xHigh**. Large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
+Defaults: super defined → **Claude Haiku 5.5 Max** (Claude Code). General code, UI, and docs → **Opus 5.5 High** (Claude Code), or **Grok 4.7 xHigh** (Cursor Agent CLI) when Claude Code usage is above 70%. Review → **GPT 6.1 Sol High** (Codex, read-only) when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one. **Opus 5.5 High** (Claude Code, read-only) reviews Codex work. The brief is [code review](skills/amillez-mode/references/code-review.md). Codex writes only raster image edits that need its image tooling, per [`templates/models.md`](templates/models.md). Orca coordinator → **Opus 5.5 xHigh**. Large non-orchestration reasoning → **Fable 5.1 Medium**, then High or xHigh. Workers pick per task from the policy. Every session, review included, starts through Orca with `orca agent launch`, and a review runs inside the main agent's Orca worktree session. [Orca launches](skills/amillez-mode/references/orca-launch.md) has the verified commands. `/setup-amillez-models`, `update-install.sh`, and `install.sh` refresh the user rules. Nothing writes project `.claude/rules/` or `.agents/rules/`.
 
 ## Keeping skills up to date
 

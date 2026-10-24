@@ -23,6 +23,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
 
 1. **Open the chooser.** Point the user (and yourself) at [`amillez/ai-eng-practices` → `policies/agent-use-policy.md`](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md):
    - Coding agents are Claude Code and the Cursor Agent CLI (Grok only). Codex runs review only, apart from [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception) that need its image tooling.
+   - Every session, review included, starts through Orca with `orca agent launch`, per [Orca launches](../amillez-mode/references/orca-launch.md). A review runs inside the main agent's Orca worktree session, never in a new child worktree.
    - Default picks (roles → harness):
      - Very direct / super defined → **Claude Haiku 5.5 Max** (Claude Code `claude-haiku-5-5`).
      - General code / some reasoning → **Opus 5.5 High** (Claude Code `claude-opus-5-5`). Claude Code usage > 70% → **Grok 4.7 xHigh** (Cursor Agent CLI `grok-4.7-xhigh`).
@@ -30,7 +31,7 @@ Model choice follows the policy chooser in `amillez/ai-eng-practices`. This skil
      - Docs, knowledge, playbook, or policy PRs → **Opus 5.5 High** (Claude Code `claude-opus-5-5`). Claude Code usage > 70% → **Grok 4.7 xHigh** (Cursor Agent CLI `grok-4.7-xhigh`). Haiku is not for docs.
      - Large-work orchestration (Orca coordinator) → **Opus 5.5 xHigh**.
      - Large reasoning (non-orch) → **Fable 5.1 Medium** → High/xHigh.
-     - Review → **GPT 6.1 Sol High** on Codex, read-only, for Claude Code and Grok work alike, when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one.
+     - Review → **GPT 6.1 Sol High** on Codex, read-only, for Claude Code and Grok work alike, when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one. **Opus 5.5 High** on Claude Code, read-only, reviews Codex work. The brief is [code review](../amillez-mode/references/code-review.md).
      - Never GPT 5.6 or Opus 5.
    - **Claude Code usage > 70%.** Check `/usage` (or `/status`) in Claude Code for current-window plan usage. Above 70%, route general, UI, and docs work to Grok 4.7 xHigh on the Cursor Agent CLI. Escalate one knob at a time.
 
