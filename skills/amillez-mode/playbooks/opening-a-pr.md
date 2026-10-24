@@ -2,7 +2,7 @@
 
 Invoked at the end of every other playbook that changes code.
 
-**Worktree.** Work from your own git worktree on a branch named `agent/<bot>/<slug>`, cut from an up-to-date `main`. Never work in the `main` checkout, and never put two agents in one worktree. Subagents that write code get their own worktree or run one at a time in yours. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from `main`, redo minimally.
+**Worktree.** Work from your own Orca worktree on a branch named `agent/<bot>/<slug>`, created per [Orca launches](../references/orca-launch.md#start-a-session-in-a-worktree). Never work in the `main` checkout, and never put two agents in one worktree. Subagents that write code get their own worktree or run one at a time in yours. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from `main`, redo minimally.
 
 **Commits.** Commit liberally. Rebase into small, ordered commits before opening PRs. Each commit is a future PR: landable, ordered to tell the story. Amend when the fix belongs in a just-made commit. New commit when separable.
 
