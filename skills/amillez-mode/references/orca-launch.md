@@ -70,7 +70,7 @@ Fleet sessions run on two Orca hosts. The limits the host rules use live in this
 
 | Host | Orca selector | Owner | Role | Health check | Disk floor (hard stop) | Simulator cap |
 | --- | --- | --- | --- | --- | --- | --- |
-| `agent-m1` | this machine (no flag) | The bots | Default for bot sessions | `bash ~/agent-work/bin/host-health.sh` | 30 GB free | 1 Android emulator, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) |
+| `agent-m1` | this machine (no flag) | The bots | Default for bot sessions | `bash ~/agent-work/bin/host-health.sh` | 30 GB free | 1 Android emulator, per [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits) |
 | The M4 | `--environment m4` | Agustín, his day-job laptop | Overflow for bots, any time | `bash ~/orca/host-health.sh` | 30 GB free | 2 iOS simulators and 1 Android emulator in total, Agustín's and the bots' together |
 
 A host is busy (soft) when its load per core is 1.0 or more, its free memory is under 15%, or it uses more than 6 GB of swap. When a host is blocked, recheck every 5 minutes for up to 2 hours.
