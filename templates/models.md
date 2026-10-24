@@ -1,6 +1,6 @@
 # amillez model defaults (Claude Code / Cursor Agent CLI / Codex)
 
-Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on `agent-m1` or with `--environment m4` on the M4. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23.
+Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on the host picked per [Pick a host](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md#pick-a-host). Bots default to `agent-m1` and move to the M4 with `--environment m4` when `agent-m1` is blocked. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23.
 
 | Situation | Pick | `orca agent launch` flags |
 | --- | --- | --- |
@@ -22,7 +22,8 @@ Session defaults for **bots and orchestrators**. Every session, review included,
 - Coding agents are **Claude Code** and the **Cursor Agent CLI** (Grok only). **Codex** runs review only, with one exception. Codex may write raster image edits, such as icons or screenshots, that need its image tooling. Scripted edits with ImageMagick or Python stay in the general-code lane (Opus 5.5 High). Source is the [Codex raster image exception](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception).
 - Never use GPT 5.6 or Opus 5.
 - Never start a session with a direct `claude`, `claude -p`, `codex exec`, or `agent -p` call. Orca runs each CLI in a tab that Agustín and every bot can reach.
-- Leave `--effort` off the Grok lane, since the effort is part of `grok-4.7-xhigh`. Orca starts `cursor-agent` with `--yolo`.
+- Leave `--effort` off the Grok lane, since the effort is part of `grok-4.7-xhigh`. On `agent-m1`, Orca starts `cursor-agent` with `--yolo`.
+- Permissions bypass on `agent-m1`, and on the M4 for Orca-launched bot sessions only, with the flag passed per launch per [Run on the M4](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md#run-on-the-m4). Never change global settings on the M4.
 - Orca tabs run without a sandbox, so a read-only role, such as a reviewer, states read-only in its prompt.
 - On `agent-m1`, [amillez-mode](https://github.com/amillez/akit/blob/main/skills/amillez-mode/SKILL.md) and simfleet rules win over Argent's installer rules: respect simfleet device claims, run only the named `xcrun simctl` and `adb -s <serial>` operations, and keep Argent results out of project memory.
 
