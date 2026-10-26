@@ -74,9 +74,13 @@ the HTTP/WebSocket contract.
   natively only when native inputs changed, and only through `native plan` and `native ensure`
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
-- **One Android emulator per Orca host.** Check `simfleet emu list` before `emu boot` and reuse or wait
-  if one runs. Run the host's health check from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) first. Don't boot an emulator or run
-  `native ensure` while its `status` is `blocked`, meaning free disk is below the host's floor. Ping Ben with its JSON line and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
+- **Stay under the host's simulator cap.** Run the host's health check from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) before
+  `sim boot` or `emu boot`. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
+  of device only while it is above 0. `null` means the host has no cap for that kind, as for iOS on
+  `agent-m1`. The counts include devices outside the fleet, such as Agustín's on the M4. Every host
+  allows one Android emulator, so also check `simfleet emu list` and reuse a running one or wait.
+  Don't boot a device or run `native ensure` while `status` is `blocked`, meaning free disk is below
+  the host's floor. Ping Ben with its JSON line and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
