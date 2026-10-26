@@ -45,7 +45,9 @@ done
 
 now=$(date +%s)
 
-if stat --version >/dev/null 2>&1; then
+# GNU stat reads -f as file system status and GNU date reads -r as a file.
+# Probe the -c flag itself, not --version.
+if stat -c %Y / >/dev/null 2>&1; then
 	mtime() { stat -c '%Y' "$1" 2>/dev/null || echo 0; }
 	ymd() { date -d "@$1" '+%Y-%m-%d' 2>/dev/null || echo "?"; }
 else
