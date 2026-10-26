@@ -104,7 +104,9 @@ Disk is a hard stop. Never start a session on a `blocked` host. `busy` is soft. 
 
 ### Respect the simulator cap
 
-Before you boot a simulator or emulator on the M4, run the check. Boot an iOS simulator only while `ios_slots_free` is above 0, and an Android emulator only while `android_slots_free` is above 0. The counts include Agustín's devices. When the M4 is full, run the simulator task on `agent-m1` or wait. Shut down only the devices your session booted.
+Before you boot a simulator or emulator, run the check. When `ios_slots_free` or `android_slots_free` is a number, boot that kind of device only while it is above 0. `null` means the host has no cap for that kind. On `agent-m1`, `ios_slots_free` is `null` and `android_slots_free` is a number. On the M4 both are numbers, and the counts include Agustín's devices. When the M4 is full, run the simulator task on `agent-m1` or wait. Shut down only the devices your session booted.
+
+Every host runs slim devices. Use stock only when the task needs what slim disables, per the [`simfleet`](../../simfleet/SKILL.md#rules) rules. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
 
 ### Use the M4 as a guest
 
