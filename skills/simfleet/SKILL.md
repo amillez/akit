@@ -58,7 +58,9 @@ the HTTP/WebSocket contract.
   Contacts and Photos pickers, and universal links. When the feature under test needs one of them, boot
   with `--stock`, or run `simfleet sim restore <udid>` or `simfleet emu restore <avd>` on a running
   device. With the server down, `simslim off <udid>` and `avdslim off` do the same. Run `slim` again
-  when you are done.
+  when you are done. `--stock` only skips auto-slim, so for a stock baseline use `sim restore` or
+  `emu restore`. After `emu restore`, wait about 30 s and run `adb -s <serial> shell sync` before
+  shutdown, or the restore is lost.
 - **Claim what you hold.** Every CLI call from a Claude Code or Codex session is attributed to the
   device it touches. Export `SIMFLEET_AGENT` (the bot or agent name) and `SIMFLEET_SESSION_ID` (your
   session or branch) so claims name you, and they are required when `claim` reports it could not detect
@@ -81,6 +83,11 @@ the HTTP/WebSocket contract.
   allows one Android emulator, so also check `simfleet emu list` and reuse a running one or wait.
   Don't boot a device or run `native ensure` while `status` is `blocked`, meaning free disk is below
   the host's floor. Ping Ben with its JSON line and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
+- **Slim on every host.** `agent-m1` and the M4 both run slim devices, per the slim-by-default rule
+  above. Measured on 2026-10-25, an iOS simulator takes 4.0 to 4.4 GB of host memory stock and 1.0 to
+  1.1 GB slim. An Android cold boot takes 4.2 GB stock and 3.2 to 3.7 GB slim. Android slim helps only
+  when applied from boot. Slimming a running emulator saved nothing on `agent-m1`. Measure with
+  `simslim measure` or `avdslim measure`, never summed RSS.
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
