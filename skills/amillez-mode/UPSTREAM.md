@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/` (`pstack/skills/poteto-mode/`, `pstack/skills/principle-*/`, siblings) |
-| Pinned commit | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (2026-10-19 05:35 +00:00). Last checked against `origin/main` on 2026-10-19. |
-| Version | pstack `0.15.28` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
+| Pinned commit | `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` (2026-10-23 22:56 +00:00). Last checked against `origin/main` on 2026-10-26. |
+| Version | pstack `0.15.32` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 Attribution: the principles and any playbook text marked KEEP are poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to every vendored file.
@@ -38,7 +38,7 @@ Applied to vendored files. Everything else is upstream text.
 18. **Correct.** `pstack/skills/correct/` becomes the separate core skill [`skills/correct/`](../correct/SKILL.md), which holds the whole procedure, with its own `UPSTREAM.md` and `LICENSE-pstack`. A Non-negotiables trigger for a repeated correction names the sibling skill.
 19. **Unslop.** `pstack/skills/unslop/` becomes the separate core skill [`skills/unslop/`](../unslop/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. The Non-negotiables trigger for any prose surface names the sibling skill, and so do `investigation.md`, `opening-a-pr.md`, `references/technical-writing.md`, and the sibling `show-me-your-work` and `blast-radius` skills.
 20. **Argent precedence.** A Non-negotiables trigger ranks amillez-mode and simfleet over Argent's installer rules on `agent-m1` for device claims, named `xcrun simctl` operations, named `adb -s <serial>` operations, and writing Argent results to project memory. The sibling [`simfleet`](../simfleet/SKILL.md) skill has a matching rule.
-21. **Sharpen.** `pstack/skills/sharpen/` becomes the separate core skill [`skills/sharpen/`](../sharpen/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. It holds the whole pre-task check (expert approach, real goal, specification level, one outside check), so it applies without loading amillez-mode.
+21. **Sharpen.** `pstack/skills/sharpen/` becomes the separate core skill [`skills/sharpen/`](../sharpen/SKILL.md), byte-for-byte upstream, with its own `UPSTREAM.md` and `LICENSE-pstack`. It holds the whole prompt rewrite (what a top professional would add, the rawest material, their methods and tools, one outside check) and hands back the rewritten prompt instead of doing the task, so it applies without loading amillez-mode.
 22. **Formal verification.** `pstack/skills/create-formal-verification-skill/` and `pstack/skills/maintain-formal-verification-skill/` become the separate core skills [`skills/create-formal-verification-skill/`](../create-formal-verification-skill/SKILL.md) and [`skills/maintain-formal-verification-skill/`](../maintain-formal-verification-skill/SKILL.md), each with its own `UPSTREAM.md` and `LICENSE-pstack`. They are standalone, and no amillez-mode trigger names them.
 23. **Code review brief.** `pstack/skills/interrogate/SKILL.md` and its four references (`reviewer-prompt.md`, `rubric.md`, `code-quality-review.md`, `lead-judgment.md`) become `references/code-review.md`, the brief the author sends to one cross-model reviewer and the guide for whoever reads the verdict. The fan-out of reviewers is not ported. Per-file changes are in the verdict tables.
 
@@ -99,7 +99,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `sharpen/SKILL.md` | KEEP (separate skill) | → [`skills/sharpen/`](../sharpen/SKILL.md), a separate core skill with its own [`UPSTREAM.md`](../sharpen/UPSTREAM.md) and `LICENSE-pstack`. Byte-for-byte upstream, frontmatter included, so it keeps `disable-model-invocation: true` and `/sharpen` loads it. |
 | `technical-writing`, `tdd` | KEEP | → `references/`, capitalization remap. |
 | `poteto-mode/scripts/{watch-pr,orch,check-plan.mjs,bootstrap.ts,package.json,bun.lock}` | DROP | Cursor/Origin/gt/bun tooling. |
-| `poteto-mode/scripts/worktree-audit.sh` | ADAPT (ported) | → `scripts/worktree-audit.sh`. Read-only: `--fetch` is opt-in, nothing is deleted, `GIT_OPTIONAL_LOCKS=0` keeps `git status` from rewriting the index. Scans given repos, the current repo, or `--root` (default `$AGENT_WORK_ROOT`, else `~/agent-work`). Transcript column → LAST_TOUCH (newer of index mtime and HEAD commit); buckets `hold-wip`, `hold-open-pr`, `verify-recent`, `safe`, `review`, `prunable`; portable GNU/BSD `stat` and `date`; RUNTIME section (Metro/Expo ports 8081, 8090, 19000, 19001, Expo CLI processes, booted simulators, adb devices). |
+| `poteto-mode/scripts/worktree-audit.sh` | ADAPT (ported) | → `scripts/worktree-audit.sh`. Read-only: `--fetch` is opt-in, nothing is deleted, `GIT_OPTIONAL_LOCKS=0` keeps `git status` from rewriting the index. Scans given repos, the current repo, or `--root` (default `$AGENT_WORK_ROOT`, else `~/agent-work`). Transcript column → LAST_TOUCH (newer of index mtime and HEAD commit); buckets `hold-wip`, `hold-open-pr`, `verify-recent`, `safe`, `review`, `prunable`; portable GNU/BSD `stat` and `date`, picked once, as upstream does since `f83fbe6`; RUNTIME section (Metro/Expo ports 8081, 8090, 19000, 19001, Expo CLI processes, booted simulators, adb devices). |
 | `agents/poteto-agent.md`, `agents/comment-sicko.md` | DROP | Cursor subagent wrappers. |
 | `benchmark-checklist/SKILL.md` | DEFER | A separate port that pairs with `perf-issue.md` and `hillclimb.md`. Both playbooks vet numbers per Explain the Number. |
 | `poteto-help/SKILL.md` | DROP | Cursor plugin help command. |
@@ -133,6 +133,10 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `poteto-mode/scripts/worktree-audit.sh` (`-b/--base`, Origin PR lookup, MERGED against the default branch) | ALREADY-HAVE | Ours already resolves the base from `origin/HEAD` and uses `gh` only. |
 | `in-your-own-words` skill | ALREADY-HAVE | The restate-first step in the Bug fix and Investigation playbooks and the ai-eng-practices dispatch step "Restate reports before acting" cover it. |
 | `ketchup` skill | DROP | It relies on `/bro`, `/visualize`, and Cursor chat. Our coding agents run headless. |
+| `ketchup-video` skill (`3c0fdb4`) | DROP | Same reason as `ketchup`. It follows `/ketchup` and embeds a video in the chat reply. |
+| `statechart` skill (`eb4db2b`, `7698375`, `4ec7ffa`, `076f4b2`) | DEFER | It draws Mermaid statecharts from TLA+ models with about 5.1k lines of node scripts and a 6.9k-line test, and its first run installs TLC and Java with mise (about 305 MB). Whether we want it beside the formal verification pair is an owner's call. |
+| `create-formal-verification-skill/SKILL.md` paragraph to read every TLA+ result with `/statechart` (`00d5dec`) | DEFER | Goes with `statechart`. Ours names no skill we don't ship. |
+| `reflect/SKILL.md` line to never edit a skill under `plugins/cache/`, edit a copy in `.cursor/skills/`, and never open a PR or push (`7054003`) | ALREADY-HAVE, DROP | ALREADY-HAVE for the first half. Ours never edits installed copies, and every edit lands in an akit or ai-eng-practices worktree. DROP for the Cursor paths and the no-PR rule, since ours opens one small PR by design. |
 | `principle-type-system-discipline` and `principle-migrate-callers-then-delete-legacy-apis` cuts (`99743e9`), with the matching `description` and README summary that drop "refuse to lie to the compiler" | DROP | The cuts remove the rules the two principles carry. migrate-callers keeps only its tests bullet, with no rule above it. type-system drops make-illegal-states-unrepresentable, constructions, don't-lie, exhaustive matching, and strengthen-where-partiality-appears, while its own description still names illegal states and exhaustive variants. Our [`typescript-best-practices`](../typescript-best-practices/SKILL.md) applies type-system-discipline first. Ours keep the `e5136d8` text. |
 | `poteto-mode/SKILL.md` `name: poteto-mode` (`a968159`) | ALREADY-HAVE | Ours is `name: amillez-mode`, and every akit skill's `name` matches its folder. |
 | Claude Code plugin (`docs/harness/claude-code.md`, the generated `harness/pstack/claude-code/` tree, `.claude-plugin/marketplace.json`, and the README install lines) from `182f2ce` and `1b80080` | DROP | We don't install pstack on `agent-m1` (ai-eng-practices `steal-from-pstack`). amillez-mode and our ported skills already run in Claude Code and Codex with our own remaps. The adapter maps roles to pstack defaults (`opus`, or the session model for non-Claude slugs) and writes `~/.claude/rules/pstack-models.md` instead of using our lanes. Upstream dropped its Codex harness in `182f2ce`. |
@@ -145,7 +149,7 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 Run during the weekly pstack revisit (see ai-eng-practices `playbooks/steal-from-pstack.md`).
 
 ```bash
-PIN=d457567332aa6989e753ea289f30ea2bfbc80bc0
+PIN=e73df471cd4bd918367e99f3dd9c51bd53ddf5f0
 git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugins 2>/dev/null \
   || git -C /tmp/cursor-plugins fetch origin main
 cd /tmp/cursor-plugins

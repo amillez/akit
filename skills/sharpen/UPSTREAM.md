@@ -1,6 +1,6 @@
 # sharpen upstream
 
-`sharpen` is our port of poteto's `sharpen` skill from pstack. It is a separate core skill that holds the whole pre-task check, so it applies without loading any other skill.
+`sharpen` is our port of poteto's `sharpen` skill from pstack. It is a separate core skill that holds the whole prompt rewrite, so it applies without loading any other skill.
 
 ## Source
 
@@ -8,12 +8,12 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/sharpen/` (`SKILL.md`) |
-| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). The directory last changed in `75fabace38ce507ee044546eaca64167c8c1e21b` (2026-10-18), which dropped the closing "Don't hand back a rewritten prompt." sentence. Ours is byte-for-byte that text. |
+| Compared against | `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` (pstack `0.15.32`). The directory last changed in `88d47514b82e7c44f00f2b2a72ff6dd12158038c` (2026-10-20), which restored the original prompt. `/sharpen` now answers four questions and hands back the rewritten prompt instead of doing the task. Ours is byte-for-byte that text. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
 
-Attribution: the pre-task check (expert approach, real goal, specification level, one outside check) is poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to it.
+Attribution: the prompt rewrite (what a top professional would add, the rawest material, their methods and tools, one outside check) is poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to it.
 
 ## Local changes
 
