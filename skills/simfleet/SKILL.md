@@ -59,8 +59,8 @@ the HTTP/WebSocket contract.
   with `--stock`, or run `simfleet sim restore <udid>` or `simfleet emu restore <avd>` on a running
   device. With the server down, `simslim off <udid>` and `avdslim off` do the same. Run `slim` again
   when you are done. `--stock` only skips auto-slim, so for a stock baseline use `sim restore` or
-  `emu restore`. After `emu restore`, wait about 30 s and run `adb -s <serial> shell sync` before
-  shutdown, or the restore is lost.
+  `emu restore`. After `emu restore`, wait about 30 s and let adb sync before shutdown, or the restore
+  is lost.
 - **Claim what you hold.** Every CLI call from a Claude Code or Codex session is attributed to the
   device it touches. Export `SIMFLEET_AGENT` (the bot or agent name) and `SIMFLEET_SESSION_ID` (your
   session or branch) so claims name you, and they are required when `claim` reports it could not detect
