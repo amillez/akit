@@ -158,7 +158,8 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
 
     npx -y skills add uni-stack/uniwind --skill uniwind --agent '*' -g -y --copy
 
-    # Margelo: pinned to the commit in manifest.json
+    # Margelo: pinned to the commit in manifest.json.
+    # nitro-fetch is the skill name; its upstream folder is react-native-nitro-fetch.
     npx -y skills add "margelo/react-native-skills#1e9e17be6f41c838db472d6a4b943fc26355a3be" \
       --skill api-design \
       --skill build-nitro-modules \
@@ -166,7 +167,7 @@ if [[ "$SKIP_UPSTREAM" -eq 0 ]]; then
       --skill kotlin \
       --skill swift \
       --skill react-native-mmkv \
-      --skill react-native-nitro-fetch \
+      --skill nitro-fetch \
       --skill react-native-vision-camera \
       --agent '*' -g -y --copy
   fi

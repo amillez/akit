@@ -102,11 +102,11 @@
         "kotlin",
         "swift",
         "react-native-mmkv",
-        "react-native-nitro-fetch",
+        "nitro-fetch",
         "react-native-vision-camera"
       ],
       "when": "Building Nitro / native modules",
-      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet. Upstream has no tags, so ref is the full 40-character commit SHA (the skills CLI rejects a short one). Bump this ref and the one in scripts/install.sh together."
+      "note": "Margelo Nitro modules skills (same mobile category as other native RN skills). Pack also ships react-native-vision-camera-realtime; not on the allowlist yet. Upstream has no tags, so ref is the full 40-character commit SHA (the skills CLI rejects a short one). Bump this ref and the one in scripts/install.sh together. nitro-fetch lives in the upstream folder skills/react-native-nitro-fetch, but its SKILL.md names it nitro-fetch, and --skill matches that name."
     }
   ],
   "amillez": [
