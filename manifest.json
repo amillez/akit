@@ -199,7 +199,7 @@
       "id": "sharpen",
       "group": "core",
       "path": "skills/sharpen",
-      "when": "/sharpen: before starting a task, check how a top expert would approach it, what the user is really after, and whether it is over- or underspecified, keeping one outside check that the result is right; the check lives in the skill (ported from pstack, MIT, see skills/sharpen/UPSTREAM.md)",
+      "when": "/sharpen: answer four questions about a task (what a top professional would add, the rawest material they would start from, their methods and tools, and an outside check that the result is right), then return only a rewritten prompt without doing the task (ported from pstack, MIT, see skills/sharpen/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /sharpen loads it."
     },
     {

@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/maintain-verification-skill/SKILL.md` |
-| Compared against | `d457567332aa6989e753ea289f30ea2bfbc80bc0` (pstack `0.15.28`). The file is unchanged upstream since `6714489fa233263f00e419f6cfc4759b07c81056` (2026-07-12). |
+| Compared against | `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` (pstack `0.15.32`). The file is unchanged upstream since `6714489fa233263f00e419f6cfc4759b07c81056` (2026-07-12). |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
@@ -22,4 +22,4 @@ Attribution: the maintain pass (source wave, live pass, triage, ship or stop) is
 3. **App CLI check** (pairs with `create-verification-skill` local change 4). The live pass first checks the app CLI's `--help` and one `--dry-run` per destructive command. Failures are harness gaps, and the CLI is in edit scope.
 4. **Empty data dir.** The live pass launches from an empty data dir at least once per pass, and a ready signal that fires before the app is usable is a harness gap. Upstream added the readiness rule only to `create-verification-skill`. This line catches verify skills written before it.
 5. **Skill text only.** `SKILL.md` names no host and carries no attribution or long dashes. Attribution lives here.
-6. **agent-m1 limits** (pairs with `create-verification-skill` local change 7). The intro links [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits) before the live pass boots a device or starts a native build on `agent-m1`: one Android emulator, a 20 GB free-disk floor, and `./gradlew --stop` after an Android run. The policy text stays in the policy.
+6. **Orca host limits** (pairs with `create-verification-skill` local change 7). The intro links [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits) before the live pass boots a device or starts a native build on whichever Orca host runs the session: the host's simulator cap and free-disk floor from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host), and `./gradlew --stop` after an Android run. The policy text stays in the policy.

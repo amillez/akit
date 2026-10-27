@@ -58,7 +58,9 @@ the HTTP/WebSocket contract.
   Contacts and Photos pickers, and universal links. When the feature under test needs one of them, boot
   with `--stock`, or run `simfleet sim restore <udid>` or `simfleet emu restore <avd>` on a running
   device. With the server down, `simslim off <udid>` and `avdslim off` do the same. Run `slim` again
-  when you are done.
+  when you are done. `--stock` only skips auto-slim, so for a stock baseline use `sim restore` or
+  `emu restore`. After `emu restore`, wait about 30 s and let adb sync before shutdown, or the restore
+  is lost.
 - **Claim what you hold.** Every CLI call from a Claude Code or Codex session is attributed to the
   device it touches. Export `SIMFLEET_AGENT` (the bot or agent name) and `SIMFLEET_SESSION_ID` (your
   session or branch) so claims name you, and they are required when `claim` reports it could not detect
@@ -74,9 +76,18 @@ the HTTP/WebSocket contract.
   natively only when native inputs changed, and only through `native plan` and `native ensure`
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
-- **One Android emulator on `agent-m1`.** Check `simfleet emu list` before `emu boot` and reuse or wait
-  if one runs. Don't boot an emulator or run `native ensure` under 20 GB free (`df -h ~`, Avail column).
-  Under 20 GB, ping Ben with the `df -h ~` output and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
+- **Stay under the host's simulator cap.** Run the host's health check from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) before
+  `sim boot` or `emu boot`. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
+  of device only while it is above 0. `null` means the host has no cap for that kind, as for iOS on
+  `agent-m1`. The counts include devices outside the fleet, such as Agustín's on the M4. Every host
+  allows one Android emulator, so also check `simfleet emu list` and reuse a running one or wait.
+  Don't boot a device or run `native ensure` while `status` is `blocked`, meaning free disk is below
+  the host's floor. Ping Ben with its JSON line and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
+- **Slim on every host.** `agent-m1` and the M4 both run slim devices, per the slim-by-default rule
+  above. Measured on 2026-10-25, an iOS simulator takes 4.0 to 4.4 GB of host memory stock and 1.0 to
+  1.1 GB slim. An Android cold boot takes 4.2 GB stock and 3.2 to 3.7 GB slim. Android slim helps only
+  when applied from boot. Slimming a running emulator saved nothing on `agent-m1`. Measure with
+  `simslim measure` or `avdslim measure`, never summed RSS.
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
@@ -128,7 +139,7 @@ Stop `simfleet serve` if you started it. With the server down, use `xcrun simctl
 
 After an Android lane or Android native build, run `./gradlew --stop` in the project's `android/`
 directory and kill any of the job's daemons that `pgrep -fl 'GradleDaemon|KotlinCompileDaemon'` still
-lists. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-agent-m1-resource-limits).
+lists. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
 
 ## Report
 
