@@ -33,7 +33,8 @@ fi
 mkdir -p "$BASE/bin"
 cat > "$BASE/bin/npx" <<'NPX'
 #!/usr/bin/env bash
-echo "npx $*" >> "$HOME/npx.log"
+echo "npx CODEX_HOME=${CODEX_HOME:-} $*" >> "$HOME/npx.log"
+(IFS=$'\t'; echo "$*") >> "$HOME/npx.argv"
 NPX
 chmod +x "$BASE/bin/npx"
 export PATH="$BASE/bin:$PATH"
@@ -45,6 +46,23 @@ check() {
 }
 has_skill() { [[ -f "$HOME/.claude/skills/$1/SKILL.md" && -f "$HOME/.agents/skills/$1/SKILL.md" ]]; }
 ensure() { "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" 2>&1 | tail -1; }
+# Prints each skills add call's --agent values, sorted, one call per line.
+add_agents() {
+  python3 -c '
+import sys
+for line in open(sys.argv[1]):
+    args = line.rstrip("\n").split("\t")
+    if "add" not in args or args[args.index("add") - 1] != "skills":
+        continue
+    agents, take = [], False
+    for a in args:
+        if a.startswith("-"):
+            take = a == "--agent"
+        elif take:
+            agents.append(a)
+    print(" ".join(sorted(agents)))
+' "$HOME/npx.argv"
+}
 settings() { python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1])), sort_keys=True))' "$HOME/.claude/settings.json"; }
 
 AMILLEZ_SKILLS=()
@@ -58,6 +76,15 @@ for s in "${AMILLEZ_SKILLS[@]}"; do
 done
 check "fresh HOME: rules installed" '[[ -f "$HOME/.claude/rules/amillez-models.md" && -f "$HOME/.agents/rules/amillez-models.md" ]]'
 check "fresh HOME: stamp written" '[[ -f "$HOME/.amillez-plugin.json" && -f "$HOME/.agents/amillez-plugin.json" ]]'
+check "fresh HOME: ran upstream skills add" 'grep -q "skills add" "$HOME/npx.log"'
+check "fresh HOME: no --agent '"'"'*'"'"'" '! grep -qF -- "--agent *" "$HOME/npx.log"'
+check "fresh HOME: every skills add targets exactly claude-code and codex" '[[ "$(add_agents | sort -u)" == "claude-code codex" ]] || { echo "  got: $(add_agents | sort -u | paste -sd "|" -)"; false; }'
+check "fresh HOME: every skills add installs at user root" '! grep "skills add" "$HOME/npx.log" | grep -vqF -- " -g -y --copy"'
+check "fresh HOME: codex lands in ~/.agents, not ~/.codex" '! grep "skills add" "$HOME/npx.log" | grep -vqF "CODEX_HOME=$HOME/.agents "'
+check "fresh HOME: adds the Margelo pack" 'grep -q margelo/react-native-skills "$HOME/npx.log"'
+check "fresh HOME: Margelo add passes --skill nitro-fetch" 'grep margelo/react-native-skills "$HOME/npx.log" | grep -qE -- "--skill nitro-fetch( |$)"'
+check "fresh HOME: no --skill react-native-nitro-fetch (folder name, not the skill name)" '! grep -qF -- "--skill react-native-nitro-fetch" "$HOME/npx.log"'
+check "fresh HOME: nothing under ~/.codex" '[[ ! -e "$HOME/.codex" ]]'
 check "fresh HOME: Claude settings allow Read on the proof dir only" '[[ "$(settings)" == '"'"'{"permissions": {"allow": ["Read(~/agent-work/proof/**)"]}}'"'"' ]] || { echo "  got: $(settings 2>&1)"; false; }'
 
 : > "$HOME/npx.log"
@@ -221,6 +248,24 @@ rc=0; "$REPO/scripts/prune-skills.sh" --pending >/dev/null 2>&1 || rc=$?
 check "backup outside HOME: --pending exits 2" '[[ $rc == 2 ]]'
 check "backup outside HOME: ensure fails, not report updated or already present" '! "$REPO/scripts/ensure-install.sh" --skills-root "$REPO" >"$HOME/ensure.out" 2>&1 && ! grep -q "amillez plugin:" "$HOME/ensure.out" && grep -q "outside HOME" "$HOME/ensure.out"'
 check "backup outside HOME: nothing moved" '[[ -f "$HOME/.codex/skills/api-design/SKILL.md" && -z "$(ls -A "$BASE/outside-backup")" ]]'
+
+export HOME="$BASE/prune-nitro"
+mkdir -p "$HOME"
+for d in .claude/skills .agents/skills; do seed "$d/react-native-nitro-fetch"; seed "$d/nitro-fetch"; done
+"$REPO/scripts/prune-skills.sh" >/dev/null 2>&1
+check "prune: old react-native-nitro-fetch folder moved out of ~/.claude and ~/.agents" '[[ ! -e "$HOME/.claude/skills/react-native-nitro-fetch" && ! -e "$HOME/.agents/skills/react-native-nitro-fetch" ]]'
+check "prune: installed nitro-fetch kept" 'has_skill nitro-fetch'
+
+# Machine install only: no project option, and nothing lands in the working directory.
+export HOME="$BASE/no-project"
+mkdir -p "$HOME" "$BASE/project"
+check "install.sh rejects --target (no project install)" '! "$REPO/scripts/install.sh" --target "$BASE/project" >/dev/null 2>&1'
+check "install.sh rejects --project (no project install)" '! "$REPO/scripts/install.sh" --project >/dev/null 2>&1'
+(cd "$BASE/project" && "$REPO/scripts/install.sh" >/dev/null 2>&1)
+check "install from a project dir: writes no project .claude or .agents" '[[ ! -e "$BASE/project/.claude" && ! -e "$BASE/project/.agents" ]]'
+check "install from a project dir: installs at user root" 'has_skill bootstrap-empty-app'
+check "manifest allowlists nitro-fetch in the Margelo entry" 'python3 -c "import json,sys; sys.exit(not any(e.get(\"package\") == \"margelo/react-native-skills\" and \"nitro-fetch\" in e.get(\"skills\", []) for e in json.load(open(sys.argv[1]))[\"upstream\"]))" "$REPO/manifest.json"'
+check "manifest allowlists no react-native-nitro-fetch" 'python3 -c "import json,sys; sys.exit(any(\"react-native-nitro-fetch\" in e.get(\"skills\", []) for e in json.load(open(sys.argv[1]))[\"upstream\"]))" "$REPO/manifest.json"'
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures check(s) failed"

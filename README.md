@@ -33,14 +33,14 @@ cd ~/agent-work/akit
 # ./scripts/install.sh --groups core,mobile    # same as default
 ```
 
-`install.sh` adds the allowlisted upstream packs with `npx skills add`, copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, merges the allow rules in `templates/claude-settings.json` into `~/.claude/settings.json`, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). The only allow rule is `Read(~/agent-work/proof/**)`. It lets an auto-mode Claude Code session read proof screenshots without stopping on the first-read-outside-the-working-directories prompt. The merge adds missing entries and leaves every other key alone.
+`install.sh` adds the allowlisted upstream packs with `npx skills add` for two agents only, `claude-code` (`~/.claude/skills`) and `codex` (pointed at `~/.agents/skills`, Codex's current user location, so nothing lands under `~/.codex`), never `--agent '*'`. It then copies the amillez skills under `skills/` for the chosen groups into `~/.agents/skills` and `~/.claude/skills`, copies `templates/models.md` to the user rules dirs, merges the allow rules in `templates/claude-settings.json` into `~/.claude/settings.json`, and writes `~/.amillez-plugin.json` (and `~/.agents/amillez-plugin.json`). The only allow rule is `Read(~/agent-work/proof/**)`. It lets an auto-mode Claude Code session read proof screenshots without stopping on the first-read-outside-the-working-directories prompt. The merge adds missing entries and leaves every other key alone.
 
 **Groups** (see `manifest.json` `groups` and the per-entry `group` tags):
 
 | Group | Always? | Contents |
 | --- | --- | --- |
 | `core` | **yes** (even with `--groups mobile`) | `amillez-mode`, `grill-me`, `grilling`, `orchestrate-agents`, `create-verification-skill`, `maintain-verification-skill`, `setup-amillez-models`, `typescript-best-practices`, `correct`, `blast-radius`, `reflect`, `show-me-your-work`, `figure-it-out`, `unslop`, `draft-upstream`, `sharpen`, `create-formal-verification-skill`, `maintain-formal-verification-skill` |
-| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet` |
+| `mobile` | no | Argent, `animate-expo`, `apple-design`, `review-animations`, `expo-dev-client`, `expo-upgrade`, `react-native-best-practices`, `uniwind`, Margelo Nitro modules, `simfleet`, `amillez-react-native-mode`, `bootstrap-empty-app` |
 
 Default is **core+mobile**. `--groups core` skips mobile.
 
@@ -118,6 +118,8 @@ Grouped as **core** and **mobile** in `manifest.json`, selectable with `--groups
 | `maintain-formal-verification-skill` | core | **amillez** (pstack port, MIT; see `skills/maintain-formal-verification-skill/UPSTREAM.md`) | `/maintain-formal-verification-skill`, a standalone skill that brings a formal verify skill back in line after code changes that skipped it, and reports each check as in sync, updated, bug, or blocked. Byte-for-byte upstream. Sets `disable-model-invocation: true`, so the model never invokes it on its own. |
 | Nitro modules set (`api-design`, `build-nitro-modules`, `cpp`, `kotlin`, `swift`, `react-native-mmkv`, `nitro-fetch`, `react-native-vision-camera`) | mobile | `margelo/react-native-skills` (pinned commit in `manifest.json`) | Building native or Nitro modules |
 | `simfleet` | mobile | **amillez** (`entropyconquers/simfleet` port, MIT; see `skills/simfleet/UPSTREAM.md`) | Boot, slim, restore, claim, and shut down simulators and emulators through simfleet, and run worktree lanes with leased Metro ports. Argent still drives proof. Needs the simfleet CLI (see [Install](#2-install-at-user-root)). |
+| `amillez-react-native-mode` | mobile | **amillez** | React Native and Expo twin of `amillez-mode`. Attach it alongside `amillez-mode` on RN coding work. It picks a house playbook from its allowlist and links into `amillez/rn-bedrock` docs. Its `bootstrap-empty-app` slug names the standalone skill. |
+| `bootstrap-empty-app` | mobile | **amillez** | A standalone skill that holds the whole procedure for starting a brand-new Expo or React Native app from the `amillez/rn-bedrock` stack, with age-gated dependency versions and proof on both platforms. Needs neither `amillez-mode` nor `amillez-react-native-mode`. |
 
 Not in the pack: `autoreview`, the Superset pack, other design and planning skills, and `expo-native-ui`. Orca's own skills (`orca-cli`, `orchestration`) come from `orca skills install` on the coordinator device (see `orchestrate-agents`).
 
