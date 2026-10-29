@@ -18,7 +18,7 @@ Attribution: the maintain pass (source wave, live pass, triage, ship or stop) is
 ## Local changes
 
 1. **Target search.** `.claude/skills/verify-*/` and `.agents/skills/verify-*/`, never `.cursor/skills/`.
-2. **Expo, React Native, and visual proof.** Drive with Argent. Visual evidence goes to the `media` branch and is inspected against the feature's end state before a feature counts as verified. A separate verifier is optional and runs with the model unset. The live pass tears down simulators, emulators, and Metro or dev servers it started.
+2. **Expo, React Native, and visual proof.** Drive with Argent. Visual evidence stays out of git, goes in the PR's `review-guide` Orca artifact, and is inspected against the feature's end state before a feature counts as verified. A separate verifier is optional and runs with the model unset. The live pass tears down simulators, emulators, and Metro or dev servers it started.
 3. **App CLI check** (pairs with `create-verification-skill` local change 4). The live pass first checks the app CLI's `--help` and one `--dry-run` per destructive command. Failures are harness gaps, and the CLI is in edit scope.
 4. **Empty data dir.** The live pass launches from an empty data dir at least once per pass, and a ready signal that fires before the app is usable is a harness gap. Upstream added the readiness rule only to `create-verification-skill`. This line catches verify skills written before it.
 5. **Skill text only.** `SKILL.md` names no host and carries no attribution or long dashes. Attribution lives here.

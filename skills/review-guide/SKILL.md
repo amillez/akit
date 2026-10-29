@@ -12,7 +12,7 @@ description: >-
 
 The guide lets a reviewer read a PR in order of risk without asking the author anything. Build it only from what the run already produced: the decision trail, commits, proof files, logs, and the commands you ran. Do not start review sessions, capture new proof, or rerun work to fill it.
 
-Skip it for docs-only PRs and for trivial ones, such as a typo or a version bump with no code change.
+Skip it for docs-only PRs. Skip trivial PRs too, such as a typo or a version bump with no code change, unless they carry visual proof. The guide is the only place proof is published.
 
 ## 1. Build the file outside git
 
@@ -75,7 +75,7 @@ A human enables publishing per host in Orca under **Settings > Artifacts**. Ther
 - `artifact_sharing_disabled` means publishing is off on this host.
 - `sharing_unavailable_on_host` means the host is headless and cannot share.
 
-Do not retry either error. Put a text-only guide in the PR body instead, with sections 5 to 8 added after the usual sections. GitHub renders Mermaid blocks in the PR body. Also say in the PR body and your reply that sharing failed and why.
+Do not retry either error. Put a text-only guide in the PR body instead, with sections 5 to 8 added after the usual sections. GitHub renders Mermaid blocks in the PR body. Images stay local under `~/agent-work/proof/<slug>/`, so describe each one in its pass or fail note. Also say in the PR body and your reply that sharing failed and why.
 
 ## 4. Update on each push
 
