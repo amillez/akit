@@ -33,12 +33,14 @@ Close the session as soon as its PR merges or the work is abandoned. Leave no te
 for h in $(orca terminal list --worktree path:$W --json | jq -r '.result.terminals[].handle'); do
   orca terminal close --terminal "$h" --tab --json
 done
+orca artifacts delete <id> --json
 orca worktree rm --worktree name:<slug> --json
 git -C ~/agent-work/<repo> worktree list
 git -C ~/agent-work/<repo> branch --list agent/<bot>/<slug>
 git -C ~/agent-work/<repo> push origin --delete agent/<bot>/<slug>
 ```
 
+- Run `orca artifacts delete` only when the PR has a [`review-guide`](../../review-guide/SKILL.md) artifact. Take `<id>` from `~/agent-work/proof/<slug>/review-guide.share.json`, or from `orca artifacts list --json`. Delete it before `orca worktree rm`.
 - `orca worktree create` opens a shell tab next to the agent tab, so the loop closes every tab, not only the agent's.
 - `orca worktree rm` returns `"removing": true` and finishes in the background. Run `git worktree list` again until the path is gone.
 - `orca worktree rm` also deletes the local branch, an unmerged one too once it is pushed. If `git branch --list` still shows it, delete it with `git branch -D`.
