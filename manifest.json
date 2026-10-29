@@ -221,7 +221,7 @@
       "group": "core",
       "path": "skills/statechart",
       "when": "/statechart: check a small TLA+ model with TLC, draw it as a Mermaid statechart, and report the shortest path to each state that breaks a rule; needs Node 22.18+ (or Bun, Deno) and TLC with Java via mise or TLA2TOOLS and JAVA (copied from pstack, MIT, see skills/statechart/UPSTREAM.md)",
-      "note": "Byte-for-byte upstream, scripts and tests included. Sets disable-model-invocation: true, so the model never invokes it on its own and /statechart loads it. create-formal-verification-skill reads TLA+ results with it."
+      "note": "Byte-for-byte upstream, without upstream's tests and fixtures under scripts/test/. Sets disable-model-invocation: true, so the model never invokes it on its own and /statechart loads it. create-formal-verification-skill reads TLA+ results with it."
     },
     {
       "id": "review-guide",
