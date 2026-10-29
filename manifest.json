@@ -4,7 +4,7 @@
   "groups": {
     "core": {
       "always": true,
-      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, sharpen, create-formal-verification-skill, maintain-formal-verification-skill, and review-guide skills"
+      "description": "Always installed: amillez-mode (required working mode), grill-me with grilling, and the amillez orchestration, verification, model setup, TypeScript, correct, blast-radius, reflect, show-me-your-work, figure-it-out, unslop, draft-upstream, sharpen, create-formal-verification-skill, maintain-formal-verification-skill, statechart, and review-guide skills"
     },
     "mobile": {
       "description": "React Native, Expo, and native (Argent, Emil, Expo, SWM, Uniwind, Margelo Nitro modules, simfleet). Not installed with --groups core alone."
@@ -215,6 +215,13 @@
       "path": "skills/maintain-formal-verification-skill",
       "when": "/maintain-formal-verification-skill: after code changes that skipped the verify skill, read the commits that touched verified code, update the model, harness, or properties from the code, rerun, and report each check as in sync, updated, bug, or blocked (ported from pstack, MIT, see skills/maintain-formal-verification-skill/UPSTREAM.md)",
       "note": "Sets disable-model-invocation: true, so the model never invokes it on its own and /maintain-formal-verification-skill loads it. Points at create-formal-verification-skill when no verify skill exists."
+    },
+    {
+      "id": "statechart",
+      "group": "core",
+      "path": "skills/statechart",
+      "when": "/statechart: check a small TLA+ model with TLC, draw it as a Mermaid statechart, and report the shortest path to each state that breaks a rule; needs Node 22.18+ (or Bun, Deno) and TLC with Java via mise or TLA2TOOLS and JAVA (copied from pstack, MIT, see skills/statechart/UPSTREAM.md)",
+      "note": "Byte-for-byte upstream, without upstream's tests and fixtures under scripts/test/. Sets disable-model-invocation: true, so the model never invokes it on its own and /statechart loads it. create-formal-verification-skill reads TLA+ results with it."
     },
     {
       "id": "review-guide",

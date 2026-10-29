@@ -68,7 +68,7 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 - **Fix Root Causes** ([principles/fix-root-causes.md](principles/fix-root-causes.md)). Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
 - **Sequence Work into Verifiable Units** ([principles/sequence-verifiable-units.md](principles/sequence-verifiable-units.md)). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 - **Test Behavior, Not Implementation** ([principles/test-behavior-not-implementation.md](principles/test-behavior-not-implementation.md)). Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
-- **Explain the Number** ([principles/explain-the-number.md](principles/explain-the-number.md)). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
+- **Explain the Number** ([principles/explain-the-number.md](principles/explain-the-number.md)). Apply before you measure, and before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
 
 **Delegation**
 

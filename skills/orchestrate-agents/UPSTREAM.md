@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/poteto-mode/playbooks/orchestrate.md` |
-| Pinned commit | `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` (2026-10-23 22:56 +00:00) |
-| Version | pstack `0.15.32` |
+| Pinned commit | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (2026-10-27 23:12 +00:00) |
+| Version | pstack `0.15.36` |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The same pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit both together.
@@ -20,3 +20,4 @@ The same pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTR
 2. **Brief rules.** Kept: the brief is the product, a field you cannot fill is an unscoped task, size the brief to the task, a dependency is a context relay, missing fields refuse the spawn, never resume-chain a brief. Dropped: cloud versus local spawn rules, sub-coordinator briefs, and the sampled brief audit, which assume Cursor cloud agents and the `orch` store.
 3. **Retry by failure mode.** Kept verbatim in substance: cap hit or OOM → smaller scope, network drop → as is, tool error → different model (here, a different lane), unknown → once, two retries → abandon and replan. Kept the read-only liveness probe, late-worker reconciliation, and bounding your own retries. Probes use Orca and `gh` instead of the Cursor dashboard and `orch`.
 4. **Not ported.** The rest of the playbook (store layout, `orch` CLI, drain protocol, stacker, ledger, Cursor restart recovery) is Cursor-cloud sized. Orca owns the DAG and runtime state here.
+5. **Upstream rewrite not ported.** `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`) rewrites the playbook to run on the coordinator's own tools and deletes the `orch` scripts. It drops the brief template, and its Supervision section keeps retry by cause in one line. Ours keeps both sections at the `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` text, since the template is what our briefs use.
