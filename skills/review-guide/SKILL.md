@@ -53,11 +53,10 @@ Keep the file self-contained:
 
 ## 2. Scrub before you share
 
-The link is public. Anyone with it can open the page without signing in, and the page is not marked `noindex`.
+The guide is link-only. Its slug is 12 unguessable characters, no public listing shows it, it expires after 30 days, and `orca artifacts delete <id>` revokes it at once. Anyone who has the link can open it without signing in, and a link can be forwarded. The page is not marked `noindex`, so a link that leaks onto an indexed page can be crawled.
 
-- Leave secrets, tokens, keys, cookies, and env values out of screenshots and logs.
+- Leave secrets, tokens, keys, cookies, and env values out of screenshots, logs, and code snippets.
 - Leave personal user data out, such as real names, emails, phone numbers, and account IDs.
-- Link to code instead of pasting it, since the repo may be private.
 
 Open every embedded image and check it before you share.
 
