@@ -27,7 +27,16 @@ Use these sections in this order. Number them as written.
 5. **How to reproduce.** The `verify-<app>` commands, or the exact commands you ran, in code blocks.
 6. **Review order.** Critical files first. Each entry links to the exact lines at the PR head SHA, as `https://github.com/<owner>/<repo>/blob/<head-sha>/<path>#L<start>-L<end>`. Get the SHA with `gh pr view <number> --json headRefOid -q .headRefOid`.
 7. **Critical parts and why they matter.** The few hunks a reviewer must not skim, and what breaks if they are wrong.
-8. **Diagrams.** Only when the change spans several modules or changes a flow. Use Mermaid by default. When pstack ships poteto's statechart and diagram companion skill, prefer it.
+8. **Diagrams.** Only when the change spans several modules or changes a flow. Draw an architecture diagram by hand as inline SVG or HTML and CSS, in the style of [`references/diagram-style.html`](references/diagram-style.html):
+   - Light by default, with dark colors only under `prefers-color-scheme: dark`. Never dark-only.
+   - One horizontal band per package or layer, labelled top-left with a subtitle. Label sub-layers such as ui, domain, and data-access on the left.
+   - Each box has a bold title and a muted monospace or plain detail line.
+   - Label each arrow with the call or method it stands for.
+   - Fill the boxes this PR touches in teal and draw their arrows in teal. Draw later or deferred PR work in dashed purple.
+   - Put a caption of 2 to 4 sentences under the diagram that states the key invariants, and a small legend.
+   - Use no external libraries.
+
+   Use Mermaid only as a quick fallback for a trivial flow. For a state machine, prefer pstack's statechart and diagram companion skill by poteto once it ships.
 
 Keep the file self-contained:
 
@@ -38,7 +47,7 @@ Keep the file self-contained:
   printf 'data:image/jpeg;base64,%s' "$(base64 < shot.jpg | tr -d '\n')"
   ```
 
-- Render Mermaid in the browser from a pinned CDN build, such as `<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs'; mermaid.initialize({ startOnLoad: true });</script>`, or inline an SVG.
+- For the Mermaid fallback only, render it in the browser from a pinned CDN build, such as `<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs'; mermaid.initialize({ startOnLoad: true });</script>`.
 - Use no other relative or external assets. `orca artifacts` uploads only the HTML file.
 - Keep the file under about 800 KiB. Check with `wc -c < review-guide.html`. The service rejects files over 10 MiB.
 
@@ -75,7 +84,7 @@ A human enables publishing per host in Orca under **Settings > Artifacts**. Ther
 - `artifact_sharing_disabled` means publishing is off on this host.
 - `sharing_unavailable_on_host` means the host is headless and cannot share.
 
-Do not retry either error. Put a text-only guide in the PR body instead, with sections 5 to 8 added after the usual sections. GitHub renders Mermaid blocks in the PR body. Images stay local under `~/agent-work/proof/<slug>/`, so describe each one in its pass or fail note. Also say in the PR body and your reply that sharing failed and why.
+Do not retry either error. Put a text-only guide in the PR body instead, with sections 5 to 8 added after the usual sections. GitHub strips inline SVG from the PR body, so draw section 8 there as a Mermaid block. Images stay local under `~/agent-work/proof/<slug>/`, so describe each one in its pass or fail note. Also say in the PR body and your reply that sharing failed and why.
 
 ## 4. Update on each push
 
