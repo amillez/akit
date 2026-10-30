@@ -88,6 +88,8 @@ the HTTP/WebSocket contract.
   1.1 GB slim. An Android cold boot takes 4.2 GB stock and 3.2 to 3.7 GB slim. Android slim helps only
   when applied from boot. Slimming a running emulator saved nothing on `agent-m1`. Measure with
   `simslim measure` or `avdslim measure`, never summed RSS.
+- **`avdslim tune-avd --help` is not read-only.** It applies the tune and purges the AVD's snapshots
+  instead of printing help, so never run it to read usage.
 - **simfleet outranks Argent's installer rules.** simfleet claims and the `xcrun simctl` operations this
   skill names, run only on devices you claimed (or booted, with the server down), win over Argent's
   "prefer running devices" and "never use `xcrun simctl`". See the Argent trigger in
