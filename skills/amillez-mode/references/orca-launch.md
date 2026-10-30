@@ -142,6 +142,7 @@ orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode fir
 - Before you send the brief, check that the banner shows the expected model and `bypass permissions on`.
 - Start Codex with `--dangerously-bypass-approvals-and-sandbox` and the Cursor Agent CLI with `--yolo`, the flags Orca adds on `agent-m1`, plus the lane's model flags.
 - Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
+- In Agustín's own sessions, the `gh pr edit` that adds the [`review-guide`](../../review-guide/SKILL.md#add-the-link-to-the-pr-body) link can wait on his approval, so the PR body may lack the link until he approves.
 
 Select the M4 by its name, `m4`, not by id. Each machine keeps its own pairing store, so an environment id copied from another machine does not resolve here. `orca host list --json` prints the selector for each host this machine can reach.
 

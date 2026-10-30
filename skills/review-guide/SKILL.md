@@ -68,13 +68,38 @@ orca artifacts share ~/agent-work/proof/<slug>/review-guide.html --json > ~/agen
 
 Read the artifact id and the URL from the JSON result and keep the file. The id is what `delete` needs. If you lose it, `orca artifacts list --json` lists the account's artifacts with their ids.
 
-The PR body keeps its usual sections short. They cover guide sections 1 to 4. Add a `## Review guide` section with the link and the date it expires.
-
 Facts about the link, verified 2026-10-29:
 
 - The URL is `https://share.onorca.dev/a/<slug>`, where the slug is 12 unguessable characters.
-- It expires 30 days after sharing. For a PR open longer, share again and replace the link in the PR body.
+- It expires 30 days after sharing. For a PR open longer, share again and replace the link in the PR body per [Keep the link in sync](#keep-the-link-in-sync).
 - `orca artifacts delete <id>` revokes it at once.
+
+The PR body keeps its usual sections short. They cover guide sections 1 to 4.
+
+### Add the link to the PR body
+
+This step is required. Run it right after `share`, as its own command. Never chain it with `gh pr checks --watch` or any other command, since a long or failing command in the chain hides whether the body changed.
+
+Keep the existing body exactly and append one `## Review guide` section with the link and the date it expires. Fetch the body with `jq -j`, since `-q .body` adds a trailing newline that each edit would store:
+
+```bash
+f=~/agent-work/proof/<slug>/pr-body.md
+gh pr view <number> --json body | jq -j .body > "$f"
+printf '\n\n## Review guide\n\n%s (expires %s)\n' '<url>' '<YYYY-MM-DD>' >> "$f"
+gh pr edit <number> --body-file "$f"
+```
+
+Then check that the link landed:
+
+```bash
+gh pr view <number> --json body -q .body | grep -F '<url>'
+```
+
+If `grep` prints nothing, run the edit again. If `gh pr edit` exits non-zero, for example with `GraphQL: Projects (classic) is being deprecated`, it has not changed the body. Write the same file through the REST API instead, then check again:
+
+```bash
+gh api -X PATCH repos/<owner>/<repo>/pulls/<number> -F body=@"$f"
+```
 
 ### When sharing fails
 
@@ -94,6 +119,19 @@ orca artifacts update ~/agent-work/proof/<slug>/review-guide.html --json
 ```
 
 `update` works only from the same file path and the same Orca profile that shared the file. On another host or profile, run `orca artifacts delete <id> --json`, share again, and replace the link in the PR body and the saved id.
+
+### Keep the link in sync
+
+After each `update` or new share, make the PR body match the current URL and expiry date. A new share always has a new URL. Replace the line in the existing `## Review guide` section and never add a second section:
+
+```bash
+f=~/agent-work/proof/<slug>/pr-body.md
+gh pr view <number> --json body | jq -j .body > "$f"
+sed -i '' 's|https://share.onorca.dev/a/.*|<url> (expires <YYYY-MM-DD>)|' "$f"
+gh pr edit <number> --body-file "$f"
+```
+
+Then run the same `grep -F` check, with the same retry and `gh api` fallback as in [Add the link to the PR body](#add-the-link-to-the-pr-body). Also check that `gh pr view <number> --json body -q .body | grep -c '^## Review guide'` prints `1`.
 
 ## 5. Delete after merge or close
 
