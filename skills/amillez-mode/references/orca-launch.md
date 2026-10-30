@@ -18,6 +18,9 @@ orca agent launch --agent claude --worktree path:$W \
 
 - Orca cuts the worktree from the repo's default base at `~/orca/workspaces/<repo>/<slug>`, on branch `amillez/<slug>`. Rename the branch before the launch. Orca follows the rename.
 - Orca marks the new path trusted in `~/.claude.json` at launch, so Claude Code starts without the trust prompt.
+- Claude Code can still show a folder-trust dialog on a repo that contains `.claude/settings.json`. Choose "continue without" and send the brief again.
+- Write `path:` selectors with an absolute path. Orca does not expand `~`, so `path:~/...` returns `selector_not_found`.
+- A worker never approves a shell `rm -rf` prompt. It deletes the exact temp paths instead.
 - `--no-parent` keeps the session top-level instead of a child of the caller's worktree.
 - `result.outcome.handle` in the launch reply is the terminal handle. Read the banner with `orca terminal read --terminal <handle> --screen --json` and check that it shows the expected model.
 - `--surface terminal` makes the launch a terminal even when the Chat UI setting is on, so the `orca terminal` commands below work on it.
@@ -42,6 +45,7 @@ git -C ~/agent-work/<repo> push origin --delete agent/<bot>/<slug>
 
 - Run `orca artifacts delete` only when the PR has a [`review-guide`](../../review-guide/SKILL.md) artifact. Take `<id>` from `~/agent-work/proof/<slug>/review-guide.share.json`, or from `orca artifacts list --json`. Delete it before `orca worktree rm`.
 - `orca worktree create` opens a shell tab next to the agent tab, so the loop closes every tab, not only the agent's.
+- If `orca terminal close --tab` returns `terminal_handle_stale`, run `orca terminal close --worktree path:$W --all --json` instead, with `$W` the absolute worktree path.
 - `orca worktree rm` returns `"removing": true` and finishes in the background. Run `git worktree list` again until the path is gone.
 - `orca worktree rm` also deletes the local branch, an unmerged one too once it is pushed. If `git branch --list` still shows it, delete it with `git branch -D`.
 - Skip `push origin --delete` when GitHub already deleted the branch on merge.
