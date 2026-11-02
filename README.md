@@ -144,7 +144,7 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI (the tool behind `npx s
 
    Packs installed at a pinned ref (Argent, Margelo) stay at that ref.
 
-2. **Argent version bumps.** Pin the CLI and the skills tag together. Update the ref in `manifest.json` (`upstream[argent].ref`) and in `scripts/install.sh`, upgrade `@swmansion/argent`, then re-run `./scripts/install.sh`.
+2. **Argent version bumps.** Pin the CLI and the skills tag together. Update the ref in `manifest.json` (`upstream[argent].ref`) and in `scripts/install.sh`, and the version in this README's `npm install -g @swmansion/argent` command. Then upgrade `@swmansion/argent` and re-run `./scripts/install.sh`.
 
    **Margelo bumps.** `margelo/react-native-skills` has no tags, so `manifest.json` pins a commit (`upstream[margelo-react-native-skills].ref`). Use the full 40-character SHA, since the `skills` CLI rejects a short one. Update the ref there and in `scripts/install.sh`, then re-run `./scripts/install.sh`.
 

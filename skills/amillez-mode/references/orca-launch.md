@@ -101,10 +101,10 @@ Android work is the likeliest to hit the disk stop. One Android build worktree t
 ### Route a bot session
 
 1. Run the check on `agent-m1`. If `status` is `ok`, launch there.
-2. If `agent-m1` is `blocked`, run the [worktree cleanup](../playbooks/worktree-cleanup.md) on it for finished worktrees, then check again.
-3. If `agent-m1` is still not `ok`, check the M4. If the M4 is `ok`, launch there with `--environment m4`.
+2. If `agent-m1` is `blocked` or `busy`, run the [worktree cleanup](../playbooks/worktree-cleanup.md) on it for finished worktrees, then check again.
+3. If `agent-m1` is still not `ok`, check the M4. If the M4 is `blocked` or `busy`, run the worktree cleanup there for finished bot worktrees only, then check again. If the M4 is `ok`, launch there with `--environment m4`.
 4. If neither host is `ok`, wait and recheck at the interval above, from a background shell loop. A recheck runs the health check only, never a model.
-5. When the wait limit runs out, message Agustín once with the last JSON line from each host. A coding agent reports the message to its dispatcher instead of sending it.
+5. When the wait limit runs out, message Agustín once with each host's `--human` output. A coding agent reports the message to its dispatcher instead of sending it.
 
 Disk is a hard stop. Never start a session on a `blocked` host. `busy` is soft. A short, urgent fix may still run on a `busy` host.
 
