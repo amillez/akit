@@ -88,7 +88,7 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 - Merging any PR, or arming auto-merge. Only Agustín's explicit say-so merges. Agents never merge.
 - Force-push to a shared branch, deploys, data deletion, deleting anything outside your worktree.
 - Messages to people, chat posts, and ticket updates. Report what you would send instead.
-- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`). The Grok lane on the Cursor Agent CLI is not one.
+- Anything that needs a Cursor path (Cursor cloud agents, My Machines, Cursor plugin, `.cursor/`).
 
 **Session overrides.** "Don't stop", "run until done", or "be fully autonomous" in the launch prompt → keep going on reversible work. The always-pause list still holds.
 
@@ -98,14 +98,14 @@ Read the leaf file in full for any principle you apply. Each entry names when it
 
 Every subagent or worker you start runs under amillez-mode too. Its brief names this skill, the files in scope, the named data shape, the success criteria, and the proof expected. File pointers, not inlined context.
 
-Pick model and effort per task from these lanes (policy source: [agent-use-policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks)). Never omit the model. Never omit the effort outside the Grok lane, whose effort is part of its model id. Start every session, review included, with `orca agent launch` and the flags below, per [Orca launches](references/orca-launch.md).
+Pick model and effort per task from these lanes (policy source: [agent-use-policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks)). Never omit the model or the effort outside the Grok lane. Orca takes neither flag for `--agent grok`, per [Launch the Grok lane](references/orca-launch.md#launch-the-grok-lane). Start every session, review included, with `orca agent launch` and the flags below, per [Orca launches](references/orca-launch.md).
 
 | Task | Lane | `orca agent launch` flags |
 | --- | --- | --- |
 | Very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
-| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
-| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
-| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI. Haiku is not for docs. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| General code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7 on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok` |
+| UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7 on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok` |
+| Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7 on the Grok CLI. Haiku is not for docs. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok` |
 | Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `--agent claude --model claude-opus-5-5 --effort xhigh` |
 | Large reasoning, gnarly single-agent debugging | Fable 5.1, Medium, then High, then xhigh one step at a time | `--agent claude` with the Fable 5.1 model id |
 | Review of a diff, PR, or decision trail | GPT 6.1 Sol, High, read-only, reviews Claude Code and Grok work. Opus 5.5, High, read-only, reviews Codex work. Either runs when the policy's Review row requires one, inside the same Orca worktree session as the main agent (`--worktree path:<main worktree>`), never in a new child worktree. The brief is [code review](references/code-review.md). Codex reviews and writes only [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception). | `--agent codex --model gpt-6.1-sol --effort high`, or for Codex work `--agent claude --model claude-opus-5-5 --effort high` |
@@ -113,7 +113,7 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 Rules for the lanes:
 
 - Check Claude Code usage with `/usage` (or `/status`) before a Claude Code general-code, UI, or docs launch. Above 70% → the Grok lane.
-- Never use GPT 5.6 or Opus 5. The only Cursor lane is Grok 4.7 xHigh on the Cursor Agent CLI. Never Composer or another Cursor model.
+- Never use GPT 5.6 or Opus 5. The Grok lane runs on the Grok CLI. Never Composer or another Cursor model.
 - Escalate one knob at a time (model, effort, context) and say why. De-escalate once the hard part is done.
 - The Orca coordinator plans, dispatches, and waits. It does not implement, integrate, or validate. Workers do.
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
@@ -173,7 +173,7 @@ When upstream text (see [UPSTREAM.md](UPSTREAM.md)) and this table disagree on h
 
 | Upstream / Cursor default | amillez-mode | Source |
 | --- | --- | --- |
-| Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor cloud coding path. The Cursor Agent CLI runs only the Grok fallback lane. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
+| Cursor cloud, Composer, or My Machines as coding host | Override. No Cursor cloud coding path. The Grok fallback lane runs on the Grok CLI. | [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) |
 | Cursor `Task` subagents, `poteto-agent`, grok and opus-max defaults | Override. Lanes in **Subagents and model lanes**. Large work goes to Orca. | [agent-use-policy §2](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#2-default-model-posture) |
 | Fan-out skills (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `reflect`) | Not part of amillez-mode. Recon and plan, `grill-me`, and Orca instead. The exception is `reflect`, ported as the sibling [`reflect`](../reflect/SKILL.md) skill, with its three reviewers on our lanes and its output as one PR for review or a garden hand-off. The brief from `interrogate` is ported as [code review](references/code-review.md), with one reviewer from the other family and no fan-out. | [UPSTREAM.md](UPSTREAM.md) |
 | Done means green CI or files changed | Override. Proof loop with flexible evidence, media in the `review-guide` Orca artifact and never in git, each asset inspected against the success criteria. | [agent-proof-feedback-loop](https://github.com/amillez/ai-eng-practices/blob/main/playbooks/agent-proof-feedback-loop.md) |
