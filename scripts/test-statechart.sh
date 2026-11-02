@@ -114,6 +114,14 @@ Next == \E i \in 1..5 : bits' = [bits EXCEPT ![i] = 1 - @]
 Safe == DOMAIN bits = 1..5
 ====
 TLA
+cat > "$MODELS/One.tla" <<'TLA'
+---- MODULE One ----
+VARIABLE x
+Init == x = 0
+Next == UNCHANGED x
+Safe == x = 0
+====
+TLA
 cat > "$MODELS/Counter.tla" <<'TLA'
 ---- MODULE Counter ----
 EXTENDS Naturals
@@ -125,7 +133,7 @@ Next == Inc \/ Done
 Safe == x < 2
 ====
 TLA
-for m in Correlated Fork Bits Counter; do
+for m in Correlated Fork Bits One Counter; do
   printf 'INIT Init\nNEXT Next\nINVARIANT Safe\n' > "$MODELS/$m.cfg"
 done
 regions_view "$MODELS/correlated-32.mjs" 32 'v.x === 0 ? "Offline" : "Online"'
@@ -133,6 +141,7 @@ regions_view "$MODELS/correlated-5.mjs" 5 'v.x === 0 ? "Offline" : "Online"'
 regions_view "$MODELS/fork-32.mjs" 32 '["Idle", "Left", "Right"][v.x]'
 regions_view "$MODELS/fork-5.mjs" 5 '["Idle", "Left", "Right"][v.x]'
 regions_view "$MODELS/bits-5.mjs" 5 'v.bits[i + 1] ? "On" : "Off"'
+regions_view "$MODELS/one-3000.mjs" 3000 '"Idle"'
 
 # A low heap limit makes the exponential failure fast. It is not the cause.
 export NODE_OPTIONS=--max-old-space-size=64
@@ -157,6 +166,10 @@ check "5 independent regions: exit 0" '[[ "$code" -eq 0 ]]'
 check "5 independent regions: keeps regions" 'kept_regions'
 
 unset NODE_OPTIONS
+
+run "$MODELS" One.tla --view one-3000.mjs
+check "3000 regions with one combination: exit 0" '[[ "$code" -eq 0 ]]'
+check "3000 regions with one combination: keeps regions" 'kept_regions'
 
 run "$MODELS" Counter.tla
 check "absolute TLA2TOOLS: Safe breaks" 'broke_safe'
