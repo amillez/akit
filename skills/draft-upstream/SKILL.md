@@ -27,7 +27,7 @@ A match stops the draft. Report its URL. If you hold something it lacks, such as
 
 ## 2. Build a minimal public repro
 
-Make the smallest standalone project or snippet that shows the problem. Start from the upstream's own template or example app when it has one. Use public dependencies only, pin the versions you ran, and run the repro yourself to confirm it fails as described. A fix PR also needs the upstream's test command passing on your branch.
+Make the smallest standalone project or snippet that shows the problem. Start from the upstream's own template or example app when it has one. Use public dependencies only, pin the versions you ran, and run the repro yourself to confirm it fails as described. A fix PR also needs the upstream's test command passing on your branch. On an Orca host, read [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits) before the repro or that test command boots a simulator or emulator or starts a native build.
 
 Read the upstream's `CONTRIBUTING.md` and `.github/ISSUE_TEMPLATE` or PR template, and fill their fields.
 
