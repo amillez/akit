@@ -30,7 +30,7 @@ orca agent launch --agent claude --worktree path:$W \
 
 ## Launch the Grok lane
 
-Use the Grok lane when Claude Code usage is above 70%. The lane runs the Grok CLI at xhigh in an Orca terminal. Orca can't pass the effort, so set the default in `~/.grok/config.toml` before you launch.
+Use the Grok lane when Claude Code usage is above 70%. The lane runs the Grok CLI at xhigh in an Orca terminal. Orca can't pass the effort, so `~/.grok/config.toml` sets the default. `agent-m1` and the M4 both have this block, with backups at `~/.grok/config.toml.bak-20261102`.
 
 ```toml
 [models]
@@ -43,9 +43,9 @@ orca agent launch --agent grok --worktree path:$W --surface terminal \
 ```
 
 - Leave `--model` and `--effort` off. Orca rejects `--model` for Grok with "does not support launch-time model selection", and `--effort` requires `--model`.
-- `~/.grok/docs/user-guide/26-config-reference.md` defines `models.default_reasoning_effort`, and `05-configuration.md` shows the key in a `GROK_CONFIG` example. Its effect on Orca launches is unverified. Without the setting, the CLI default is `high`.
+- `~/.grok/docs/user-guide/26-config-reference.md` defines `models.default_reasoning_effort`, and `05-configuration.md` shows the key in a `GROK_CONFIG` example. This key is the way to get xhigh through Orca, and the banner then shows `Grok 4.7 (xhigh) · always-approve`. Without the setting, the CLI default is `high`.
 - Orca starts the CLI as `grok --permission-mode bypassPermissions -- <prompt>`.
-- The first launch per repo shows a one-time "Do you trust the contents of this directory?" prompt, even with bypass. Answer it with `orca terminal send --terminal <handle> --text y`.
+- The first launch per repo can show a one-time "Do you trust the contents of this directory?" prompt, even with bypass. Answer it with `orca terminal send --terminal <handle> --text y`.
 - A direct call passes the model and xhigh on the command. A coding session still starts through Orca, so use the direct call only to check the CLI.
 
 ```bash
@@ -64,12 +64,11 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 
 These facts were verified on `agent-m1` on 2026-11-02. The Orca smoke test ran `orca worktree create` with `--agent grok --surface terminal --prompt`, and the agent answered.
 
-These items are unverified:
+The Grok CLI on the M4 is version 1.0.70 (`f50904eaee6c`) `[stable]` at `~/.grok/bin/grok`. It is logged in with grok.com, and its model is `grok-4.7`. These facts were verified on 2026-11-02.
 
-- `orca agent launch --agent grok` and `orca orchestration worker-start --agent grok`.
-- The effect of `default_reasoning_effort` on Orca launches.
-- What the terminal banner shows for Grok.
-- The Grok CLI on the M4, which was unreachable.
+With the config block set, an Orca smoke test on each host showed the banner `Grok 4.7 (xhigh) · always-approve`, and the agent replied. Both tests ran on 2026-11-02.
+
+`orca agent launch --agent grok` and `orca orchestration worker-start --agent grok` are unverified.
 
 ## Close a session
 
@@ -184,7 +183,7 @@ orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode fir
 
 - Before you send the brief, check that the banner shows the expected model and `bypass permissions on`.
 - Start Codex with `--dangerously-bypass-approvals-and-sandbox`, the flag Orca adds on `agent-m1`, plus the lane's model flags.
-- Start the Grok CLI with `--permission-mode bypassPermissions -m grok-4.7 --reasoning-effort xhigh`. The command passes xhigh itself, so the M4's `~/.grok/config.toml` stays unchanged. This command is unverified, because the Grok CLI has not run on the M4 and the verified direct call used `-p`.
+- Start the Grok CLI with `--permission-mode bypassPermissions`. The M4's `~/.grok/config.toml` already sets xhigh, so the command does not pass it. The Orca smoke test passed the prompt on the command, so starting the CLI first and sending the brief after is unverified.
 - Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
 - In Agustín's own sessions, the `gh pr edit` that adds the [`review-guide`](../../review-guide/SKILL.md#add-the-link-to-the-pr-body) link can wait on his approval, so the PR body may lack the link until he approves.
 
