@@ -34,6 +34,8 @@ Write a project-local skill with frontmatter that names the area and says when t
 
 Write the generated skill under the project, in `.claude/skills/<name>/` for Claude Code and `.agents/skills/<name>/` for Codex. Write both when the project uses both agents. One is enough when it uses only one.
 
+If the check is a TLA+ model, tell the next agent to read every result with the [`/statechart`](../statechart/SKILL.md) skill. It shows each invariant violation the checker finds as its shortest path in plain words. When the check passes, `/statechart` draws a chart of how the system moves between states. Refer to `/statechart` by name. Its commands, options, and file paths change between releases and machines, so copy none of them into the generated skill or its scripts.
+
 ## Prove it before you hand off
 
 Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. A verify skill that was never run is a draft. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.

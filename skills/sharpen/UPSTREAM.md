@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/sharpen/` (`SKILL.md`) |
-| Compared against | `e73df471cd4bd918367e99f3dd9c51bd53ddf5f0` (pstack `0.15.32`). The directory last changed in `88d47514b82e7c44f00f2b2a72ff6dd12158038c` (2026-10-20), which restored the original prompt. `/sharpen` now answers four questions and hands back the rewritten prompt instead of doing the task. Ours is byte-for-byte that text. |
+| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). The directory last changed in `88d47514b82e7c44f00f2b2a72ff6dd12158038c` (2026-10-20), which restored the original prompt. `/sharpen` now answers four questions and hands back the rewritten prompt instead of doing the task. Ours is byte-for-byte that text. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
