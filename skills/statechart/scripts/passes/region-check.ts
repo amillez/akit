@@ -14,9 +14,13 @@ type Enabled = { i: number; a: Arrow };
 
 // Lazy because the product is exponential in the region count. Callers stop at the
 // first combination the model lacks, so they see at most one more than the model has.
-function* product<T>(lists: T[][], picked: T[] = []): Generator<T[]> {
-  if (picked.length === lists.length) yield picked;
-  else for (const item of lists[picked.length]) yield* product(lists, [...picked, item]);
+function* product<T>(lists: T[][]): Generator<T[]> {
+  if (lists.some((list) => !list.length)) return;
+  const at = new Array<number>(lists.length).fill(0);
+  for (let i = 0; i >= 0; ) {
+    yield lists.map((list, k) => list[at[k]]);
+    for (i = lists.length - 1; i >= 0 && ++at[i] === lists[i].length; i--) at[i] = 0;
+  }
 }
 
 export function regionsLie(
