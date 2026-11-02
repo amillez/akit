@@ -36,6 +36,6 @@ TLA2TOOLS=/path/to/tla2tools.jar JAVA=java npm test
 
 Without `TLA2TOOLS`, the tests that run TLC skip. On macOS, also set `TMPDIR` to a folder with no symlink in its path. The default sits under `/var`, a symlink to `/private/var`, so the symlinked-launcher test in `cli.test.ts` builds a relative link one level short and fails with ENOENT. On 2026-10-29 on `agent-m1`, the suite passed 366 of 367 with the default `TMPDIR`, and that one test passed with `TMPDIR` under `/private/tmp`.
 
-To check the bug fixes, run `./scripts/test-statechart.sh` from the akit root. It runs the launcher on real TLC. Without `TLA2TOOLS`, it downloads the pinned jar. On 2026-11-02, upstream's suite also passed 367 of 367 on a copy with these two fixes.
+To check the bug fixes, run `./scripts/test-statechart.sh` from the akit root. It runs the launcher on real TLC. Without `TLA2TOOLS`, it downloads the pinned jar. On 2026-11-02, upstream's suite also passed 367 of 367 on a copy with these two fixes. Its SIGINT and SIGTERM tests named `while the command writes its files` failed now and then at a load average above 40, with and without the fixes, so rerun them alone before you trust a failure.
 
 To check our copy, run one corpus model from the upstream checkout, such as `pstack/skills/statechart/scripts/test/corpus/CounterAction/`, with our `scripts/statechart`, and `cmp` its `report.md` and `chart.mmd` against the copies saved next to the model.
