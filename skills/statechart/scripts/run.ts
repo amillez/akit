@@ -191,8 +191,11 @@ const runToFiles = (
   });
 
 async function findTlc(cwd: string) {
-  const { TLA2TOOLS, JAVA } = process.env;
-  if (TLA2TOOLS) return { jar: TLA2TOOLS, java: JAVA || "java" };
+  const { TLA2TOOLS, JAVA: java } = process.env;
+  // Java runs in a temporary folder, so relative paths must resolve first.
+  // A bare name stays a PATH lookup.
+  const JAVA = java && path.basename(java) !== java ? path.resolve(java) : java;
+  if (TLA2TOOLS) return { jar: path.resolve(TLA2TOOLS), java: JAVA || "java" };
   const mise = (...args: string[]) =>
     runChild("mise", args, { cwd, env: { ...process.env, MISE_CEILING_PATHS: cwd } });
   const where = () =>

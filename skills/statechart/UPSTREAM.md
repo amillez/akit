@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/statechart/` (`SKILL.md`, `references/`, `scripts/`) |
-| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). The directory last changed in `519d36aa98955bf680db01bcde5fdfba686dc901` (2026-10-26), which fixed a test. Before it, `34b1b7c96f09f81a21a6c78f65b7833f7dcb5b24` replaced the node scripts with the TypeScript compiler, and `740d2c0786246cafac41906198f656b135194d3b` kept qualified action names in property traces. Ours is that tree without `scripts/test/` (Local change 1). |
+| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). The directory last changed in `519d36aa98955bf680db01bcde5fdfba686dc901` (2026-10-26), which fixed a test. Before it, `34b1b7c96f09f81a21a6c78f65b7833f7dcb5b24` replaced the node scripts with the TypeScript compiler, and `740d2c0786246cafac41906198f656b135194d3b` kept qualified action names in property traces. Ours is that tree without `scripts/test/` (Local change 1) and with two bug fixes (Local change 4). |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
@@ -17,9 +17,12 @@ Attribution: the skill text, the compiler under `scripts/`, and `references/rend
 
 ## Local changes
 
-1. **Tests and fixtures not vendored.** Upstream's `scripts/test/` (about 3.6 MB on disk, 376 files) is left out. It holds the TLC corpus, the `.test.ts` files, `ConfigOracle.java`, and the chart fixtures. Nothing the launcher runs imports from it, and every install would otherwise copy it twice per host, once to `~/.claude/skills` and once to `~/.agents/skills`. Every other file is byte-for-byte upstream, frontmatter and exec bits included, so the skill keeps `disable-model-invocation: true` and `/statechart` loads it. `scripts/package.json` is upstream's, so its `test` script and `fast-check` dev dependency point at the missing `test/` folder. Only `UPSTREAM.md` and `LICENSE-pstack` are ours.
-2. **Runtime.** `scripts/statechart` runs `statechart.ts` with Node 22.18+, Bun 1.1.5+, or Deno 2.0+, with no build step. It finds TLC through mise (`tla2tools` 1.7.4 and `java@temurin-25`), or through `TLA2TOOLS` (path to `tla2tools.jar`) and `JAVA` (Java 11 or later) when `TLA2TOOLS` is set. `agent-m1` has Node 22 and Java 21 but no mise as of 2026-10-29, so a bare first run there exits 2 with "Cannot find TLC: mise install failed", and a run with `TLA2TOOLS` and `JAVA` set works.
-3. **Size.** Ours is 31 upstream files, about 216 KB on disk with `UPSTREAM.md` and `LICENSE-pstack`.
+1. **Tests and fixtures not vendored.** Upstream's `scripts/test/` (about 3.6 MB on disk, 376 files) is left out. It holds the TLC corpus, the `.test.ts` files, `ConfigOracle.java`, and the chart fixtures. Nothing the launcher runs imports from it, and every install would otherwise copy it twice per host, once to `~/.claude/skills` and once to `~/.agents/skills`. Every other file except the two in Local change 4 is byte-for-byte upstream, frontmatter and exec bits included, so the skill keeps `disable-model-invocation: true` and `/statechart` loads it. `scripts/package.json` is upstream's, so its `test` script and `fast-check` dev dependency point at the missing `test/` folder. Only `UPSTREAM.md` and `LICENSE-pstack` are ours.
+2. **Runtime.** `scripts/statechart` runs `statechart.ts` with Node 22.18+, Bun 1.1.5+, or Deno 2.0+, with no build step. It finds TLC through mise (`tla2tools` 1.7.4 and `java@temurin-25`), or through `TLA2TOOLS` (path to `tla2tools.jar`) and `JAVA` (Java 11 or later) when `TLA2TOOLS` is set. Relative paths in both resolve against the folder where you run the command, and a bare `JAVA` name such as `java` uses `PATH`. `agent-m1` has Node 22 and Java 21 but no mise as of 2026-10-29, so a bare first run there exits 2 with "Cannot find TLC: mise install failed", and a run with `TLA2TOOLS` and `JAVA` set works.
+3. **Size.** Ours is 31 upstream files, about 220 KB on disk with `UPSTREAM.md` and `LICENSE-pstack`.
+4. **Two bug fixes.** Both defects are in upstream at the pin. Drop a fix once upstream has its own.
+   - `scripts/passes/region-check.ts`. Upstream's `regionsLie` builds every combination of initial region states and of simultaneous moves before it compares them with the model, so a two-state model with 32 regions runs out of memory and writes nothing. Ours iterates a lazy `product` and returns at the first combination the model lacks. The report message stays the same, and the chart falls back to parent states.
+   - `scripts/run.ts`. Upstream's `findTlc` returns `TLA2TOOLS` and `JAVA` as given, but Java runs with a temporary folder as its working directory, so relative paths fail. Ours resolves them first, in the mise branch too.
 
 ## Check a revisit
 
@@ -32,5 +35,7 @@ TLA2TOOLS=/path/to/tla2tools.jar JAVA=java npm test
 ```
 
 Without `TLA2TOOLS`, the tests that run TLC skip. On macOS, also set `TMPDIR` to a folder with no symlink in its path. The default sits under `/var`, a symlink to `/private/var`, so the symlinked-launcher test in `cli.test.ts` builds a relative link one level short and fails with ENOENT. On 2026-10-29 on `agent-m1`, the suite passed 366 of 367 with the default `TMPDIR`, and that one test passed with `TMPDIR` under `/private/tmp`.
+
+To check the bug fixes, run `./scripts/test-statechart.sh` from the akit root. It runs the launcher on real TLC. Without `TLA2TOOLS`, it downloads the pinned jar. On 2026-11-02, upstream's suite also passed 367 of 367 on a copy with these two fixes. Its SIGINT and SIGTERM tests named `while the command writes its files` failed now and then at a load average above 40, with and without the fixes, so rerun them alone before you trust a failure.
 
 To check our copy, run one corpus model from the upstream checkout, such as `pstack/skills/statechart/scripts/test/corpus/CounterAction/`, with our `scripts/statechart`, and `cmp` its `report.md` and `chart.mmd` against the copies saved next to the model.
