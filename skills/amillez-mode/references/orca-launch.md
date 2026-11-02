@@ -1,6 +1,6 @@
 # Orca launches
 
-Every coding session starts through Orca, with or without orchestration, so Agustín and every bot can reach it. This covers Claude Code (`--agent claude`), the Grok CLI (`--agent grok`), and Codex (`--agent codex`). A review runs inside the same Orca worktree session as the main agent, as a second agent tab. Never start a session with a direct `claude`, `claude -p`, `codex exec`, or `grok -p` call. Host routing lives in [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). Pick the lane and its flags from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes).
+Every coding session starts through Orca, with or without orchestration, so Agustín and every bot can reach it. This covers Claude Code (`--agent claude`), the Grok CLI at xhigh (`--agent grok`), and Codex (`--agent codex`). A review runs inside the same Orca worktree session as the main agent, as a second agent tab. Never start a session with a direct `claude`, `claude -p`, `codex exec`, or `grok -p` call. Host routing lives in [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). Pick the lane and its flags from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes).
 
 Commands verified with Orca 1.4.237 on `agent-m1` on 2026-10-24. Check `orca agent launch --help` when they drift. The Grok CLI has its own stamp in [Launch the Grok lane](#launch-the-grok-lane).
 
@@ -30,7 +30,12 @@ orca agent launch --agent claude --worktree path:$W \
 
 ## Launch the Grok lane
 
-Use the Grok lane when Claude Code usage is above 70%. The lane runs the Grok CLI in an Orca terminal.
+Use the Grok lane when Claude Code usage is above 70%. The lane runs the Grok CLI at xhigh in an Orca terminal. Orca can't pass the effort, so set the default in `~/.grok/config.toml` before you launch.
+
+```toml
+[models]
+default_reasoning_effort = "xhigh"
+```
 
 ```bash
 orca agent launch --agent grok --worktree path:$W --surface terminal \
@@ -38,10 +43,10 @@ orca agent launch --agent grok --worktree path:$W --surface terminal \
 ```
 
 - Leave `--model` and `--effort` off. Orca rejects `--model` for Grok with "does not support launch-time model selection", and `--effort` requires `--model`.
-- Through Orca, the lane runs `grok-4.7` at the configured effort, which is high by default. xhigh through Orca is unverified.
+- `~/.grok/docs/user-guide/26-config-reference.md` defines `models.default_reasoning_effort`, and `05-configuration.md` shows the key in a `GROK_CONFIG` example. Its effect on Orca launches is unverified. Without the setting, the CLI default is `high`.
 - Orca starts the CLI as `grok --permission-mode bypassPermissions -- <prompt>`.
 - The first launch per repo shows a one-time "Do you trust the contents of this directory?" prompt, even with bypass. Answer it with `orca terminal send --terminal <handle> --text y`.
-- A direct call sets the model and the effort. A coding session still starts through Orca, so use the direct call only to check the CLI.
+- A direct call passes the model and xhigh on the command. A coding session still starts through Orca, so use the direct call only to check the CLI.
 
 ```bash
 grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
@@ -53,7 +58,7 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 | Config home | `~/.grok` |
 | Login | `grok login`. `grok models` prints "You are logged in with grok.com" |
 | Models | `grok-4.7` only, which is the default. No `grok-4.7-xhigh` id exists |
-| Effort | `--reasoning-effort` or `--effort`, with `xhigh`, `high`, `medium`, or `low`. The default is `high` |
+| Effort | `--reasoning-effort xhigh`, or the alias `--effort xhigh`. The accepted levels are `xhigh`, `high`, `medium`, and `low`. The default is `high` |
 | Headless | `grok -p "<prompt>"`, `--prompt-file`, `--max-turns`, and `--output-format` with `plain`, `json`, `streaming-json`, or `streaming-messages-json`. `grok agent` takes `stdio`, `headless`, or `serve` |
 | Permissions | `--always-approve`, `--permission-mode` with `bypassPermissions`, `default`, `acceptEdits`, `auto`, `dontAsk`, or `plan`, and `--sandbox <profile>` |
 
@@ -62,6 +67,7 @@ These facts were verified on `agent-m1` on 2026-11-02. The Orca smoke test ran `
 These items are unverified:
 
 - `orca agent launch --agent grok` and `orca orchestration worker-start --agent grok`.
+- The effect of `default_reasoning_effort` on Orca launches.
 - What the terminal banner shows for Grok.
 - The Grok CLI on the M4, which was unreachable.
 
@@ -178,7 +184,7 @@ orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode fir
 
 - Before you send the brief, check that the banner shows the expected model and `bypass permissions on`.
 - Start Codex with `--dangerously-bypass-approvals-and-sandbox`, the flag Orca adds on `agent-m1`, plus the lane's model flags.
-- Start the Grok CLI with `--permission-mode bypassPermissions -m grok-4.7 --reasoning-effort xhigh`. This command is unverified, because the Grok CLI has not run on the M4 and the verified direct call used `-p`.
+- Start the Grok CLI with `--permission-mode bypassPermissions -m grok-4.7 --reasoning-effort xhigh`. The command passes xhigh itself, so the M4's `~/.grok/config.toml` stays unchanged. This command is unverified, because the Grok CLI has not run on the M4 and the verified direct call used `-p`.
 - Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
 - In Agustín's own sessions, the `gh pr edit` that adds the [`review-guide`](../../review-guide/SKILL.md#add-the-link-to-the-pr-body) link can wait on his approval, so the PR body may lack the link until he approves.
 
