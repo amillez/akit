@@ -21,9 +21,9 @@ The one PR in step 5 is the only thing this skill publishes. Never post or file 
 
 | Role | Lane | `orca agent launch` flags |
 | --- | --- | --- |
-| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI, read-only. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI, read-only. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Tooling reviewer | GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | `--agent codex --model gpt-6.1-sol --effort xhigh` |
-| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Cursor Agent CLI. | `--agent claude --model claude-opus-5-5 --effort xhigh` |
+| Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Grok CLI. | `--agent claude --model claude-opus-5-5 --effort xhigh` |
 
 Check Claude Code usage with `/usage` or `/status` before the launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#agent-chooser-examples). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5.
 
@@ -50,7 +50,7 @@ Each reviewer is a fresh Orca tab on its lane with its own lens. Pass each templ
 | Tooling | [references/tooling-reviewer.md](references/tooling-reviewer.md) |
 | Divergent | [references/divergent-reviewer.md](references/divergent-reviewer.md) |
 
-Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once inside your own Orca worktree session with `--worktree path:<your worktree>`, never in a new child worktree. Each reviewer writes its output next to its brief. Wait for all three, then close their tabs, and check they are gone per [Orca launches](../amillez-mode/references/orca-launch.md#run-a-review-in-the-same-worktree). When usage moved the Judgment and Divergent lane, swap in its Cursor Agent CLI flags.
+Create a scratch dir outside any worktree and write the three filled templates to `$out/judgment.md`, `$out/tooling.md`, and `$out/divergent.md`. Then launch all three at once inside your own Orca worktree session with `--worktree path:<your worktree>`, never in a new child worktree. Each reviewer writes its output next to its brief. Wait for all three, then close their tabs, and check they are gone per [Orca launches](../amillez-mode/references/orca-launch.md#run-a-review-in-the-same-worktree). When usage moved the Judgment and Divergent lane, swap in `--agent grok`, with xhigh set in `~/.grok/config.toml`.
 
 ```bash
 out=$(mktemp -d)

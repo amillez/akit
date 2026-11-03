@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Diagram style</title>
+<style>
+  :root {
+    --bg: #ffffff; --band: #f5f6f8; --line: #d0d4da; --box: #ffffff;
+    --text: #1f2328; --muted: #656d76;
+    --teal: #0f8a7e; --teal-fill: #e0f4f1;
+    --purple: #7c4dcc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --band: #161b22; --line: #30363d; --box: #0d1117;
+      --text: #e6edf3; --muted: #8b949e;
+      --teal: #2fbfae; --teal-fill: #0f2e2b;
+      --purple: #a985f0;
+    }
+  }
+  body { background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, sans-serif; margin: 16px; }
+  figure { margin: 0; max-width: 720px; }
+  svg { width: 100%; height: auto; }
+  svg text { fill: var(--text); font-size: 13px; }
+  .band { fill: var(--band); stroke: var(--line); }
+  .layer { stroke: var(--line); stroke-dasharray: 4 4; }
+  .muted { fill: var(--muted); }
+  .mono { font-family: ui-monospace, monospace; font-size: 11px; }
+  .title { font-weight: 600; }
+  .box { fill: var(--box); stroke: var(--line); }
+  .box.touched { fill: var(--teal-fill); stroke: var(--teal); stroke-width: 1.5; }
+  .box.later { fill: none; stroke: var(--purple); stroke-dasharray: 6 4; }
+  .arrow { fill: none; stroke-width: 1.5; }
+  .arrow.touched { stroke: var(--teal); }
+  .arrow.later { stroke: var(--purple); stroke-dasharray: 6 4; }
+  .head.touched { fill: var(--teal); }
+  .head.later { fill: var(--purple); }
+  figcaption { color: var(--muted); margin-top: 8px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .legend span::before { content: ""; display: inline-block; width: 14px; height: 10px; margin-right: 6px; vertical-align: middle; border: 1.5px solid var(--line); }
+  .legend .touched::before { background: var(--teal-fill); border-color: var(--teal); }
+  .legend .later::before { border: 1.5px dashed var(--purple); }
+</style>
+<figure>
+  <svg viewBox="0 0 720 240" role="img" aria-label="OrderController calls PaymentService; RefundService is later work">
+    <defs>
+      <marker id="head-touched" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="head touched" d="M0 0L10 5L0 10z"/></marker>
+      <marker id="head-later" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="head later" d="M0 0L10 5L0 10z"/></marker>
+    </defs>
+    <rect class="band" x="10" y="10" width="700" height="220" rx="10"/>
+    <text class="title" x="26" y="34">app</text>
+    <text class="muted" x="26" y="52">checkout package</text>
+    <line class="layer" x1="20" y1="138" x2="700" y2="138"/>
+    <text class="muted" x="26" y="100">ui</text>
+    <text class="muted" x="26" y="186">domain</text>
+
+    <rect class="box touched" x="120" y="66" width="220" height="52" rx="6"/>
+    <text class="title" x="134" y="88">OrderController</text>
+    <text class="muted mono" x="134" y="106">app/ui/OrderController.ts</text>
+
+    <rect class="box" x="120" y="160" width="220" height="52" rx="6"/>
+    <text class="title" x="134" y="182">PaymentService</text>
+    <text class="muted mono" x="134" y="200">app/domain/PaymentService.ts</text>
+
+    <rect class="box later" x="440" y="160" width="220" height="52" rx="6"/>
+    <text class="title" x="454" y="182">RefundService</text>
+    <text class="muted" x="454" y="200">later PR</text>
+
+    <path class="arrow touched" d="M230 118V158" marker-end="url(#head-touched)"/>
+    <text class="mono" x="240" y="154">charge(order)</text>
+    <path class="arrow later" d="M340 186H438" marker-end="url(#head-later)"/>
+    <text class="mono" x="352" y="179">refund(id)</text>
+  </svg>
+  <figcaption>OrderController calls PaymentService.charge once per order and never talks to the payment provider itself. PaymentService owns retries, so a charge is idempotent on the order id. Refunds stay out of this PR.</figcaption>
+  <div class="legend"><span class="touched">changed in this PR</span><span class="later">later PR</span><span>unchanged</span></div>
+</figure>

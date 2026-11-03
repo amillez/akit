@@ -6,7 +6,7 @@
 2. Anti-shortcut clauses, stated and held: no harness modifications, no baseline tampering, no component restructuring to make a diff pass. If the baseline looks wrong, stop and ask, don't edit it.
 3. Migrate one component at a time. Parallelize across worktrees, one owner per component ([Separate Before Serializing Shared State](../principles/separate-before-serializing-shared-state.md)), and one simulator per owner so runs never share device state. Shared primitives migrate first as a blocking phase.
 4. Verify each component against its baseline via image diff on the matching surface. A nonzero diff is a fail. For each nonzero diff, locate and describe the differing region. Only a zero diff passes. Repeat per component until the diff is zero.
-5. Push the baseline, final screenshots, and diff output to the repo's `media` branch, never the PR branch, and link them in the PR.
+5. Keep the baseline, final screenshots, and diff output under `~/agent-work/proof/<slug>/`, never in git, and publish them in the PR's [`review-guide`](../../review-guide/SKILL.md) artifact.
 6. Tear down what you started, then run [Opening a PR](opening-a-pr.md) per component or per safe batch.
 
 **Reply:** components migrated, the diff result for each, the baseline harness location, what's left.

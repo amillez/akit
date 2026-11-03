@@ -16,8 +16,8 @@ When the task matches no playbook, design one. The deliverable before any code i
 | --- | --- | --- |
 | Second opinion on a one-way-door design | The same prompt on the other model family, read-only. Claude Code work asks GPT 6.1 Sol, xHigh on Codex. Grok work asks Opus 5.5, High on Claude Code, or Codex. | `--agent codex --model gpt-6.1-sol --effort xhigh`, or `--agent claude --model claude-opus-5-5 --effort high`, inside your own Orca worktree session (`orca agent launch --worktree path:<your worktree>`), never in a new child worktree |
 | Delegated unit, very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
-| Delegated unit, general code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
-| Delegated unit, UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Cursor Agent CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent cursor --model grok-4.7-xhigh` |
+| Delegated unit, general code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
+| Delegated unit, UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 
 Check Claude Code usage with `/usage` or `/status` before a Claude Code launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#default-picks). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5. Start every launch with `orca agent launch` per [Orca launches](../amillez-mode/references/orca-launch.md). A read-only role states read-only in its prompt, since Orca tabs run without a sandbox.
 
