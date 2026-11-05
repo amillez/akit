@@ -30,6 +30,6 @@ Put each section under a `##` heading, not a bold lead-in, so the sections stand
 
 **Never merge.** Do not run `gh pr merge`, arm auto-merge, or close the PR. Only Agustín's explicit say-so merges.
 
-**After opening.** Tear down what the task started (simulators, emulators, Metro and dev servers, matching Expo CLI processes, watchers), then check that no used Metro port is listening. Post the PR URL and stop. Opening a PR does not start a babysit. When you are sent back with review comments, apply Agustín's comments without asking, verify each automated review claim against the code, push one batched fix wave, and report. Push back when feedback drifts from the intent.
+**After opening.** Tear down what the task started (simulators, emulators, Metro and dev servers, matching Expo CLI processes, watchers), then check that no used Metro port is listening. Post the PR URL and stop. A run that is interrupted after its PR opens, such as a dependency (deps) routine, reports `PR opened` with the URL, not a failure. A failure report invites a blind retry that opens a second PR. Opening a PR does not start a babysit. When you are sent back with review comments, apply Agustín's comments without asking, verify each automated review claim against the code, push one batched fix wave, and report. Push back when feedback drifts from the intent.
 
 A subagent that opens a PR posts the URL and returns to its parent.

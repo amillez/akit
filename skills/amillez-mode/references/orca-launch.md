@@ -57,6 +57,7 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 | Binary | `~/.local/bin/grok` links to `~/.grok/bin/grok`. Version 1.0.70 (`f50904eaee6c`), installer `internal`. `grok update` updates it |
 | Config home | `~/.grok` |
 | Login | `grok login`. `grok models` prints "You are logged in with grok.com" |
+| Auth check | `agent models`. It exits 0 and prints the login and the models. `agent` resolves through `~/.local/bin/agent` to `~/.grok/bin/agent`, so `~/.local/bin` must be on PATH. Verified on `agent-m1` on 2026-11-06 |
 | Models | `grok-4.7` only, which is the default. No `grok-4.7-xhigh` id exists |
 | Effort | `--reasoning-effort xhigh`, or the alias `--effort xhigh`. The accepted levels are `xhigh`, `high`, `medium`, and `low`. The default is `high` |
 | Headless | `grok -p "<prompt>"`, `--prompt-file`, `--max-turns`, and `--output-format` with `plain`, `json`, `streaming-json`, or `streaming-messages-json`. `grok agent` takes `stdio`, `headless`, or `serve` |
@@ -135,6 +136,17 @@ Fleet sessions run on two Orca hosts. The limits the host rules use live in this
 A host is busy (soft) when its load per core is 1.0 or more, its free memory is under 15%, or it uses more than 6 GB of swap. When a host is blocked, recheck every 5 minutes for up to 2 hours.
 
 Ben owns the health check script on both hosts. It prints one JSON line with `host`, `disk_free_gb`, `load_per_core`, `mem_free_pct`, `swap_used_gb`, `ios_booted`, `android_running`, `caps`, `ios_slots_free`, `android_slots_free`, `status` (`ok`, `busy`, or `blocked`), and `reasons`. It exits 0 for `ok` or `busy`, 1 for `blocked`, and 2 on a script error. Add `--human` for a readable summary. The device counts include every simulator and emulator on the host, whoever started it.
+
+The script does not check the JS toolchain. Before a build or install that needs Node, check it yourself on the same host:
+
+```bash
+command -v node pnpm corepack && node --version && pnpm --version
+```
+
+- `command -v` must print a path for each of `node`, `pnpm`, and `corepack`.
+- `node --version` proves that the pinned Node runs, not only that it is on PATH. A Homebrew Node 24 once failed at start because `libsimdjson.34.dylib` was missing.
+- After any Homebrew Node upgrade, run `corepack enable --install-directory /opt/homebrew/bin`, then check `pnpm --version` again.
+- If a check fails, stop and report the output, as for a `blocked` host.
 
 On the M4, run the check in a terminal inside the session's worktree there. Create the worktree first, run the check, and remove the worktree with `orca worktree rm --environment m4` if the M4 is blocked. The M4 refused ssh from `agent-m1` on 2026-10-24, so use the Orca terminal.
 
