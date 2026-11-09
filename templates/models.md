@@ -1,6 +1,6 @@
 # amillez model defaults (Claude Code / Grok CLI / Codex)
 
-Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on the host picked per [Pick a host](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md#pick-a-host). Bots default to `agent-m1` and move to the M4 with `--environment m4` when `agent-m1` is blocked. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23. Grok CLI facts verified with Grok CLI 1.0.70 on `agent-m1` on 2026-11-02. The M4 runs the same Grok CLI version.
+Session defaults for **bots and orchestrators**. Every session, review included, starts through Orca with `orca agent launch` and the flags below, on the host picked per [Pick a host](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md#pick-a-host). Bots default to `agent-m1` and move to the M4 with `--environment m4` when `agent-m1` is blocked. The full commands are in [Orca launches](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/orca-launch.md). Flags verified with Orca 1.4.237 on `agent-m1` as of 2026-10-23. Grok CLI facts verified with Grok CLI 1.0.77 on `agent-m1` on 2026-11-09. The M4 runs the same Grok CLI version.
 
 | Situation | Pick | `orca agent launch` flags |
 | --- | --- | --- |

@@ -54,7 +54,7 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 
 | Item | Verified value |
 | --- | --- |
-| Binary | `~/.local/bin/grok` links to `~/.grok/bin/grok`. Version 1.0.70 (`f50904eaee6c`), installer `internal`. `grok update` updates it |
+| Binary | `~/.local/bin/grok` links to `~/.grok/bin/grok`. Version 1.0.77 (`50ca579fa996`), installer `internal`. `grok update` updates it |
 | Config home | `~/.grok` |
 | Login | `grok login`. `grok models` prints "You are logged in with grok.com" |
 | Auth check | `agent models`. It exits 0 and prints the login and the models. `agent` resolves through `~/.local/bin/agent` to `~/.grok/bin/agent`, so `~/.local/bin` must be on PATH. Verified on `agent-m1` on 2026-11-06 |
@@ -65,7 +65,7 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 
 These facts were verified on `agent-m1` on 2026-11-02. The Orca smoke test ran `orca worktree create` with `--agent grok --surface terminal --prompt`, and the agent answered.
 
-The Grok CLI on the M4 is version 1.0.70 (`f50904eaee6c`) `[stable]` at `~/.grok/bin/grok`. It is logged in with grok.com, and its model is `grok-4.7`. These facts were verified on 2026-11-02.
+The Grok CLI on the M4 is version 1.0.77 (`50ca579fa996`) `[stable]` at `~/.grok/bin/grok`. It is logged in with grok.com, and its model is `grok-4.7`. These facts were verified on 2026-11-02. The version was rechecked on 2026-11-09.
 
 With the config block set, an Orca smoke test on each host showed the banner `Grok 4.7 (xhigh) · always-approve`, and the agent replied. Both tests ran on 2026-11-02.
 
