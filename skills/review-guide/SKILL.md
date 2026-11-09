@@ -14,7 +14,19 @@ The guide lets a reviewer read a PR in order of risk without asking the author a
 
 Skip it for docs-only PRs. Skip trivial PRs too, such as a typo or a version bump with no code change, unless they carry visual proof. The guide is the only place proof is published.
 
-## 1. Build the file outside git
+## 1. Check that sharing is on
+
+Run this check before you build the guide. A human turns on publishing per host in the Orca desktop app, under **Settings > Artifacts** ("Allow publishing public artifact links"). No CLI command reads or changes that setting, and `orca artifacts list` works with publishing off. So share a throwaway file on the host that will share the guide, then delete it:
+
+```bash
+p=~/agent-work/proof/<slug>/share-probe.html
+printf '<p>share probe</p>\n' > "$p"
+orca artifacts share "$p" --json && orca artifacts unshare "$p" --json
+```
+
+If `share` fails with `artifact_sharing_disabled`, publishing is off on this host, and Agustín must turn it on in Orca **Settings > Artifacts**. Report that to your dispatcher, then follow [When sharing fails](#when-sharing-fails). The probe and `unshare` passed on `agent-m1` with Orca 1.4.237 on 2026-11-06.
+
+## 2. Build the file outside git
 
 Write one HTML file to `~/agent-work/proof/<slug>/review-guide.html`, next to the run's local proof. Never commit it. No `REVIEW.md`, no screenshots on any branch, and no media branch for the guide. Keep the same path for the life of the PR, because `orca artifacts update` finds the artifact by that path.
 
@@ -51,7 +63,7 @@ Keep the file self-contained:
 - Use no other relative or external assets. `orca artifacts` uploads only the HTML file.
 - Keep the file under about 800 KiB. Check with `wc -c < review-guide.html`. The service rejects files over 10 MiB.
 
-## 2. Scrub before you share
+## 3. Scrub before you share
 
 The guide is link-only. Its slug is 12 unguessable characters, no public listing shows it, it expires after 30 days, and `orca artifacts delete <id>` revokes it at once. Anyone who has the link can open it without signing in, and a link can be forwarded. The page is not marked `noindex`, so a link that leaks onto an indexed page can be crawled.
 
@@ -60,7 +72,7 @@ The guide is link-only. Its slug is 12 unguessable characters, no public listing
 
 Open every embedded image and check it before you share.
 
-## 3. Share and link it
+## 4. Share and link it
 
 ```bash
 orca artifacts share ~/agent-work/proof/<slug>/review-guide.html --json > ~/agent-work/proof/<slug>/review-guide.share.json
@@ -103,14 +115,14 @@ gh api -X PATCH repos/<owner>/<repo>/pulls/<number> -F body=@"$f"
 
 ### When sharing fails
 
-A human enables publishing per host in Orca under **Settings > Artifacts**. There is no CLI way to turn it on.
+The check in [step 1](#1-check-that-sharing-is-on) catches a host with publishing off before you build. A share can still fail later.
 
-- `artifact_sharing_disabled` means publishing is off on this host.
+- `artifact_sharing_disabled` means publishing is off on this host. Agustín must turn it on in Orca **Settings > Artifacts**.
 - `sharing_unavailable_on_host` means the host is headless and cannot share.
 
 Do not retry either error. Put a text-only guide in the PR body instead, with sections 5 to 8 added after the usual sections. GitHub strips inline SVG from the PR body, so draw section 8 there as a Mermaid block. Images stay local under `~/agent-work/proof/<slug>/`, so describe each one in its pass or fail note. Also say in the PR body and your reply that sharing failed and why.
 
-## 4. Update on each push
+## 5. Update on each push
 
 After each push to the PR branch, regenerate the guide at the same path with the new head SHA, then run:
 
@@ -133,6 +145,6 @@ gh pr edit <number> --body-file "$f"
 
 Then run the same `grep -F` check, with the same retry and `gh api` fallback as in [Add the link to the PR body](#add-the-link-to-the-pr-body). Also check that `gh pr view <number> --json body -q .body | grep -c '^## Review guide'` prints `1`.
 
-## 5. Delete after merge or close
+## 6. Delete after merge or close
 
 When the PR merges or closes, run `orca artifacts delete <id> --json` as part of task cleanup, before the worktree is removed. [Close a session](../amillez-mode/references/orca-launch.md#close-a-session) lists the step.
