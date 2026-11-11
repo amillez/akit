@@ -75,7 +75,9 @@ VERIFY       the package scripts CI runs, or the repo's verify skill, or the Arg
              path, plus known gotchas. Never run a linter file by file, because that
              skips the package's lint config. Pick the proof device and OS version
              from the changed code's platform and version gates, not from a default
-             simulator roster.
+             simulator roster. After pulling new commits into a reused worktree,
+             run `pnpm install` in a pnpm repo before the checks, so stale
+             `node_modules` cannot fail them.
 TIMEBOX      rough cap on runtime; on expiry, return partial findings and stop rather than run on
 FORBIDDEN    no merge, no auto-merge, no PR close, no rebase or force-push outside your own
              branch, no fixes outside scope, plus task-specific bans

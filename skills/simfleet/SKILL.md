@@ -77,7 +77,7 @@ the HTTP/WebSocket contract.
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
 - **Stay under the host's simulator cap.** Run the host's health check from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) before
-  `sim boot` or `emu boot`. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
+  each `sim boot`, `emu boot`, or `native ensure`, mid-session too. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
   of device only while it is above 0. `null` means the host has no cap for that kind, as for iOS on
   `agent-m1`. The counts include devices outside the fleet, such as Agustín's on the M4. Every host
   allows one Android emulator, so also check `simfleet emu list` and reuse a running one or wait.
@@ -118,7 +118,9 @@ concurrently (one build, everyone reuses it).
 
 Android devices are addressed by AVD name (the `emulator-5554` serial only exists while running).
 Android lanes are debug-only. `lane launch` sets up `adb reverse` and opens the dev client, which must
-already be installed.
+already be installed. If the emulator stops responding on a loaded host, retry the Android step on the
+M4 per [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host), or report the Android
+results as missing. Never present partial Android results as complete.
 
 ## Drive and prove with Argent
 
