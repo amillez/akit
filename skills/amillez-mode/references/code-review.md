@@ -19,7 +19,7 @@ Launch the reviewer with `--prompt "$(cat brief.md)"` and the flags for your lan
 
 ## Review rounds
 
-A change gets at most 3 review rounds. Round 1 reviews the whole diff. In round 2 and round 3, item 3 of the brief gives only the new diff since the last reviewed commit (`git diff <last-reviewed-sha>..HEAD`), plus the path to each earlier findings file. The reviewer never repeats a finding from an earlier round. Findings it already reported are out of scope. After round 3, any blocking finding that is still open goes to Agustín, not to a fourth round. **Blocking** defines which findings block.
+A change gets at most 3 review rounds. Round 1 reviews the whole diff. In round 2 and round 3, item 3 of the brief gives only the new diff since the last reviewed commit (`git diff <last-reviewed-sha>..HEAD`), plus the path to each earlier findings file. The reviewer never repeats a finding from an earlier round. Findings it already reported are out of scope. After round 3, any blocking finding that is still open goes to Agustín, not to a fourth round. **Blocking** defines which findings block. A round is done only when the reviewer has run on the round's head commit, because [fleet-norms rule 9](https://github.com/amillez/ai-eng-practices/blob/main/policies/fleet-norms.md) pins a merge to the head SHA the review ran on. Changes the Review row exempts, such as docs-only changes, have no rounds.
 
 ## Write the intent
 
