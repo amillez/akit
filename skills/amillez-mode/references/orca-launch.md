@@ -90,14 +90,12 @@ Close the session as soon as its PR merges or the work is abandoned. Leave no te
 for h in $(orca terminal list --worktree path:$W --json | jq -r '.result.terminals[].handle'); do
   orca terminal close --terminal "$h" --tab --json
 done
-orca artifacts delete <id> --json
 orca worktree rm --worktree name:<slug> --json
 git -C ~/agent-work/<repo> worktree list
 git -C ~/agent-work/<repo> branch --list agent/<bot>/<slug>
 git -C ~/agent-work/<repo> push origin --delete agent/<bot>/<slug>
 ```
 
-- Run `orca artifacts delete` only when the PR has a [`review-guide`](../../review-guide/SKILL.md) artifact. Take `<id>` from `~/agent-work/proof/<slug>/review-guide.share.json`, or from `orca artifacts list --json`. Delete it before `orca worktree rm`.
 - `orca worktree create` opens a shell tab next to the agent tab, so the loop closes every tab, not only the agent's.
 - If `orca terminal close --tab` returns `terminal_handle_stale`, run `orca terminal close --worktree path:$W --all --json` instead, with `$W` the absolute worktree path.
 - `orca worktree rm` returns `"removing": true` and finishes in the background. Run `git worktree list` again until the path is gone.
@@ -210,7 +208,6 @@ orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode fir
 - Start Codex with `--dangerously-bypass-approvals-and-sandbox`, the flag Orca adds on `agent-m1`, plus the lane's model flags.
 - To start the Grok CLI through `orca terminal create`, pass `--permission-mode bypassPermissions`. The M4's `~/.grok/config.toml` already sets xhigh, so the command does not pass it. Starting the CLI first and sending the brief after passed end to end on `agent-m1`. Run locally on the M4, the flow showed the banner `Grok 4.7 (xhigh) · always-approve` and delivered the brief, but the M4 Grok account's free usage limit blocked the reply.
 - Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
-- In Agustín's own sessions, the `gh pr edit` that adds the [`review-guide`](../../review-guide/SKILL.md#add-the-link-to-the-pr-body) link can wait on his approval, so the PR body may lack the link until he approves.
 
 Select the M4 by its name, `m4`, not by id. Each machine keeps its own pairing store, so an environment id copied from another machine does not resolve here. `orca host list --json` prints the selector for each host this machine can reach.
 
