@@ -10,7 +10,7 @@ Invoked at the end of every other playbook that changes code.
 
 **Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area as the scope. Keep the subject short and imperative. Name a real symbol when one carries the change. For example, `fix(checkout): retry payment intent on 409`. Do not add a trailing period. Follow the repo's own title convention when it has one.
 
-**Descriptions.** The PR description is the review guide. A reviewer who has the diff should learn why the change exists, what it could break, how you proved it works, and where to start reading, without asking you anything. Write short, simple sentences with few identifiers. Do not write walls of text. Keep each section to what a reviewer needs.
+**Descriptions.** The PR description is the review guide. A reviewer who has the diff should learn why the change exists, what it could break, how you proved it works, and where to start reading, without asking you anything. Open with a summary a reviewer can read in under a minute. Write short, simple sentences with few identifiers. Do not write walls of text. Keep each section to what a reviewer needs.
 
 Put each section under a `##` heading, not a bold lead-in, so the sections stand apart. Use these sections in order. Drop a section when it has nothing to say.
 
@@ -24,6 +24,8 @@ Put each section under a `##` heading, not a bold lead-in, so the sections stand
 - `## Diagrams`. Mermaid, only when the change spans modules or changes a flow.
 
 **Proof media.** Screenshots, videos, and logs never go into git, on any branch. Save local proof under `~/agent-work/proof/<slug>/`, the one directory outside the working directories that the akit install lets Claude Code read without a prompt. Attach each screenshot and video inline in `## Proof` with `gh pr create|edit --attach`, so it renders in the description, never only behind a link. Do not paste full SHAs, lane recitals, file-by-file checklists, or "CLEAN" verdicts. Do not use `## Test plan` boilerplate. A commit body does not restate its subject.
+
+**Squash commit.** The squash commit message is not the PR body. Write it as a short summary of the change, about 40 lines at most. Leave out the proof media, the review order, and the diagrams.
 
 **Review guide.** For a non-trivial PR, and for any PR with visual proof, write the body with the sibling [`review-guide`](../../review-guide/SKILL.md) skill. It covers the Mermaid light theme, the `--attach` upload, the check that the body holds user-attachments URLs and no local paths, and the in-place update after each push. Skip it for docs-only PRs, which still use the sections above.
 

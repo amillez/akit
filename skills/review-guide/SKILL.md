@@ -20,6 +20,12 @@ Skip this skill for docs-only PRs. Skip trivial PRs too, such as a typo or a ver
 
 Write the body to `~/agent-work/proof/<slug>/pr-body.md`, next to the run's local proof. The akit install lets Claude Code read that directory without a prompt. Keep the same path for the life of the PR.
 
+Run every `gh` command in this skill from the worktree, so `gh` knows the repo and the head branch. Point at the proof directory with absolute paths:
+
+```bash
+proof_dir="$HOME/agent-work/proof/<slug>"
+```
+
 Use these `##` sections in this order. Drop section 8 when it does not apply.
 
 1. **Summary and risk.** What the PR does in two or three sentences, and a risk level (low, medium, or high) with the reason.
@@ -53,13 +59,15 @@ A hand-built HTML or SVG diagram is a fallback for when Mermaid is too limited. 
 
 ## 3. Attach media inline
 
-Keep each screenshot and video under `~/agent-work/proof/<slug>/`. Reference each one from the body file by a path relative to that file:
+Keep each screenshot and video in `$proof_dir`. Reference each one from the body file by a path relative to that file:
 
 ```markdown
 ![Settings screen after save, iOS 26 simulator](./settings-after.png)
 ```
 
-Every screenshot and video must render in the description. Never put proof only behind a link.
+Every screenshot and video must render in the description. Never put proof only behind a link. Put a video reference in its own paragraph, so GitHub renders a player.
+
+`gh` resolves the two kinds of path differently. It resolves an `--attach` argument from the working directory, so always pass `--attach "$proof_dir/x.png"`. It resolves a relative reference inside the body file from the body file's directory first, then from the working directory, so `./x.png` in `$proof_dir/pr-body.md` finds `$proof_dir/x.png`.
 
 `gh pr create` and `gh pr edit` take a repeatable `--attach <file>`. `gh` uploads each file to `https://github.com/user-attachments/assets/<uuid>` and rewrites the matching `![alt](./file)` reference in the body in place. It appends a file the body does not reference. Facts checked on 2026-11-12 against gh 2.103.3 and GitHub's [attaching files with GitHub CLI](https://docs.github.com/en/github-cli/github-cli/attaching-files-with-github-cli) docs:
 
@@ -84,24 +92,23 @@ Open every image and check it before you attach it.
 
 ## 5. Open the PR with the body
 
-Run the commands from the proof directory, so `gh` resolves `./x.png` next to the body file:
+From the worktree, run:
 
 ```bash
-cd ~/agent-work/proof/<slug>
-gh pr create --title "<type(scope): subject>" --body-file pr-body.md \
-  --attach ./settings-before.png --attach ./settings-after.png
+gh pr create --title "<type(scope): subject>" --body-file "$proof_dir/pr-body.md" \
+  --attach "$proof_dir/settings-before.png" --attach "$proof_dir/settings-after.png"
 ```
 
-Run it as its own command. Never chain it with `gh pr checks --watch` or any other command, since a long or failing command in the chain hides whether the body landed.
+Run it as its own command. Never chain it with `gh pr checks --watch` or any other command, since a long or failing command in the chain hides whether the body landed. If it exits non-zero, follow [When gh exits non-zero](#when-gh-exits-non-zero) before you run it again.
 
 ## 6. Verify the body
 
 Fetch the stored body with `jq -j`, since `-q .body` adds a trailing newline that each later edit would store:
 
 ```bash
-gh pr view <number> --json body | jq -j .body > pr-body.md
-grep -o 'https://github.com/user-attachments/assets/[^)]*' pr-body.md | wc -l
-grep -nE '\]\((\./|/Users/|~/)' pr-body.md
+gh pr view <number> --json body | jq -j .body > "$proof_dir/pr-body.md"
+grep -o 'https://github.com/user-attachments/assets/[^)]*' "$proof_dir/pr-body.md" | wc -l
+grep -nE '\]\((\./|/Users/|~/)' "$proof_dir/pr-body.md"
 ```
 
 The first `grep` prints the number of uploaded files you expect. The second prints nothing, because no local path is left. If either check fails, fix the body file and run [step 7](#7-update-on-each-push).
@@ -118,21 +125,28 @@ Keep the fetched `pr-body.md`. It now holds the user-attachments URLs, and it is
 
 ## 7. Update on each push
 
-After each push, update section 6 to the new head SHA and refresh the sections the push changed. Edit the body file that you fetched in [step 6](#6-verify-the-body), so it keeps the user-attachments URLs from earlier uploads. Pass `--attach` only for new or changed media:
+After each push, update section 6 to the new head SHA and refresh the sections the push changed. Fetch the current body first, so the file keeps the user-attachments URLs from earlier uploads. Pass `--attach` only for new or changed media. From the worktree, run:
 
 ```bash
-cd ~/agent-work/proof/<slug>
-gh pr view <number> --json body | jq -j .body > pr-body.md
+gh pr view <number> --json body | jq -j .body > "$proof_dir/pr-body.md"
 # edit pr-body.md
-gh pr edit <number> --body-file pr-body.md --attach ./new-shot.png
+gh pr edit <number> --body-file "$proof_dir/pr-body.md" --attach "$proof_dir/new-shot.png"
 ```
 
 `gh pr edit --body-file` replaces the whole body, so never start an edit from a body file older than the PR's current body. Run [step 6](#6-verify-the-body) again after each edit.
 
-If `gh pr edit` exits non-zero, for example with `GraphQL: Projects (classic) is being deprecated`, it has not changed the body. When the edit attaches no new media, write the same file through the REST API instead, then verify again:
+### When gh exits non-zero
+
+A non-zero exit does not prove that nothing changed. With `--attach`, `gh` uploads files one at a time and stops at the first failed upload. When at least one file uploaded, `gh pr edit` still writes the body with those files, and `gh pr create` still creates the PR and prints its URL. Both then exit non-zero. When no file uploaded, `gh pr create` creates no PR. The gh 2.103.3 source shows this in [`create.go`](https://github.com/cli/cli/blob/v2.103.3/pkg/cmd/pr/create/create.go#L1121-L1153) and [`edit.go`](https://github.com/cli/cli/blob/v2.103.3/pkg/cmd/pr/edit/edit.go#L410-L449). Before any retry:
+
+1. Check what GitHub stored. After `gh pr create`, run `gh pr view --json number,url` from the worktree. If it finds the PR, the PR exists, so continue with `gh pr edit` and never run `create` again. Then fetch the body as in [step 6](#6-verify-the-body).
+2. Keep every user-attachments URL the stored body has. Edit the fetched file, not your pre-upload draft.
+3. Run `gh pr edit` with `--attach` only for the files whose reference is still a local path or is missing.
+
+When the stored body is unchanged and the edit attaches no new media, a REST call can write the body instead. Use it for a failure before the write, for example `GraphQL: Projects (classic) is being deprecated`:
 
 ```bash
-gh api -X PATCH repos/<owner>/<repo>/pulls/<number> -F body=@pr-body.md
+gh api -X PATCH repos/<owner>/<repo>/pulls/<number> -F body=@"$proof_dir/pr-body.md"
 ```
 
-The REST call cannot attach. With new media, fix the `gh pr edit` failure first.
+The REST call cannot attach. With new media, fix the `gh pr edit` failure first. Run [step 6](#6-verify-the-body) after either path.

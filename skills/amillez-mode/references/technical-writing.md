@@ -87,7 +87,7 @@ Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding
 ## Voice and repo specifics
 
 - Apply the sibling [`unslop`](../../unslop/SKILL.md) skill to every doc this reference touches. That skill owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
-- PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing that a reviewer can read in under a minute. Do not paste swarm logs, SHA lists, or metric tables. Link them.
+- PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is the review guide, in the sections that [Opening a PR](../playbooks/opening-a-pr.md) lists. Open it with a summary a reviewer can read in under a minute, and keep every section short. Do not paste swarm logs, SHA lists, or metric tables. Link them. A squash commit message is a short summary of the change, about 40 lines at most. It never copies the whole PR body.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - Indent code snippets the way the repo indents code. Write real paths. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
 
