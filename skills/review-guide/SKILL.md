@@ -12,7 +12,7 @@ description: >-
 
 The PR description is the review guide. It lets a reviewer read a PR in order of risk without asking the author anything. Build it only from what the run already produced: the decision trail, commits, proof files, logs, and the commands you ran. Do not start review sessions, capture new proof, or rerun work to fill it.
 
-There is no Orca artifact, no HTML file, no link-out, and no `## Review guide` section with a URL. Diagrams, screenshots, and video render in the description itself. Nothing goes into git: no `REVIEW.md`, no proof media on any branch, and no media branch.
+There is no Orca artifact, no HTML file, no link-out, and no `## Review guide` section with a URL. Diagrams, screenshots, and video render in the description itself. Nothing goes into git: no `REVIEW.md`, no proof media on any branch, and never a push to a media branch. The existing `media` branches in KaikuLabs/favvy-app and Peersyst/near-mobile stay as read-only history, never deleted and never pushed to, so old PR images keep working. New proof uses `gh pr create|edit|comment --attach`.
 
 Skip this skill for docs-only PRs. Skip trivial PRs too, such as a typo or a version bump with no code change, unless they carry visual proof. Those PRs still use the section headings from [Opening a PR](../amillez-mode/playbooks/opening-a-pr.md) and drop the sections that have nothing to say.
 
