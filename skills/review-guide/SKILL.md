@@ -107,11 +107,11 @@ Fetch the stored body with `jq -j`, since `-q .body` adds a trailing newline tha
 
 ```bash
 gh pr view <number> --json body | jq -j .body > "$proof_dir/pr-body.md"
-grep -o 'https://github.com/user-attachments/assets/[^)]*' "$proof_dir/pr-body.md" | wc -l
+grep -oE 'https://github.com/user-attachments/assets/[0-9a-f-]+' "$proof_dir/pr-body.md" | sort -u | wc -l
 grep -nE '\]\((\./|/Users/|~/)' "$proof_dir/pr-body.md"
 ```
 
-The first `grep` prints the number of uploaded files you expect. The second prints nothing, because no local path is left. If either check fails, fix the body file and run [step 7](#7-update-on-each-push).
+The first `grep` prints the number of distinct uploaded files you expect. The second prints nothing, because no local path is left. If either check fails, fix the body file and run [step 7](#7-update-on-each-push).
 
 Check that one upload serves an image. Use a GET, not `curl -I`. GitHub redirects to a signed S3 URL that answers a HEAD with 403:
 
