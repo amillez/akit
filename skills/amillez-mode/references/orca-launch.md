@@ -56,8 +56,8 @@ grok -p "reply OK" -m grok-4.7 --reasoning-effort xhigh --always-approve
 | --- | --- |
 | Binary | `~/.local/bin/grok` links to `~/.grok/bin/grok`. Version 1.0.77 (`50ca579fa996`), installer `internal`. `grok update` updates it |
 | Config home | `~/.grok` |
-| Login | `grok login`. `grok models` prints "You are logged in with grok.com" |
-| Auth check | `agent models`. It exits 0 and prints the login and the models. `agent` resolves through `~/.local/bin/agent` to `~/.grok/bin/agent`, so `~/.local/bin` must be on PATH. Verified on `agent-m1` on 2026-11-06 |
+| Login | `grok login` |
+| Auth check | `grok models`. It prints "You are logged in with grok.com" and the models. Read the output, not the exit code. `agent models`, the old Cursor CLI name, exited 0 without a login on `agent-m1` on 2026-11-09. Verified on `agent-m1` on 2026-11-11 |
 | Models | `grok-4.7` only, which is the default. No `grok-4.7-xhigh` id exists |
 | Effort | `--reasoning-effort xhigh`, or the alias `--effort xhigh`. The accepted levels are `xhigh`, `high`, `medium`, and `low`. The default is `high` |
 | Headless | `grok -p "<prompt>"`, `--prompt-file`, `--max-turns`, and `--output-format` with `plain`, `json`, `streaming-json`, or `streaming-messages-json`. `grok agent` takes `stdio`, `headless`, or `serve` |
@@ -90,14 +90,12 @@ Close the session as soon as its PR merges or the work is abandoned. Leave no te
 for h in $(orca terminal list --worktree path:$W --json | jq -r '.result.terminals[].handle'); do
   orca terminal close --terminal "$h" --tab --json
 done
-orca artifacts delete <id> --json
 orca worktree rm --worktree name:<slug> --json
 git -C ~/agent-work/<repo> worktree list
 git -C ~/agent-work/<repo> branch --list agent/<bot>/<slug>
 git -C ~/agent-work/<repo> push origin --delete agent/<bot>/<slug>
 ```
 
-- Run `orca artifacts delete` only when the PR has a [`review-guide`](../../review-guide/SKILL.md) artifact. Take `<id>` from `~/agent-work/proof/<slug>/review-guide.share.json`, or from `orca artifacts list --json`. Delete it before `orca worktree rm`.
 - `orca worktree create` opens a shell tab next to the agent tab, so the loop closes every tab, not only the agent's.
 - If `orca terminal close --tab` returns `terminal_handle_stale`, run `orca terminal close --worktree path:$W --all --json` instead, with `$W` the absolute worktree path.
 - `orca worktree rm` returns `"removing": true` and finishes in the background. Run `git worktree list` again until the path is gone.
@@ -161,7 +159,7 @@ orca terminal close --environment m4 --terminal "$h" --tab --json
 - The exit code does not reach `orca terminal read`, so read `status` from the JSON line.
 - Don't add `; exit` to the command. A terminal that exits returns no output to `orca terminal read`.
 
-Android work is the likeliest to hit the disk stop. One Android build worktree takes about 9 GB, and on 2026-10-24 `agent-m1` had about 34 GB free and the M4 about 40 GB. One Android build can take either host below its floor. Before an Android task, run the [worktree cleanup](../playbooks/worktree-cleanup.md) for finished worktrees first.
+Android work is the likeliest to hit the disk stop. One Android build worktree takes about 9 GB, and on 2026-10-24 `agent-m1` had about 34 GB free and the M4 about 40 GB. One Android build can take either host below its floor. Before an Android task, run the [worktree cleanup](../playbooks/worktree-cleanup.md) for finished worktrees first. In a long session, run the health check again before each heavy step: a native build, `expo prebuild`, `pod install`, a Gradle build, or an emulator boot. `agent-m1` once fell to 27 GB free mid-session, under its 30 GB floor. If the check reports `blocked`, stop before the heavy step and run the worktree cleanup.
 
 ### Route a bot session
 
@@ -210,7 +208,6 @@ orca terminal send --environment m4 --terminal "$h" --text "Use amillez-mode fir
 - Start Codex with `--dangerously-bypass-approvals-and-sandbox`, the flag Orca adds on `agent-m1`, plus the lane's model flags.
 - To start the Grok CLI through `orca terminal create`, pass `--permission-mode bypassPermissions`. The M4's `~/.grok/config.toml` already sets xhigh, so the command does not pass it. Starting the CLI first and sending the brief after passed end to end on `agent-m1`. Run locally on the M4, the flow showed the banner `Grok 4.7 (xhigh) · always-approve` and delivered the brief, but the M4 Grok account's free usage limit blocked the reply.
 - Agustín's own sessions keep their permission prompts. Turn prompts off only for a bot session launched through Orca.
-- In Agustín's own sessions, the `gh pr edit` that adds the [`review-guide`](../../review-guide/SKILL.md#add-the-link-to-the-pr-body) link can wait on his approval, so the PR body may lack the link until he approves.
 
 Select the M4 by its name, `m4`, not by id. Each machine keeps its own pairing store, so an environment id copied from another machine does not resolve here. `orca host list --json` prints the selector for each host this machine can reach.
 
