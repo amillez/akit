@@ -227,7 +227,7 @@
       "id": "review-guide",
       "group": "core",
       "path": "skills/review-guide",
-      "when": "Build one self-contained HTML reviewer guide for a non-trivial PR from the material the run already produced, publish it with orca artifacts share, link it from the PR body, update it on each push, and delete it after merge or close; nothing goes into git",
+      "when": "Write the PR description as the review guide for a non-trivial PR from the material the run already produced: eight sections, Mermaid diagrams, and screenshots or video attached inline with gh pr create|edit --attach, updated in place on each push; nothing goes into git",
       "note": "Omits disable-model-invocation so the model loads it at the PR-open step. amillez-mode's Opening a PR playbook and Close a session cleanup name it."
     },
     {
