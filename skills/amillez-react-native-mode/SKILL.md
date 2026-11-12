@@ -14,7 +14,7 @@ Attach this skill **alongside** `amillez-mode` on React Native and Expo coding w
 - Non-negotiables, principles, autonomy, and model lanes.
 - `grill-me` and the [Prototype](../amillez-mode/playbooks/prototype.md) playbook for open questions.
 - Process playbooks such as [Feature](../amillez-mode/playbooks/feature.md), [Bug fix](../amillez-mode/playbooks/bug-fix.md), and [Refactoring](../amillez-mode/playbooks/refactoring.md).
-- Proof on a simulator or emulator through Argent or the project's `verify-*` skill, published in a [`review-guide`](../review-guide/SKILL.md) HTML guide shared as an Orca artifact (`orca artifacts share`), never on a media branch or committed to git, and teardown, with `orca artifacts delete <id>` before the worktree is removed.
+- Proof on a simulator or emulator through Argent or the project's `verify-*` skill, attached inline in the PR description per the [`review-guide`](../review-guide/SKILL.md) skill, never on a media branch or committed to git, and teardown.
 - [Opening a PR](../amillez-mode/playbooks/opening-a-pr.md), never merge, [Babysit](../amillez-mode/playbooks/babysit.md), and the sibling [`reflect`](../reflect/SKILL.md) skill.
 
 ## Docs are the source of truth
