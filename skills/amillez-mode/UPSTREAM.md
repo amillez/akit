@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/` (`pstack/skills/poteto-mode/`, `pstack/skills/principle-*/`, siblings) |
-| Pinned commit | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (2026-10-27 23:12 +00:00). Last checked against `origin/main` on 2026-10-29. |
-| Version | pstack `0.15.36` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
+| Pinned commit | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (2026-11-15 03:36 +00:00). Last checked against `origin/main` on 2026-11-16. |
+| Version | pstack `0.15.42` (`pstack/.cursor-plugin/plugin.json` and the root `pstack/plugin.json`) |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 Attribution: the principles and any playbook text marked KEEP are poteto's (Lauren Tan) work under MIT. Keep `LICENSE-pstack` next to every vendored file.
@@ -149,13 +149,18 @@ KEEP = near-verbatim. ADAPT = ported with our remaps. DROP = not ported (reason)
 | `opening-a-pr.md` drops `interrogate` from the subagent line (`ab1f702`) | ALREADY-HAVE | Ours never had that line. |
 | `babysit.md`, `autopilot-*.md`, `multi-phase-plan.md`, `arena`, `ketchup-video`, `poteto-help`, and `setup-pstack` edits (`ab1f702`) | Verdict unchanged | Files we DROP or DEFER above. Ours have no Autopilot owner, arena cross-judge, or slide subtitles. |
 | `automate-me`, `make-bot-ui`, `no-comments`, `README.md`, `docs/guide/` | DROP | Never ported. Cursor plugin skills and docs. |
+| `poteto-mode/SKILL.md` drops the "Nontrivial change ... → the **how** skill" trigger and `how`/`why` from the routed skills, and the `bug-fix`, `feature`, `hillclimb`, `investigation`, `perf-issue`, `refactoring`, and `multi-phase-plan` playbooks replace `how` with "Trace the code" or "Trace the subsystem" (`bf0c7cd`) | ALREADY-HAVE | Our trigger already sends that case to read-only recon, and none of our playbooks routes through `how`. |
+| `how` and `why` cut to one `SKILL.md` each with their `references/` deleted, wording in `comment-sicko`, `no-comments`, `teach`, `arena`, `architect`, `swarm`, and `recall`, and `recall` spawning its own per-source investigators instead of `why`'s (`bf0c7cd`) | Verdict unchanged | DROP for the skills we never ported. `recall` stays FOLDED into `session-pickup.md`, which sweeps git history and `gh`. |
+| New default models in `poteto-mode/SKILL.md` Subagents and "Match the model to the job", the playbook delegate defaults, `setup-pstack` (Fable 5.2, Opus 5.5, Gemini 4 Carbon), the `reflect` Tooling lens, and `swarm` workers (`bf0c7cd`) | DROP | Our lanes come from the ai-eng-practices agent-use policy. |
+| `sharpen` text, the `reflect` synthesizer example, and the `statechart` `mermaid.ts` and `run.ts` fixes (`bf0c7cd`) | Sibling PRs | The sibling `sharpen`, `reflect`, and `statechart` PRs bring them in and bump those skills' `UPSTREAM.md` rows. |
+| `README.md`, `docs/guide/`, `docs/harness/claude-code.md`, Benny automations, and `plugin.json` version bumps (`bf0c7cd`) | Verdict unchanged | DROP, as above. |
 
 ## Friday revisit (tracking upstream)
 
 Run during the weekly pstack revisit (see ai-eng-practices `playbooks/steal-from-pstack.md`).
 
 ```bash
-PIN=c742dd61706fbacc1b95f1a20b7b988cf096ce6c
+PIN=bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7
 git clone --filter=blob:none https://github.com/cursor/plugins /tmp/cursor-plugins 2>/dev/null \
   || git -C /tmp/cursor-plugins fetch origin main
 cd /tmp/cursor-plugins
