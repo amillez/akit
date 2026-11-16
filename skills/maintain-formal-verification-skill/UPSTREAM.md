@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/maintain-formal-verification-skill/` (`SKILL.md`) |
-| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). `SKILL.md` last changed in `7b353f78f6ec193bdbe48ed8059444eb09b6878e` (2026-10-19), which added it. Ours is byte-for-byte that text. |
+| Compared against | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (pstack `0.15.42`). `SKILL.md` last changed in `7b353f78f6ec193bdbe48ed8059444eb09b6878e` (2026-10-19), which added it. Ours is byte-for-byte that text. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
