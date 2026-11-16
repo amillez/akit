@@ -102,7 +102,7 @@ Exclude the file so it never reaches the upstream PR. The `--git-path` form also
 echo .claude/settings.json >> "$(git rev-parse --git-path info/exclude)"
 ```
 
-If upstream already tracks `.claude/settings.json`, put the key in `.claude/settings.local.json` and exclude that file instead. Do this only in forks of third-party repos. Our own repos under `amillez` and `KaikuLabs` keep their `Co-Authored-By` trailers. An `amillez` fork of someone else's repo counts as third-party.
+If upstream already tracks `.claude/settings.json`, put the key in `.claude/settings.local.json` and exclude that file instead. Do this only in forks of third-party repos. Our own repos under `amillez`, `KaikuLabs`, and `Peersyst` keep their `Co-Authored-By` trailers. An `amillez` fork of someone else's repo counts as third-party.
 
 The setting covers only Claude Code, so the `git log` check stays the backstop. Before you push, run `git log --format='%an <%ae>%n%b' <fork-branch>..HEAD` and confirm every author is Agustín and no trailer is left.
 
