@@ -130,7 +130,7 @@ Each task owns one unit no other task touches, ideally a separate module, packag
 
 Classify a failed or silent worker before any retry. Probe read-only first (`orca orchestration check`, `gh`, pushed branches). Never resume a worker just to check on it.
 
-For a large-reasoning slice, the Fable escalation rule in [Subagents and model lanes](../amillez-mode/SKILL.md#subagents-and-model-lanes) picks the retry lane and overrides the bullets below. A run stopped by an outside cause, such as a tool error or outage, a usage limit, a blocked host, or a dropped connection, retries on Opus 5.5 xHigh and does not count, and after two failed Opus 5.5 xHigh runs the next dispatch is Fable 5.2, even past the two-retry cap.
+For a large-reasoning slice, the Fable escalation rule in [Subagents and model lanes](../amillez-mode/SKILL.md#subagents-and-model-lanes) picks the lane for each retry the bullets below allow. After an outside stop, such as a tool error or outage, a usage limit, a blocked host, or a dropped connection, retry on the model and effort the slice was on and keep its failure count. That is Opus 5.5 xHigh, or Fable 5.2 at its current effort, including a Fable run Agustín named. Only the move from Opus to Fable uses the two-failure gate, and once two Opus 5.5 xHigh runs fail, the next dispatch is Fable 5.2 even past the two-retry cap. A permission or classifier denial still stops and waits for Agustín.
 
 - **Cap hit or out of memory** (context, usage, or memory limit) → respawn with smaller scope.
 - **Network drop** → retry as is.
