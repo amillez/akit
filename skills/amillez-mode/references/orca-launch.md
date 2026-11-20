@@ -108,7 +108,7 @@ The reviewer runs inside the same Orca worktree session as the main agent. Launc
 
 ```bash
 h=$(orca agent launch --agent codex --worktree path:$W \
-  --model gpt-6.1-sol --effort high --surface terminal \
+  --model gpt-6.2-sol --effort high --surface terminal \
   --prompt "$(cat brief.md)" --json | jq -r .result.outcome.handle)
 orca terminal wait --terminal "$h" --for tui-idle --timeout-ms 590000 --json
 orca terminal read --terminal "$h" --screen --json
