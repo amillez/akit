@@ -22,7 +22,7 @@ The one PR in step 5 is the only thing this skill publishes. Never post or file 
 | Role | Lane | `orca agent launch` flags |
 | --- | --- | --- |
 | Judgment and Divergent reviewers | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI, read-only. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
-| Tooling reviewer | GPT 6.1 Sol, xHigh, always, so the panel spans two model families. | `--agent codex --model gpt-6.1-sol --effort xhigh` |
+| Tooling reviewer | GPT 6.2 Sol, xHigh, always, so the panel spans two model families. | `--agent codex --model gpt-6.2-sol --effort xhigh` |
 | Synthesizer | Opus 5.5, xHigh. Usage does not move it. If Claude Code is exhausted, say so and use Grok 4.7, xHigh on the Grok CLI. | `--agent claude --model claude-opus-5-5 --effort xhigh` |
 
 Check Claude Code usage with `/usage` or `/status` before the launch. The lanes follow the [agent use policy](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#agent-chooser-examples). When the policy changes a lane, the policy wins over this table. Never GPT 5.6 or Opus 5.
@@ -63,7 +63,7 @@ You are read-only. Do not edit, commit, or push anything. Write your full output
     | jq -r .result.outcome.handle > "$out/$lens.handle"
 }
 launch judgment --agent claude --model claude-opus-5-5 --effort high
-launch tooling --agent codex --model gpt-6.1-sol --effort xhigh
+launch tooling --agent codex --model gpt-6.2-sol --effort xhigh
 launch divergent --agent claude --model claude-opus-5-5 --effort high
 for lens in judgment tooling divergent; do
   h=$(cat "$out/$lens.handle")

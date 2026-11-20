@@ -4,7 +4,7 @@ Use this reference when the Review row in [agent-use-policy §1](https://github.
 
 ## One reviewer from the other family
 
-One reviewer reviews the change, read-only, inside the same Orca worktree session as the main agent (`orca agent launch --worktree path:<main worktree>`). Never in a new child worktree. Codex GPT 6.1 Sol High reviews Claude Code and Grok work. Opus 5.5 High reviews Codex work. Do not fan out to more reviewers.
+One reviewer reviews the change, read-only, inside the same Orca worktree session as the main agent (`orca agent launch --worktree path:<main worktree>`). Never in a new child worktree. Codex GPT 6.2 Sol High reviews Claude Code and Grok work. Opus 5.5 High reviews Codex work. Do not fan out to more reviewers.
 
 ## Send the brief
 
