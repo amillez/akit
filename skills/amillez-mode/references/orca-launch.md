@@ -2,7 +2,7 @@
 
 Every coding session starts through Orca, with or without orchestration, so Agustín and every bot can reach it. This covers Claude Code (`--agent claude`), the Grok CLI at xhigh (`--agent grok`), and Codex (`--agent codex`). A review runs inside the same Orca worktree session as the main agent, as a second agent tab. Never start a session with a direct `claude`, `claude -p`, `codex exec`, or `grok -p` call. Host routing lives in [agent-use-policy §1](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing). Pick the lane and its flags from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes).
 
-Commands verified with Orca 1.4.237 on `agent-m1` on 2026-10-24. Check `orca agent launch --help` when they drift. The Grok CLI has its own stamp in [Launch the Grok lane](#launch-the-grok-lane).
+Orca flag syntax verified with Orca 1.4.237 on `agent-m1` on 2026-10-24. The model ids `gpt-6.2-sol` (Codex 0.171.0, high) and `claude-fable-5-2` (Claude Code 2.1.329, medium) were launched through Orca on `agent-m1` on 2026-11-20. The Fable banner read "Fable 5.2 with medium effort", and the agent replied "claude-fable-5-2". Check `orca agent launch --help` when they drift. The Grok CLI has its own stamp in [Launch the Grok lane](#launch-the-grok-lane).
 
 ## Start a session in a worktree
 
