@@ -9,10 +9,12 @@ Session defaults for **bots and orchestrators**. Every session, review included,
 | UI work | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **Grok 4.7** · **xHigh** (Grok CLI) | `--agent claude --model claude-opus-5-5 --effort high` · `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Docs, knowledge, playbook, or policy PRs | **Opus 5.5** · **High**. Claude Code usage **> 70%** → **Grok 4.7** · **xHigh** (Grok CLI). Haiku is not for docs. | `--agent claude --model claude-opus-5-5 --effort high` · `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Large-work orchestration (Orca coordinator) | **Opus 5.5** · **xHigh** | `--agent claude --model claude-opus-5-5 --effort xhigh` |
-| Large reasoning (non-orch) | **Fable 5.2** · **Medium** → High → xHigh | `--agent claude --model claude-fable-5-2 --effort medium` |
+| Large reasoning (standalone or worker slice, not the coordinator) | **Opus 5.5** · **xHigh** first. After two failed runs on the same slice → **Fable 5.2** · **Medium** → High → xHigh | `--agent claude --model claude-opus-5-5 --effort xhigh` · then `--agent claude --model claude-fable-5-2 --effort medium` |
 | Review (PR review, cross-model review of a diff, the review step in babysit or proof) | **GPT 6.2 Sol** · **High** on Codex, read-only, for Claude Code and Grok work alike, when the [Review row](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#1-coding-host-routing) requires one. **Opus 5.5** · **High** on Claude Code, read-only, reviews Codex work. The brief is [code review](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/code-review.md) | `--agent codex --model gpt-6.2-sol --effort high`, with `--worktree path:<main worktree>` so it runs inside the main agent's Orca worktree session, never a new child worktree · for Codex work `--agent claude --model claude-opus-5-5 --effort high` |
 
 **Claude Code usage > 70%.** Before a Claude Code general-code, UI, or docs launch, check `/usage` (or `/status`) in Claude Code. It shows plan usage for the current window. Above 70% → run that task on the Grok CLI with **Grok 4.7 xHigh** (`grok-4.7`, `--reasoning-effort xhigh`). Orca starts it with `--agent grok`, so `~/.grok/config.toml` sets xhigh, and the banner shows `Grok 4.7 (xhigh) · always-approve`. A direct call adds `-m grok-4.7 --reasoning-effort xhigh`. At or below 70% → Opus 5.5 High.
+
+**Large reasoning.** It starts on Opus 5.5 xHigh. Fable 5.2 runs only after two failed Opus 5.5 xHigh runs on the same slice, or when Agustín names Fable for that ask. Difficulty alone never sends work to Fable. A run fails when it ends without a verified result on that slice. That means its fix or answer does not pass its repro or proof on the matching surface, or the run stalls, thrashes, or stops without one. A run stopped for an outside cause, such as a usage limit, a blocked host, or a tool outage, does not count. Escalate Fable effort one step at a time.
 
 **Workers** do **not** inherit these defaults blindly. Pick model + effort **per slice** from the policy chooser.
 
@@ -32,9 +34,9 @@ Session defaults for **bots and orchestrators**. Every session, review included,
 | Policy label | Model id | Harness |
 | --- | --- | --- |
 | Haiku | `claude-haiku-5-5` (Max) | Claude Code. Super defined, mechanical |
-| Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator) | Claude Code. General code, UI, plans, orchestration |
+| Opus | `claude-opus-5-5` (High; xHigh for Orca coordinator and large reasoning) | Claude Code. General code, UI, plans, orchestration, large reasoning |
 | Grok | `grok-4.7` (xHigh. `--reasoning-effort xhigh` on direct calls, `default_reasoning_effort = "xhigh"` in `~/.grok/config.toml` for Orca) | Grok CLI. Coding fallback when Claude Code usage > 70% |
-| Fable | Fable 5.2 (Medium → High/xHigh) | Claude Code. Large reasoning, non-orch |
+| Fable | Fable 5.2 (Medium → High/xHigh) | Claude Code. Large reasoning (standalone or worker slice, not the coordinator), only after two failed Opus 5.5 xHigh runs on the same slice |
 | Review | `gpt-6.2-sol` (High), read-only | Codex. Reviews Claude Code and Grok work when the Review row requires one. Opus 5.5 High on Claude Code reviews Codex work. The brief is [code review](https://github.com/amillez/akit/blob/main/skills/amillez-mode/references/code-review.md). Writes only under the raster image exception in Hard notes |
 
 Claude Code (Opus 5.5) is the default. The Grok CLI runs Grok 4.7 xHigh when Claude Code usage is above 70%. Codex runs review only, apart from the raster image exception in Hard notes.
