@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/show-me-your-work/` (`SKILL.md`, `references/decision-log-template.tsv`, `scripts/log.sh`) |
-| Compared against | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (pstack `0.15.42`). The directory last changed in `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14), which only adds a line to pick each subagent's reasoning level and speed per poteto-mode. Local change 5 already names the reviewer's model and effort. |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). The directory last changed in `2f87c854fe3e2fcda44ca86b46ede35aad3c46b7` (2026-11-16), which drops "and fast or standard speed" from the line to pick each subagent's reasoning level and has the trail reviewer run on "another vendor's model" instead of "a different model family". Ours keeps "different model family", which says the same thing. Before it, `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14) added the reasoning-level line. Local change 5 already names the reviewer's model and effort. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
