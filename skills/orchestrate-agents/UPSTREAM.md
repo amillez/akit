@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/poteto-mode/playbooks/orchestrate.md` |
-| Pinned commit | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (2026-11-15 03:36 +00:00) |
-| Version | pstack `0.15.42` |
+| Pinned commit | `0b46ec399d55f2829e88822998f53b84944837d3` (2026-11-19 22:12 +00:00). `2f87c854fe3e2fcda44ca86b46ede35aad3c46b7` (2026-11-16) deleted the file, so the path no longer exists at the pin. Ours keeps its sections at the `e73df47` text (Local change 5). |
+| Version | pstack `0.15.46` |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The same pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit both together.

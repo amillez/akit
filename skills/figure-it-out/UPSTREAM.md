@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/figure-it-out/` (`SKILL.md`) |
-| Compared against | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (pstack `0.15.42`). The directory last changed in `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14). Upstream's shorter description, the Phase C reflow, and the line to pick each subagent's reasoning level and speed are not ported. Local change 4 sets lanes and effort. |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). The directory last changed in `2f87c854fe3e2fcda44ca86b46ede35aad3c46b7` (2026-11-16), which drops "and fast or standard speed" from the line to pick each subagent's reasoning level. Before it, `ce649c03ac3b75b6ae80cbd15b7e2c536caedb5a` (2026-10-14) added that line. Upstream's shorter description, the Phase C reflow, and that line are not ported. Local change 4 sets lanes and effort. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
