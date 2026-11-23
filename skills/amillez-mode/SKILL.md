@@ -107,7 +107,7 @@ Pick model and effort per task from these lanes (policy source: [agent-use-polic
 | UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Docs, knowledge, playbook, or policy PRs | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI. Haiku is not for docs. | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Large-work orchestration (Orca coordinator), and the [`reflect`](../reflect/SKILL.md) synthesizer | Opus 5.5, xHigh | `--agent claude --model claude-opus-5-5 --effort xhigh` |
-| Large reasoning, gnarly single-agent debugging | Fable 5.2, Medium, then High, then xhigh one step at a time | `--agent claude --model claude-fable-5-2 --effort medium` |
+| Large reasoning, gnarly single-agent debugging | Opus 5.5, xHigh first. After two failed runs on the same slice → Fable 5.2, Medium, then High, then xhigh one step at a time | `--agent claude --model claude-opus-5-5 --effort xhigh`, then `--agent claude --model claude-fable-5-2 --effort medium` |
 | Review of a diff, PR, or decision trail | GPT 6.2 Sol, High, read-only, reviews Claude Code and Grok work. Opus 5.5, High, read-only, reviews Codex work. Either runs when the policy's Review row requires one, inside the same Orca worktree session as the main agent (`--worktree path:<main worktree>`), never in a new child worktree. The brief is [code review](references/code-review.md). Codex reviews and writes only [raster image edits](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#codex-raster-image-exception). | `--agent codex --model gpt-6.2-sol --effort high`, or for Codex work `--agent claude --model claude-opus-5-5 --effort high` |
 
 Rules for the lanes:
@@ -115,6 +115,7 @@ Rules for the lanes:
 - Check Claude Code usage with `/usage` (or `/status`) before a Claude Code general-code, UI, or docs launch. Above 70% → the Grok lane.
 - Never use GPT 5.6 or Opus 5. The Grok lane runs Grok 4.7 xHigh on the Grok CLI. Never Composer or another Cursor model.
 - Escalate one knob at a time (model, effort, context) and say why. De-escalate once the hard part is done.
+- Fable 5.2 runs only after two failed Opus 5.5 xHigh runs on the same slice, or when Agustín names Fable for that ask. Difficulty alone never sends work to Fable. A run fails when it ends without a verified result on that slice. That means its fix or answer does not pass its repro or proof on the matching surface, or the run stalls, thrashes, or stops without one. A run stopped for an outside cause, such as a usage limit, a blocked host, or a tool outage, does not count.
 - The Orca coordinator plans, dispatches, and waits. It does not implement, integrate, or validate. Workers do.
 - A second opinion is the same prompt against a different lane. Agreement is high-signal.
 - A separate proof verifier is optional. Its brief holds the success criteria and the proof links. It inspects and reports pass or fail with specifics, and never implements. It is the one subagent that runs with the model unset.
