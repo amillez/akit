@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/maintain-verification-skill/SKILL.md` |
-| Compared against | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (pstack `0.15.42`). The file is unchanged upstream since `6714489fa233263f00e419f6cfc4759b07c81056` (2026-07-12). |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). The file is unchanged upstream since `6714489fa233263f00e419f6cfc4759b07c81056` (2026-07-12). |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
