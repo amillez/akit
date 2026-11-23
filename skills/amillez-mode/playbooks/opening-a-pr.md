@@ -25,6 +25,8 @@ Put each section under a `##` heading, not a bold lead-in, so the sections stand
 
 **Proof media.** Screenshots, videos, and logs never go into git, on any branch. Save local proof under `~/agent-work/proof/<slug>/`, the one directory outside the working directories that the akit install lets Claude Code read without a prompt. Attach each screenshot and video inline in `## Proof` with `gh pr create|edit --attach`, so it renders in the description, never only behind a link. Do not paste full SHAs, lane recitals, file-by-file checklists, or "CLEAN" verdicts. Do not use `## Test plan` boilerplate. A commit body does not restate its subject.
 
+**Rate limits and lock screens.** A third-party 429 is a hard stop for writes, with no retry loop. Reads may back off once, then stop and mark it unproven. Mark proof behind a lock screen or a rate limit unproven in `## Proof`. It never counts as passed.
+
 **Squash commit.** The squash commit message is not the PR body. Write it as a short summary of the change, about 40 lines at most. Leave out the proof media, the review order, and the diagrams.
 
 **Review guide.** For a non-trivial PR, and for any PR with visual proof, write the body with the sibling [`review-guide`](../../review-guide/SKILL.md) skill. It covers the Mermaid light theme, the `--attach` upload, the check that the body holds user-attachments URLs and no local paths, and the in-place update after each push. Skip it for docs-only PRs, which still use the sections above.

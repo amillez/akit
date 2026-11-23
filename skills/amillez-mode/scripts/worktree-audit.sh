@@ -84,11 +84,15 @@ for repo in "${repos[@]}"; do
 		git -C "$main_wt" fetch origin --quiet 2>/dev/null || echo "warn: fetch failed for $main_wt" >&2
 	fi
 	base=$(git -C "$main_wt" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
-	[ -z "$base" ] && base=origin/main
+	# Never assume main: fall back to the repo's real default branch, and per worktree prefer its PR's base.
+	if [ -z "$base" ]; then
+		def=$(cd "$main_wt" && gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null)
+		[ -n "$def" ] && base="origin/$def"
+	fi
 
 	prs=$(mktemp)
 	(cd "$main_wt" && gh pr list --state all --limit 1000 \
-		--json number,state,headRefName 2>/dev/null) > "$prs" || echo "[]" > "$prs"
+		--json number,state,headRefName,baseRefName 2>/dev/null) > "$prs" || echo "[]" > "$prs"
 	[ -s "$prs" ] || echo "[]" > "$prs"
 
 	git -C "$repo" worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt; do
@@ -100,8 +104,17 @@ for repo in "${repos[@]}"; do
 		head_ts=$(git -C "$wt" log -1 --format='%ct' HEAD 2>/dev/null || echo 0)
 		age=$([ "$head_ts" -gt 0 ] 2>/dev/null && echo "$(( (now - head_ts) / 86400 ))d" || echo "?")
 
+		branch=$(git -C "$wt" symbolic-ref --quiet --short HEAD 2>/dev/null || echo "")
+		wt_base=$base
+		if [ -n "$branch" ] && command -v jq >/dev/null 2>&1; then
+			pr_base=$(jq -r --arg b "$branch" \
+				'.[] | select(.headRefName==$b) | .baseRefName // empty' "$prs" 2>/dev/null | head -1)
+			[ -n "$pr_base" ] && wt_base="origin/$pr_base"
+		fi
+
 		# Squash merges are not ancestors of the base, so PR state is the stronger signal.
-		git -C "$wt" merge-base --is-ancestor "$head" "$base" 2>/dev/null && merged=YES || merged=no
+		merged=no
+		[ -n "$wt_base" ] && git -C "$wt" merge-base --is-ancestor "$head" "$wt_base" 2>/dev/null && merged=YES
 
 		porcelain=$(git -C "$wt" status --porcelain 2>/dev/null)
 		if [ -z "$porcelain" ]; then dirty=clean
@@ -109,7 +122,6 @@ for repo in "${repos[@]}"; do
 			dirty="wip:$(printf '%s\n' "$porcelain" | grep -cv '^??')"
 		else dirty="scratch:$(printf '%s\n' "$porcelain" | grep -c '^??')"; fi
 
-		branch=$(git -C "$wt" symbolic-ref --quiet --short HEAD 2>/dev/null || echo "")
 		if [ -z "$branch" ]; then remote=detached
 		elif git -C "$wt" show-ref --verify --quiet "refs/remotes/origin/$branch"; then
 			[ "$(git -C "$wt" rev-parse "origin/$branch" 2>/dev/null)" = "$head" ] \
