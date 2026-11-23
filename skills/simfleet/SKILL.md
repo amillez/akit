@@ -77,12 +77,14 @@ the HTTP/WebSocket contract.
   (fingerprinted, single-flight, shared across agents). Never run `expo run:ios`, CocoaPods, or Xcode
   directly.
 - **Stay under the host's simulator cap.** Run the host's health check from [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) before
-  each `sim boot`, `emu boot`, or `native ensure`, mid-session too. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
+  each `sim boot` or `emu boot`, mid-session too. When `ios_slots_free` or `android_slots_free` is a number, boot that kind
   of device only while it is above 0. `null` means the host has no cap for that kind, as for iOS on
   `agent-m1`. The counts include devices outside the fleet, such as Agustín's on the M4. Every host
   allows one Android emulator, so also check `simfleet emu list` and reuse a running one or wait.
-  Don't boot a device or run `native ensure` while `status` is `blocked`, meaning free disk is below
-  the host's floor. Ping Ben with its JSON line and wait. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
+  Don't boot a device while `status` is `blocked`, meaning free disk is below the host's floor. Ping
+  Ben with its JSON line and wait. Before each `native ensure`, run the disk check from
+  [Pick a host](../amillez-mode/references/orca-launch.md#pick-a-host) and skip that leg when the
+  host is under its disk floor. Policy source is [agent-use-policy §12](https://github.com/amillez/ai-eng-practices/blob/main/policies/agent-use-policy.md#12-orca-hosts-and-resource-limits).
 - **Slim on every host.** `agent-m1` and the M4 both run slim devices, per the slim-by-default rule
   above. Measured on 2026-10-25, an iOS simulator takes 4.0 to 4.4 GB of host memory stock and 1.0 to
   1.1 GB slim. An Android cold boot takes 4.2 GB stock and 3.2 to 3.7 GB slim. Android slim helps only
