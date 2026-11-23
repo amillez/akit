@@ -14,7 +14,7 @@ When the task matches no playbook, design one. The deliverable before any code i
 
 | Role | Lane | `orca agent launch` flags |
 | --- | --- | --- |
-| Second opinion on a one-way-door design | The same prompt on the other model family, read-only. Claude Code work asks GPT 6.1 Sol, xHigh on Codex. Grok work asks Opus 5.5, High on Claude Code, or Codex. | `--agent codex --model gpt-6.1-sol --effort xhigh`, or `--agent claude --model claude-opus-5-5 --effort high`, inside your own Orca worktree session (`orca agent launch --worktree path:<your worktree>`), never in a new child worktree |
+| Second opinion on a one-way-door design | The same prompt on the other model family, read-only. Claude Code work asks GPT 6.2 Sol, xHigh on Codex. Grok work asks Opus 5.5, High on Claude Code, or Codex. | `--agent codex --model gpt-6.2-sol --effort xhigh`, or `--agent claude --model claude-opus-5-5 --effort high`, inside your own Orca worktree session (`orca agent launch --worktree path:<your worktree>`), never in a new child worktree |
 | Delegated unit, very direct, super defined, mechanical (files and success criteria already clear) | Claude Haiku 5.5, Max | `--agent claude --model claude-haiku-5-5 --effort max` |
 | Delegated unit, general code, some reasoning | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
 | Delegated unit, UI work | Opus 5.5, High. Claude Code usage above 70% → Grok 4.7, xHigh on the Grok CLI | `--agent claude --model claude-opus-5-5 --effort high`, or `--agent grok`, with xhigh set in `~/.grok/config.toml` |
