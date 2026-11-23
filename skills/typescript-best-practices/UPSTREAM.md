@@ -8,8 +8,8 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/typescript-best-practices/` (`SKILL.md`, `references/patterns.md`) |
-| Pinned commit | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` (2026-11-15 03:36 +00:00). Last checked against `origin/main` on 2026-11-16. The directory last changed in `0317eb8b858c991c57721358daaee19dbe8c814d` (2026-10-17), which builds the `AgentId` brand with a type guard instead of `as`. Ours ports it. |
-| Version | pstack `0.15.42` |
+| Pinned commit | `0b46ec399d55f2829e88822998f53b84944837d3` (2026-11-19 22:12 +00:00). Last checked against `origin/main` on 2026-11-23. The directory last changed in `0317eb8b858c991c57721358daaee19dbe8c814d` (2026-10-17), which builds the `AgentId` brand with a type guard instead of `as`. Ours ports it. |
+| Version | pstack `0.15.46` |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The same pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit both together.

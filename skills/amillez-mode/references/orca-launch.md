@@ -133,7 +133,7 @@ Fleet sessions run on two Orca hosts. The limits the host rules use live in this
 
 A host is busy (soft) when its load per core is 1.0 or more, its free memory is under 15%, or it uses more than 6 GB of swap. When a host is blocked, recheck every 5 minutes for up to 2 hours.
 
-Ben owns the health check script on both hosts. It prints one JSON line with `host`, `disk_free_gb`, `load_per_core`, `mem_free_pct`, `swap_used_gb`, `ios_booted`, `android_running`, `caps`, `ios_slots_free`, `android_slots_free`, `status` (`ok`, `busy`, or `blocked`), and `reasons`. It exits 0 for `ok` or `busy`, 1 for `blocked`, and 2 on a script error. Add `--human` for a readable summary. The device counts include every simulator and emulator on the host, whoever started it.
+Ben owns the health check script on both hosts. It prints one JSON line with `host`, `disk_free_gb`, `load_per_core`, `mem_free_pct`, `swap_used_gb`, `ios_booted`, `android_running`, `caps`, `ios_slots_free`, `android_slots_free`, `auth`, `status` (`ok`, `busy`, or `blocked`), and `reasons`. It exits 0 for `ok` or `busy`, 1 for `blocked`, and 2 on a script error. Add `--human` for a readable summary. Add `--disk-only` for a cheap disk-floor check, such as right before a native build. The device counts include every simulator and emulator on the host, whoever started it. Its `auth` field can falsely report `logged-out`, so that field alone is never a reason to block a session. Confirm first with `grok models`, or the matching command for the other CLI, `claude auth status` or `codex login status`.
 
 The script does not check the JS toolchain. Before a build or install that needs Node, check it yourself on the same host:
 
@@ -159,7 +159,7 @@ orca terminal close --environment m4 --terminal "$h" --tab --json
 - The exit code does not reach `orca terminal read`, so read `status` from the JSON line.
 - Don't add `; exit` to the command. A terminal that exits returns no output to `orca terminal read`.
 
-Android work is the likeliest to hit the disk stop. One Android build worktree takes about 9 GB, and on 2026-10-24 `agent-m1` had about 34 GB free and the M4 about 40 GB. One Android build can take either host below its floor. Before an Android task, run the [worktree cleanup](../playbooks/worktree-cleanup.md) for finished worktrees first. In a long session, run the health check again before each heavy step: a native build, `expo prebuild`, `pod install`, a Gradle build, or an emulator boot. `agent-m1` once fell to 27 GB free mid-session, under its 30 GB floor. If the check reports `blocked`, stop before the heavy step and run the worktree cleanup.
+Android work is the likeliest to hit the disk stop. One Android build worktree takes about 9 GB, and on 2026-10-24 `agent-m1` had about 34 GB free and the M4 about 40 GB. One Android build can take either host below its floor. Before an Android task, run the [worktree cleanup](../playbooks/worktree-cleanup.md) for finished worktrees first. Right before each native build, run the host's health check from the Pick a host table above, with `--disk-only`. A host whose script ignores the flag still prints `status` and `disk_free_gb`. Native builds include Android and iOS builds, `expo prebuild`, and `pod install`. If free disk is under the host's floor, run the [worktree cleanup](../playbooks/worktree-cleanup.md) and check again. If it is still under the floor, don't start that leg. Mark it unproven, never as passed, report it so the dispatcher pings Ben, and carry on with the rest of the session.
 
 ### Route a bot session
 
