@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/blast-radius/SKILL.md` |
-| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). The file last changed in `df581122cde17e6e27686b5a448bde23e4ad4318` (2026-10-05), where step 6 became "Ask more than one model". Local change 6 replaces that line. |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). The file last changed in `bf0c7cd` itself, which drops `why` from steps 1 and 4 (Local change 3). Before it, `df581122cde17e6e27686b5a448bde23e4ad4318` (2026-10-05) made step 6 "Ask more than one model". Local change 6 replaces that line. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
@@ -19,7 +19,7 @@ Attribution: the one-safety-fact method, the proof ladder, the steps, and the ha
 
 1. **Frontmatter.** Kept `name`, the description's triggers ("blast radius of X", "what could this break", a small diff you don't trust) for Codex, which reads only `name`, `description`, and `metadata`, and `disable-model-invocation: true`, since `/blast-radius` is explicit-invoke.
 2. **Sections.** The `### How sure are you` subsection becomes a `##` section beside the others.
-3. **how and why.** The `how` and `why` companions → amillez-mode's Investigation playbook. "Use `why` step 2" → `gh pr view`, `gh pr diff`, `git log -S`, and `git blame`. "Same rules as `why`" is dropped, since the rules that follow it are spelled out.
+3. **how and why.** "Companion to `how` and `why`" → amillez-mode's Investigation playbook. Step 1 names `gh pr view`, `gh pr diff`, `git log -S`, and `git blame` where upstream says "Pull the PR and its commits". Step 4 matches upstream, which dropped "Same rules as `why`" in `bf0c7cd`.
 4. **Solid versus React.** → render versus effects, the JS thread versus native modules.
 5. **Proof.** Ladder step 5 names Argent on a simulator or emulator, or the project's `verify-*` skill. Step 5 of the procedure keeps the proof script in a scratch dir outside the worktree unless it earns a place as a regression test.
 6. **Arena.** "Run it as an `arena`" → the same prompt to a read-only Codex reviewer on GPT 6.1 Sol High, with the merged answers and agreement as high-signal. Adds the size gate. A change that needs several workers stops and is reported, and large work runs as an Orca Run through `orchestrate-agents`.

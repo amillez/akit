@@ -12,7 +12,7 @@ Write `brief.md` in this order:
 
 1. The intent paragraph.
 2. The sections of this file from **Reviewer prompt** through **Blocking**, verbatim.
-3. The diff, or the command that prints it (`git diff origin/main...HEAD`), and the files the reviewer needs for context. In round 2 or 3, give the new diff and the earlier findings per **Review rounds**.
+3. The diff, or the command that prints it (`git diff origin/<base>...HEAD`, with `<base>` read by `gh pr view --json baseRefName` right before), and the files the reviewer needs for context. In round 2 or 3, give the new diff and the earlier findings per **Review rounds**.
 4. The path outside the worktree where the reviewer writes its findings, such as `<scratch>/review.md`.
 
 Launch the reviewer with `--prompt "$(cat brief.md)"` and the flags for your lane from the lane table in [`SKILL.md`](../SKILL.md#subagents-and-model-lanes), which matches [`templates/models.md`](../../../templates/models.md). Wait for it, read the findings file, and close the tab, per [Run a review in the same worktree](orca-launch.md#run-a-review-in-the-same-worktree).

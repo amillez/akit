@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/create-formal-verification-skill/` (`SKILL.md`) |
-| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). `SKILL.md` last changed in `34b1b7c96f09f81a21a6c78f65b7833f7dcb5b24` (2026-10-26), which cuts "and which of those violations a change fixes" from the `/statechart` paragraph that `00d5decc6f05669044fd092dec73da9ef6f7eec0` (2026-10-23) added. Ours ports that paragraph at the `34b1b7c` text (Local change 4). The rest follows `7b353f78f6ec193bdbe48ed8059444eb09b6878e` (2026-10-19), after `4382e687a50b8d2c5ce4d141d001186589cff8d5` added it and `6b78e9f4e46c75d1697d837e51f07c2692e60b24` added the TLA+ default and the no-verifier fallback. |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). `SKILL.md` last changed in `34b1b7c96f09f81a21a6c78f65b7833f7dcb5b24` (2026-10-26), which cuts "and which of those violations a change fixes" from the `/statechart` paragraph that `00d5decc6f05669044fd092dec73da9ef6f7eec0` (2026-10-23) added. Ours ports that paragraph at the `34b1b7c` text (Local change 4). The rest follows `7b353f78f6ec193bdbe48ed8059444eb09b6878e` (2026-10-19), after `4382e687a50b8d2c5ce4d141d001186589cff8d5` added it and `6b78e9f4e46c75d1697d837e51f07c2692e60b24` added the TLA+ default and the no-verifier fallback. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.

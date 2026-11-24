@@ -8,7 +8,7 @@
 | --- | --- |
 | Repo | https://github.com/cursor/plugins |
 | Path | `pstack/skills/unslop/` (`SKILL.md`) |
-| Compared against | `c742dd61706fbacc1b95f1a20b7b988cf096ce6c` (pstack `0.15.36`). The directory last changed in `bc697d0a5a163cec979e362b601e36f5616083fd` (2026-10-11). Ours is byte-for-byte that text. |
+| Compared against | `0b46ec399d55f2829e88822998f53b84944837d3` (pstack `0.15.46`). The directory last changed in `2f87c854fe3e2fcda44ca86b46ede35aad3c46b7` (2026-11-16, #1249), which cut each pattern to one line and dropped the group headings. The rule ids are unchanged (3, 5, 7 to 20, 22 to 33). Ours is byte-for-byte that text. |
 | License | MIT, Copyright (c) 2026 Lauren Tan. Full text in [`LICENSE-pstack`](LICENSE-pstack), copied byte-for-byte from `pstack/LICENSE`. |
 
 The pstack pin is tracked in [`../amillez-mode/UPSTREAM.md`](../amillez-mode/UPSTREAM.md). Revisit together.
